@@ -5,9 +5,13 @@ ul {
 
 ul li {
   border-bottom: 1px solid #dbdbdb;
+}
+
+ul li a {
+  display: block;
   padding: 15px;
 }
 
-ul li:hover {
+ul li a:hover {
   background-color: hsl(0, 0%, 96%)	;
 }

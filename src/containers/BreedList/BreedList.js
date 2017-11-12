@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import './BreedList.css';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
@@ -18,9 +19,7 @@ class BreedList extends Component {
   render() {
     let content;
 
-    if (!this.props.breeds) {
-      content = <h1 className="title has-text-danger">Error: No breeds found</h1>;
-    } else {
+    if (this.props.breeds) {
       const mainBreedNames = [
         ...Object.keys(this.props.breeds)
       ];
@@ -35,7 +34,20 @@ class BreedList extends Component {
 
       const breedList = breedNames
         .filter(breed => breed.toLowerCase().includes(this.state.filter.toLowerCase()))
-        .map(val => <li key={val}>{val}</li>);
+        .map(val => {
+          const split = val.split(' ');
+          const sub = split.length > 1 ? split.slice(0, split.length-1).join('-') : null;
+          const link = sub
+            ? '/breed/' + split[split.length - 1] + '/' + sub
+            : '/breed/' + split[split.length - 1];
+          return (
+            <li key={val}>
+              <Link to={link}>
+                {val}
+              </Link>
+              </li>
+          );
+        });
 
       content = (
         <Auxiliary>
@@ -55,6 +67,8 @@ class BreedList extends Component {
           </ul>
         </Auxiliary>
       );
+    } else {
+      content = <h1 className="title has-text-danger">Error: No breeds found</h1>;
     }
 
     return (

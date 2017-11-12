@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 
 class Nav extends Component {
 
@@ -22,9 +23,13 @@ class Nav extends Component {
     return (
       <nav className="navbar is-link" aria-label="main navigation">
         <div className="navbar-brand has-text-weight-semibold is-uppercase">
-          <a className="navbar-item">
+          <NavLink
+            activeClassName="is-active"
+            className="navbar-item"
+            exact
+            to="/">
             Dog breeds
-          </a>
+          </NavLink>
 
           <button className={burgerClasses.join(' ')} onClick={this.toggleMenu}>
             <span></span>
@@ -35,12 +40,12 @@ class Nav extends Component {
 
         <div className={menuClasses.join(' ')}>
           <div className="navbar-start">
-            <a className="navbar-item is-active">
-              List
-            </a>
-            <a className="navbar-item">
+            <NavLink
+              activeClassName="is-active"
+              className="navbar-item"
+              to="/quiz">
               Quiz
-            </a>
+            </NavLink>
           </div>
         </div>
       </nav>
