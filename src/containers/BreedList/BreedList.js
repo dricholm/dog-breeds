@@ -5,11 +5,16 @@ import { Link } from 'react-router-dom';
 import './BreedList.css';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import Section from '../../components/Ui/Section/Section';
+import * as breedActions from '../../store/actions/breed';
 
 class BreedList extends Component {
 
   state = {
     filter: ''
+  }
+
+  componentDidMount() {
+    this.props.onGetBreeds();
   }
 
   onFilter = (event) => {
@@ -19,22 +24,15 @@ class BreedList extends Component {
   render() {
     let content;
 
-    if (this.props.breeds) {
-      const mainBreedNames = [
-        ...Object.keys(this.props.breeds)
-      ];
-      const breedNames = [];
-      mainBreedNames.forEach((breed, idx) => {
-        if (this.props.breeds[breed].length === 0) {
-          breedNames.push(breed);
-        } else {
-          breedNames.push(...this.props.breeds[breed].map((sub) => sub + ' ' + breed));
-        }
-      });
+    if (this.props.breedNames) {
+      const filtered = this.props.breedNames
+        .filter(breed => breed.toLowerCase().includes(this.state.filter.toLowerCase()));
 
-      const breedList = breedNames
-        .filter(breed => breed.toLowerCase().includes(this.state.filter.toLowerCase()))
-        .map(val => {
+      let result;
+      if (filtered.length === 0) {
+        result = <div className="notification is-size-5">No breeds found</div>;
+      } else {
+        const breedList = filtered.map(val => {
           const split = val.split(' ');
           const sub = split.length > 1 ? split.slice(0, split.length-1).join('-') : null;
           const link = sub
@@ -48,6 +46,12 @@ class BreedList extends Component {
               </li>
           );
         });
+        result = (
+          <ul className="is-size-5 is-capitalized">
+            {breedList}
+          </ul>
+        );
+      }
 
       content = (
         <Auxiliary>
@@ -62,9 +66,7 @@ class BreedList extends Component {
             </div>
           </div>
 
-          <ul className="is-size-5 is-capitalized">
-            {breedList}
-          </ul>
+          {result}
         </Auxiliary>
       );
     } else {
@@ -84,7 +86,11 @@ class BreedList extends Component {
 }
 
 const mapStateToProps = state => ({
-  breeds: state.breeds
+  breedNames: state.breedNames
 });
 
-export default connect(mapStateToProps, null)(BreedList);
+const mapDispatchToProps = dispatch => ({
+  onGetBreeds: () => dispatch(breedActions.getBreeds())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BreedList);
