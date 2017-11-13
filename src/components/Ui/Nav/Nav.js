@@ -43,6 +43,7 @@ class Nav extends Component {
             <NavLink
               activeClassName="is-active"
               className="navbar-item"
+              onClick={this.toggleMenu}
               to="/quiz">
               Quiz
             </NavLink>

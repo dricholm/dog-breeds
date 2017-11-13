@@ -5,6 +5,7 @@ import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 
 import 'bulma/css/bulma.css';
+import 'font-awesome/css/font-awesome.min.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import breedReducer from './store/reducers/breed';

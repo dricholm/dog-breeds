@@ -14,7 +14,9 @@ class BreedList extends Component {
   }
 
   componentDidMount() {
-    this.props.onGetBreeds();
+    if (this.props.breedNames.length === 0) {
+      this.props.getBreeds();
+    }
   }
 
   onFilter = (event) => {
@@ -90,7 +92,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onGetBreeds: () => dispatch(breedActions.getBreeds())
+  getBreeds: () => dispatch(breedActions.getBreeds())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(BreedList);
