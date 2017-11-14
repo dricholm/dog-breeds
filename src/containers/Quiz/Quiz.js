@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 
 import * as breedActions from '../../store/actions/breed';
 import Section from '../../components/Ui/Section/Section';
@@ -15,7 +15,8 @@ class Quiz extends Component {
     }
   }
 
-  onStart = () => {
+  onStart = (questions, breeds) => {
+    this.props.setOptions(questions, breeds);
     this.props.history.push('/quiz/game');
   }
 
@@ -27,7 +28,12 @@ class Quiz extends Component {
         </h1>
 
         <Switch>
-          <Route path="/quiz/game" component={QuizGame} />
+          <Route
+            path="/quiz/game"
+            render={() => this.props.gameOptions.questions && this.props.gameOptions.selectedBreeds.length > 1
+              ? <QuizGame
+                  gameOptions={this.props.gameOptions} />
+              : <Redirect to="/quiz" />} />
           <Route
             path="/quiz"
             exact
@@ -43,11 +49,13 @@ class Quiz extends Component {
 }
 
 const mapStateToProps = state => ({
-  breedNames: state.breedNames
+  breedNames: state.breedNames,
+  gameOptions: state.gameOptions
 });
 
 const mapDispatchToProps = dispatch => ({
-  getBreeds: () => dispatch(breedActions.getBreeds())
+  getBreeds: () => dispatch(breedActions.getBreeds()),
+  setOptions: (questions, selectedBreeds) => dispatch(breedActions.setOptions(questions, selectedBreeds))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Quiz);

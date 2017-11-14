@@ -13,7 +13,11 @@ const initialState = {
       'wire haired'
     ]
   },
-  breedNames: []
+  breedNames: [],
+  gameOptions: {
+    questions: null,
+    selectedBreeds: []
+  }
 };
 
 const reducer = (state = initialState, action) => {
@@ -31,6 +35,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         breedNames: breedNames
       };
+
+    case actionTypes.SET_OPTIONS:
+      return {
+        ...state,
+        gameOptions: {
+          questions: action.payload.questions,
+          selectedBreeds: action.payload.selectedBreeds
+        }
+      };
+
     default:
       return state;
   }

@@ -6,9 +6,6 @@ class QuizForm extends Component {
   constructor(props) {
     super();
 
-    const checkboxes = props.breedNames.length === 0
-      ? {}
-      : this.initCheckboxes(props.breedNames);
     this.state = {
       quizForm: {
         questions: {
@@ -24,7 +21,7 @@ class QuizForm extends Component {
           elementType: 'input',
           touched: false
         },
-        checkboxes: checkboxes,
+        checkboxes: this.initCheckboxes(props.breedNames),
         isValid: true
       }
     };
@@ -127,13 +124,17 @@ class QuizForm extends Component {
       return;
     }
 
-    let checked = 0;
-    const valid = Object.keys(this.state.quizForm.checkboxes).find((box) => {
-      if (this.state.quizForm.checkboxes[box]) checked++;
-      return checked === 2 ? true : false;
+    let checked = [];
+    Object.keys(this.state.quizForm.checkboxes).forEach((box) => {
+      if (this.state.quizForm.checkboxes[box]) {
+        checked.push(box);
+      }
     });
-    if (valid) {
-      this.props.onStart();
+    if (checked.length > 1) {
+      this.props.onStart(
+        this.state.quizForm.questions.elementConfig.value,
+        checked
+      );
     } else {
       this.setState({
         ...this.state,

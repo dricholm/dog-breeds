@@ -35,7 +35,7 @@ class QuizGame extends Component {
                 Correct 6
             </div>
               <div className="level-item has-text-weight-bold is-size-3">
-                8/20
+                8/{this.props.gameOptions.questions}
             </div>
               <div className="level-item has-text-danger is-size-4">
                 Wrong 1
