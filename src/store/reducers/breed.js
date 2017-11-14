@@ -15,7 +15,7 @@ const initialState = {
   },
   breedNames: [],
   game: {
-    answered: false,
+    answer: null,
     answers: [],
     correct: 0,
     correctAnswer: '',
@@ -27,6 +27,17 @@ const initialState = {
     questions: 0
   }
 };
+
+const getRandomAnswers = (selectedBreeds) => {
+  const answerCount = Math.min(4, selectedBreeds.length);
+  let answers = [];
+  while (answers.length < answerCount) {
+    const idx = Math.floor(Math.random() * selectedBreeds.length);
+    if (answers.indexOf(selectedBreeds[idx]) === -1)
+      answers.push(selectedBreeds[idx]);
+  }
+  return answers;
+}
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -45,8 +56,17 @@ const reducer = (state = initialState, action) => {
       };
 
     case actionTypes.SET_OPTIONS:
+      const answersSet = getRandomAnswers(state.gameOptions.selectedBreeds);
       return {
         ...state,
+        game: {
+          answered: null,
+          answers: answersSet,
+          correct: 0,
+          correctAnswer: answersSet[Math.floor(Math.random() * answersSet.length)],
+          image: 'test.jpg',
+          wrong: 0
+        },
         gameOptions: {
           questions: action.payload.questions,
           selectedBreeds: action.payload.selectedBreeds
@@ -54,22 +74,26 @@ const reducer = (state = initialState, action) => {
       };
 
     case actionTypes.NEXT_QUESTION:
-      const answerCount = Math.min(4, state.gameOptions.selectedBreeds.length);
-      let answers = [];
-      while (answers.length < answerCount) {
-        const idx = Math.floor(Math.random() * state.gameOptions.selectedBreeds.length);
-        if (answers.indexOf(state.gameOptions.selectedBreeds[idx]) === -1)
-          answers.push(state.gameOptions.selectedBreeds[idx]);
-      }
-
+      const answersNext = getRandomAnswers(state.gameOptions.selectedBreeds);
       return {
         ...state,
         game: {
           ...state.game,
           answered: false,
-          answers: answers,
-          correctAnswer: answers[Math.floor(Math.random() * answers.length)],
+          answers: answersNext,
+          correctAnswer: answersNext[Math.floor(Math.random() * answersNext.length)],
           image: 'test.jpg'
+        }
+      };
+
+    case actionTypes.ANSWER:
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          answered: action.payload.answer,
+          correct: action.payload.answered === state.game.correctAnswer ? state.game.correct + 1 : state.game.correct,
+          wrong: action.payload.answered === state.game.correctAnswer ? state.game.wrong : state.game.wrong + 1,
         }
       };
 

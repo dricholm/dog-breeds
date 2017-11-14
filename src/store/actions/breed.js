@@ -15,3 +15,10 @@ export const setOptions = (questions, breeds) => ({
 export const nextQuestion = () => ({
   type: actionTypes.NEXT_QUESTION
 });
+
+export const answer = (breed) => ({
+  type: actionTypes.ANSWER,
+  payload: {
+    answer: breed
+  }
+});

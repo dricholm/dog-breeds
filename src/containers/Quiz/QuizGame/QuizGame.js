@@ -14,14 +14,42 @@ class QuizGame extends Component {
     this.props.nextQuestion();
   }
 
+  buttonClick = (breed) => {
+    if (this.props.game.answered) {
+      this.props.nextQuestion();
+    } else {
+      this.props.answer(breed);
+    }
+  }
+
   render() {
     if (!this.props.gameOptions.questions || this.props.gameOptions.selectedBreeds.length < 2) {
       return <p>Redirecting</p>;
     }
 
-    const answerButtons = this.props.game.answers.map((breed) => (
-      <button key={breed} className="answer button is-info is-block is-medium is-capitalized">{breed}</button>
-    ));
+    const answerButtons = this.props.game.answers.map((breed) => {
+      const classNames = ['answer', 'button', 'is-medium', 'is-capitalized'];
+      if (this.props.game.answered) {
+        if (breed === this.props.game.correctAnswer) {
+          classNames.push('is-success');
+        } else if (breed === this.props.game.answered) {
+            classNames.push('is-danger');
+        } else {
+          classNames.push('is-info', 'is-outlined');
+        }
+      } else {
+        classNames.push('is-info');
+      }
+
+      return (
+        <button
+          key={breed}
+          className={classNames.join(' ')}
+          onClick={(event) => this.buttonClick(breed)}>
+          {breed}
+        </button>
+      );
+    });
 
     const progress = (this.props.game.correct + this.props.game.wrong) / this.props.gameOptions.questions * 100;
     return (
@@ -32,7 +60,10 @@ class QuizGame extends Component {
               <img src={this.props.game.image} alt="Dog" className="quiz-image" />
               {this.props.game.answered
                 ? (
-                  <a href="#todo" aria-label="next" className="quiz-next has-text-white">
+                  <a
+                    aria-label="next"
+                    className="quiz-next has-text-white"
+                    onClick={this.props.nextQuestion}>
                     <i className="fa fa-chevron-right fa-fw" aria-hidden="true"></i>
                   </a>
                 )
@@ -79,7 +110,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   getBreeds: () => dispatch(breedActions.getBreeds()),
   setOptions: (questions, selectedBreeds) => dispatch(breedActions.setOptions(questions, selectedBreeds)),
-  nextQuestion: () => dispatch(breedActions.nextQuestion())
+  nextQuestion: () => dispatch(breedActions.nextQuestion()),
+  answer: (breed) => dispatch(breedActions.answer(breed))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuizGame);
