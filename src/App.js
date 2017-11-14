@@ -5,7 +5,7 @@ import './App.css';
 import Nav from './components/Ui/Nav/Nav';
 import BreedList from './containers/BreedList/BreedList';
 import BreedInfo from './containers/BreedInfo/BreedInfo';
-import Quiz from './containers/Quiz/Quiz';
+import Quiz from './components/Quiz/Quiz';
 import Section from './components/Ui/Section/Section';
 import Footer from './components/Ui/Footer/Footer';
 

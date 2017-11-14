@@ -1,10 +1,17 @@
-import Input from '../../../components/Form/Input/Input';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import * as breedActions from '../../../store/actions/breed';
+import Input from '../../../components/Form/Input/Input';
 
 class QuizForm extends Component {
 
   constructor(props) {
     super();
+
+    if (props.breedNames.length === 0) {
+      props.getBreeds();
+    }
 
     this.state = {
       quizForm: {
@@ -131,10 +138,8 @@ class QuizForm extends Component {
       }
     });
     if (checked.length > 1) {
-      this.props.onStart(
-        this.state.quizForm.questions.elementConfig.value,
-        checked
-      );
+      this.props.setOptions(this.state.quizForm.questions.elementConfig.value, checked);
+      this.props.history.push('/quiz/game');
     } else {
       this.setState({
         ...this.state,
@@ -202,4 +207,14 @@ class QuizForm extends Component {
   }
 }
 
-export default QuizForm;
+const mapStateToProps = state => ({
+  breedNames: state.breedNames,
+  gameOptions: state.gameOptions
+});
+
+const mapDispatchToProps = dispatch => ({
+  getBreeds: () => dispatch(breedActions.getBreeds()),
+  setOptions: (questions, selectedBreeds) => dispatch(breedActions.setOptions(questions, selectedBreeds))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(QuizForm);

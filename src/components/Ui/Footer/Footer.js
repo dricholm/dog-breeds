@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Footer = () => (
+const footer = () => (
   <footer className="footer">
     <div className="container">
       <div className="content has-text-centered">
@@ -10,4 +10,4 @@ const Footer = () => (
   </footer>
 );
 
-export default Footer;
+export default footer;

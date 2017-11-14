@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 import './QuizGame.css';
 import Section from '../../../components/Ui/Section/Section';
 
 class QuizGame extends Component {
+
+  componentWillMount() {
+    if (!this.props.gameOptions.questions || this.props.gameOptions.selectedBreeds.length < 2) {
+      this.props.history.push('/quiz');
+    }
+  }
+
   render() {
     return (
       <Section>
@@ -49,4 +57,13 @@ class QuizGame extends Component {
   }
 }
 
-export default QuizGame;
+const mapStateToProps = state => ({
+  gameOptions: state.gameOptions
+});
+
+// const mapDispatchToProps = dispatch => ({
+//   getBreeds: () => dispatch(breedActions.getBreeds()),
+//   setOptions: (questions, selectedBreeds) => dispatch(breedActions.setOptions(questions, selectedBreeds))
+// });
+
+export default connect(mapStateToProps, null)(QuizGame);

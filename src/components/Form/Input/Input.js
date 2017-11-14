@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Input = (props) => {
+const input = (props) => {
   switch (props.elementType) {
     case 'input':
       return <input
@@ -24,4 +24,4 @@ const Input = (props) => {
   }
 };
 
-export default Input;
+export default input;
