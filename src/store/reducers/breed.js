@@ -92,8 +92,8 @@ const reducer = (state = initialState, action) => {
         game: {
           ...state.game,
           answered: action.payload.answer,
-          correct: action.payload.answered === state.game.correctAnswer ? state.game.correct + 1 : state.game.correct,
-          wrong: action.payload.answered === state.game.correctAnswer ? state.game.wrong : state.game.wrong + 1,
+          correct: action.payload.answer === state.game.correctAnswer ? state.game.correct + 1 : state.game.correct,
+          wrong: action.payload.answer === state.game.correctAnswer ? state.game.wrong : state.game.wrong + 1,
         }
       };
 

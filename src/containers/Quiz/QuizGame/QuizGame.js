@@ -16,9 +16,17 @@ class QuizGame extends Component {
 
   buttonClick = (breed) => {
     if (this.props.game.answered) {
-      this.props.nextQuestion();
+      this.advance();
     } else {
       this.props.answer(breed);
+    }
+  }
+
+  advance = () => {
+    if (this.props.game.correct + this.props.game.wrong === +this.props.gameOptions.questions) {
+      // TODO: Implement finish
+    } else {
+      this.props.nextQuestion();
     }
   }
 
@@ -63,7 +71,7 @@ class QuizGame extends Component {
                   <a
                     aria-label="next"
                     className="quiz-next has-text-white"
-                    onClick={this.props.nextQuestion}>
+                    onClick={this.advance}>
                     <i className="fa fa-chevron-right fa-fw" aria-hidden="true"></i>
                   </a>
                 )
