@@ -11,3 +11,7 @@ export const setOptions = (questions, breeds) => ({
     selectedBreeds: breeds
   }
 });
+
+export const nextQuestion = () => ({
+  type: actionTypes.NEXT_QUESTION
+});

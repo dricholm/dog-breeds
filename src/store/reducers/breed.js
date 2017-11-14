@@ -14,9 +14,17 @@ const initialState = {
     ]
   },
   breedNames: [],
+  game: {
+    answered: false,
+    answers: [],
+    correct: 0,
+    correctAnswer: '',
+    image: null,
+    wrong: 0
+  },
   gameOptions: {
-    questions: null,
-    selectedBreeds: []
+    selectedBreeds: [],
+    questions: 0
   }
 };
 
@@ -42,6 +50,26 @@ const reducer = (state = initialState, action) => {
         gameOptions: {
           questions: action.payload.questions,
           selectedBreeds: action.payload.selectedBreeds
+        }
+      };
+
+    case actionTypes.NEXT_QUESTION:
+      const answerCount = Math.min(4, state.gameOptions.selectedBreeds.length);
+      let answers = [];
+      while (answers.length < answerCount) {
+        const idx = Math.floor(Math.random() * state.gameOptions.selectedBreeds.length);
+        if (answers.indexOf(state.gameOptions.selectedBreeds[idx]) === -1)
+          answers.push(state.gameOptions.selectedBreeds[idx]);
+      }
+
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          answered: false,
+          answers: answers,
+          correctAnswer: answers[Math.floor(Math.random() * answers.length)],
+          image: 'test.jpg'
         }
       };
 
