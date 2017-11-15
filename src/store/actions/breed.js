@@ -16,9 +16,13 @@ export const nextQuestion = () => ({
   type: actionTypes.NEXT_QUESTION
 });
 
-export const answer = (breed) => ({
+export const answer = breed => ({
   type: actionTypes.ANSWER,
   payload: {
     answer: breed
   }
+});
+
+export const restart = () => ({
+  type: actionTypes.RESTART
 });

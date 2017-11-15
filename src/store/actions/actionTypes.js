@@ -4,3 +4,4 @@ export const SET_OPTIONS = 'SET_OPTIONS';
 
 export const NEXT_QUESTION = 'NEXT_QUESTION';
 export const ANSWER = 'ANSWER';
+export const RESTART = 'RESTART';

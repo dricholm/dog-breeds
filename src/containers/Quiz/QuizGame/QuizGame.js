@@ -15,18 +15,11 @@ class QuizGame extends Component {
   }
 
   buttonClick = (breed) => {
+    if (this.props.game.correct + this.props.game.wrong === +this.props.gameOptions.questions) return;
     if (this.props.game.answered) {
-      this.advance();
+      this.props.nextQuestion();
     } else {
       this.props.answer(breed);
-    }
-  }
-
-  advance = () => {
-    if (this.props.game.correct + this.props.game.wrong === +this.props.gameOptions.questions) {
-      // TODO: Implement finish
-    } else {
-      this.props.nextQuestion();
     }
   }
 
@@ -59,6 +52,36 @@ class QuizGame extends Component {
       );
     });
 
+    let overlay = null;
+    if (this.props.game.answered) {
+      let button;
+      if (this.props.game.correct + this.props.game.wrong === +this.props.gameOptions.questions) {
+        button = (
+          <div className="has-text-centered">
+            <div className="notification is-link is-size-3">
+              <p className="has-text-weight-bold is-size-1">{Math.round(this.props.game.correct / (this.props.game.correct + this.props.game.wrong) * 100)}%</p>
+              <p>Correct: {this.props.game.correct}</p>
+              <p>Wrong: {this.props.game.wrong}</p>
+            </div>
+            <a aria-label="next" className="quiz-button" onClick={this.props.restart}>
+              <i className="fa fa-refresh fa-fw" aria-hidden="true"></i>
+            </a>
+          </div>
+        );
+      } else {
+        button = (
+          <a aria-label="replay" className="quiz-button quiz-next" onClick={this.props.nextQuestion}>
+            <i className="fa fa-chevron-right fa-fw" aria-hidden="true"></i>
+          </a>
+        );
+      }
+      overlay = (
+        <div className="quiz-overlay">
+          {button}
+        </div>
+      );
+    }
+
     const progress = (this.props.game.correct + this.props.game.wrong) / this.props.gameOptions.questions * 100;
     return (
       <Auxiliary>
@@ -66,24 +89,11 @@ class QuizGame extends Component {
           <div className="box column is-half is-offset-one-quarter">
             <figure className="image is-1by1 quiz-image-box next-question">
               <img src={this.props.game.image} alt="Dog" className="quiz-image" />
-              {this.props.game.answered
-                ? (
-                  <a
-                    aria-label="next"
-                    className="quiz-next has-text-white"
-                    onClick={this.advance}>
-                    <i className="fa fa-chevron-right fa-fw" aria-hidden="true"></i>
-                  </a>
-                )
-                : null }
+              {overlay}
             </figure>
 
             <div className="answers">
               {answerButtons}
-              {/* <button className="answer button is-info is-block is-medium">Choice button</button>
-              <button className="answer button is-info is-outlined is-block is-medium">Inactive</button>
-              <button className="answer button is-success is-block is-medium">Correct</button>
-              <button className="answer button is-danger is-block is-medium">Incorrect</button> */}
             </div>
           </div>
         </div>
@@ -119,7 +129,8 @@ const mapDispatchToProps = dispatch => ({
   getBreeds: () => dispatch(breedActions.getBreeds()),
   setOptions: (questions, selectedBreeds) => dispatch(breedActions.setOptions(questions, selectedBreeds)),
   nextQuestion: () => dispatch(breedActions.nextQuestion()),
-  answer: (breed) => dispatch(breedActions.answer(breed))
+  answer: (breed) => dispatch(breedActions.answer(breed)),
+  restart: () => dispatch(breedActions.restart())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuizGame);

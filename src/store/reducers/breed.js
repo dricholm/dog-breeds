@@ -79,7 +79,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         game: {
           ...state.game,
-          answered: false,
+          answered: null,
           answers: answersNext,
           correctAnswer: answersNext[Math.floor(Math.random() * answersNext.length)],
           image: 'test.jpg'
@@ -94,6 +94,20 @@ const reducer = (state = initialState, action) => {
           answered: action.payload.answer,
           correct: action.payload.answer === state.game.correctAnswer ? state.game.correct + 1 : state.game.correct,
           wrong: action.payload.answer === state.game.correctAnswer ? state.game.wrong : state.game.wrong + 1,
+        }
+      };
+
+    case actionTypes.RESTART:
+      const answersRestart = getRandomAnswers(state.gameOptions.selectedBreeds);
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          answered: null,
+          answers: answersRestart,
+          correctAnswer: answersRestart[Math.floor(Math.random() * answersRestart.length)],
+          correct: 0,
+          wrong: 0
         }
       };
 
