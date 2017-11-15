@@ -115,15 +115,26 @@ class QuizGame extends Component {
             <progress className="progress is-primary" value={progress.toString()} max="100">{progress}%</progress>
 
             <div className="level">
-              <div className="level-item has-text-success is-size-4">
-                Correct {this.props.quiz.correct}
-            </div>
-              <div className="level-item has-text-weight-bold is-size-3">
-                {this.props.quiz.correct + this.props.quiz.wrong}/{this.props.quiz.questionCount}
-            </div>
-              <div className="level-item has-text-danger is-size-4">
-                Wrong {this.props.quiz.wrong}
-            </div>
+              <div className="level-item has-text-centered">
+                <div>
+                  <p className="heading">Correct</p>
+                  <p className="title has-text-primary">{this.props.quiz.correct}</p>
+                </div>
+              </div>
+              <div className="level-item has-text-centered">
+                <div>
+                  <p className="heading">Progress</p>
+                  <p className="title">
+                    {this.props.quiz.correct + this.props.quiz.wrong}/{this.props.quiz.questionCount}
+                  </p>
+                </div>
+              </div>
+              <div className="level-item has-text-centered">
+                <div>
+                  <p className="heading">Wrong</p>
+                  <p className="title has-text-danger">{this.props.quiz.wrong}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

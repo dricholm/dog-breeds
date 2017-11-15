@@ -1,10 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const footer = () => (
   <footer className="footer">
     <div className="container">
       <div className="content has-text-centered">
-        Footer works
+        <p>Open source project on <a href="https://github.com/dricholm/dog-breeds">GitHub</a></p>
+        <p><Link to="/about">About</Link></p>
       </div>
     </div>
   </footer>
