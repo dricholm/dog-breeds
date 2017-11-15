@@ -1,14 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import * as breedActions from '../../store/actions/breed';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import Section from '../../components/Ui/Section/Section';
 
 class BreedInfo extends Component {
+
+  componentDidMount() {
+    if (!this.props.breedsLoaded) {
+      this.props.getBreeds();
+    }
+  }
+
   render() {
     let content;
 
-    if (this.props.breedFound) {
+    if (this.props.loading) {
+      content = <div className="notification is-info is-size-5">Loading...</div>;
+    } else if (this.props.error) {
+      content = <div className="notification is-danger is-size-5">{this.props.error}</div>;
+    } else if (this.props.breedFound) {
       const subtitle = (
         <h2 className="subtitle is-capitalized">
           {this.props.match.params.breed}
@@ -39,11 +51,18 @@ class BreedInfo extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  breedFound: state.breeds[ownProps.match.params.breed] &&
-    (!ownProps.match.params.sub ||
-      state.breeds[ownProps.match.params.breed].indexOf(ownProps.match.params.sub.replace(/-/g, ' ')) > -1)
+  breedFound: state.breeds.breeds[ownProps.match.params.breed] &&
+  (!ownProps.match.params.sub ||
+    state.breeds.breeds[ownProps.match.params.breed].indexOf(ownProps.match.params.sub.replace(/-/g, ' ')) > -1)
     ? true
-    : false
+    : false,
+  breedsLoaded: state.breeds.breedNames.length > 0,
+  error: state.breeds.error,
+  loading: state.breeds.loading
 });
 
-export default connect(mapStateToProps)(BreedInfo);
+const mapDispatchToProps = dispatch => ({
+  getBreeds: () => dispatch(breedActions.getBreeds())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(BreedInfo);
