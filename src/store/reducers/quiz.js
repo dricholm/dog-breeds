@@ -41,7 +41,7 @@ const reducer = (state = initialState, action) => {
     case actionTypes.NEXT_QUESTION_SUCCESS:
       return {
         ...state,
-        choices: action.payload.choices,
+        choices: action.payload.choices.sort(),
         correctAnswer: action.payload.correctAnswer,
         errorMessage: null,
         image: action.payload.imageUrl,

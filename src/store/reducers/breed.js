@@ -20,15 +20,15 @@ const reducer = (state = initialState, action) => {
       const breedNames = [];
       for (let breed in action.payload.breeds) {
         if (action.payload.breeds[breed].length === 0) {
-          breedNames.push(breed);
+          breedNames.push(breed.toLowerCase());
         } else {
-          breedNames.push(...action.payload.breeds[breed].map((sub) => sub + ' ' + breed));
+          breedNames.push(...action.payload.breeds[breed].map((sub) => sub.toLowerCase() + ' ' + breed.toLowerCase()));
         }
       };
       return {
         ...state,
         breeds: action.payload.breeds,
-        breedNames: breedNames,
+        breedNames: breedNames.sort(),
         error: null,
         loading: false
       };
