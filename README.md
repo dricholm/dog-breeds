@@ -2,13 +2,19 @@
 
 A website for listing dog breeds and viewing their pictures.
 
-## Tech stack
+## API
+
+The site uses [Dog API](https://dog.ceo/dog-api/) for getting breed list and images.
+
+## Used technologies, packages
 
 - View: React
-- State Management: Redux
+- CSS: Bulma, Font Awesome
+- HTTP requests: Axios
+- Routing: React-Router
+- State Management: Redux, Redux-Thunk
 
-## Planned features
+## Features considered
 
-- Quiz game: Choose breed from picture
 - Display Instagram tags and feed
 - Show pictures from subreddits

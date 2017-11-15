@@ -30,9 +30,10 @@ class BreedList extends Component {
       const filtered = this.props.breedNames
         .filter(breed => breed.toLowerCase().includes(this.state.filter.toLowerCase()));
 
-      let result;
-      if (filtered.length === 0) {
-        result = <div className="notification is-size-5">No breeds found</div>;
+      if (this.props.loading) {
+        content = <div className="notification is-info is-size-5">Loading...</div>;
+      } else if (this.props.error) {
+        content = <div className="notification is-danger is-size-5">{this.props.error}</div>;
       } else {
         const breedList = filtered.map(val => {
           const split = val.split(' ');
@@ -48,29 +49,26 @@ class BreedList extends Component {
               </li>
           );
         });
-        result = (
-          <ul className="is-size-5 is-capitalized">
-            {breedList}
-          </ul>
+
+        content = (
+          <Auxiliary>
+            <div className="field">
+              <div className="control">
+                <input
+                  autoFocus
+                  className="input is-info is-medium"
+                  onChange={this.onFilter}
+                  placeholder="Filter breeds"
+                  type="text" />
+              </div>
+            </div>
+
+            <ul className="is-size-5 is-capitalized">
+              {breedList}
+            </ul>
+          </Auxiliary>
         );
       }
-
-      content = (
-        <Auxiliary>
-          <div className="field">
-            <div className="control">
-              <input
-                autoFocus
-                className="input is-info is-medium"
-                onChange={this.onFilter}
-                placeholder="Filter breeds"
-                type="text" />
-            </div>
-          </div>
-
-          {result}
-        </Auxiliary>
-      );
     } else {
       content = <h1 className="title has-text-danger">Error: No breeds found</h1>;
     }
@@ -88,7 +86,9 @@ class BreedList extends Component {
 }
 
 const mapStateToProps = state => ({
-  breedNames: state.breedNames
+  breedNames: state.breedNames,
+  error: state.error,
+  loading: state.loading
 });
 
 const mapDispatchToProps = dispatch => ({
