@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import * as breedActions from '../../../store/actions/breed';
+import * as quizActions from '../../../store/actions/quiz';
 import Input from '../../../components/Form/Input/Input';
 
 class QuizForm extends Component {
@@ -208,13 +209,12 @@ class QuizForm extends Component {
 }
 
 const mapStateToProps = state => ({
-  breedNames: state.breedNames,
-  gameOptions: state.gameOptions
+  breedNames: state.breeds.breedNames
 });
 
 const mapDispatchToProps = dispatch => ({
   getBreeds: () => dispatch(breedActions.getBreeds()),
-  setOptions: (questions, selectedBreeds) => dispatch(breedActions.setOptions(questions, selectedBreeds))
+  setOptions: (questions, selectedBreeds) => dispatch(quizActions.setOptions(questions, selectedBreeds))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuizForm);

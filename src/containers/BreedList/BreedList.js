@@ -86,9 +86,9 @@ class BreedList extends Component {
 }
 
 const mapStateToProps = state => ({
-  breedNames: state.breedNames,
-  error: state.error,
-  loading: state.loading
+  breedNames: state.breeds.breedNames,
+  error: state.breeds.error,
+  loading: state.breeds.loading
 });
 
 const mapDispatchToProps = dispatch => ({

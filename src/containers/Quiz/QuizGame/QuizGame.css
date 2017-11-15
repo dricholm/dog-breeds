@@ -1,8 +1,10 @@
-.image img {
+.quiz-image-box {
   border-radius: 3px;
   box-shadow:
-  0 2px 3px rgba(10, 10, 10, 0.1),
-  0 0 0 1px rgba(10, 10, 10, 0.1);
+    0 2px 3px rgba(10, 10, 10, 0.1),
+    0 0 0 1px rgba(10, 10, 10, 0.1);
+  overflow: hidden;
+  position: relative;
 }
 
 .answers {
@@ -19,12 +21,30 @@
   width: 49%;
 }
 
-.quiz-image-box {
-  position: relative;
+.quiz-image {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 2;
 }
 
-.quiz-image {
+.quiz-image-fill {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: blur(15px) brightness(0.7);
+  height: 100%;
+  left: 0;
   position: absolute;
+  top: 0;
+  transform: scale(1.05);
+  width: 100%;
+  z-index: 1;
 }
 
 .quiz-overlay {
@@ -38,6 +58,7 @@
   top: 0;
   transition: background 0.3s ease-out;
   width: 100%;
+  z-index: 3;
 }
 
 .quiz-overlay:hover {

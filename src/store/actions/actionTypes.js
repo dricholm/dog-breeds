@@ -3,7 +3,8 @@ export const GET_BREEDS_SUCCESS = 'GET_BREEDS_SUCCESS';
 export const GET_BREEDS_FAIL = 'GET_BREEDS_FAIL';
 
 export const SET_OPTIONS = 'SET_OPTIONS';
-
 export const NEXT_QUESTION = 'NEXT_QUESTION';
+export const NEXT_QUESTION_SUCCESS = 'NEXT_QUESTION_SUCCESS';
+export const NEXT_QUESTION_FAIL = 'NEXT_QUESTION_FAIL';
 export const ANSWER = 'ANSWER';
 export const RESTART = 'RESTART';
