@@ -4,13 +4,15 @@ import { connect } from 'react-redux';
 import * as breedActions from '../../../store/actions/breed';
 import * as quizActions from '../../../store/actions/quiz';
 import Input from '../../../components/Form/Input/Input';
+import ErrorMessage from '../../../components/Ui/ErrorMessage/ErrorMessage';
+import Loading from '../../../components/Ui/Loading/Loading';
 
 class QuizForm extends Component {
 
   constructor(props) {
     super();
 
-    if (props.breedNames.length === 0) {
+    if (props.breeds.breedNames.length === 0) {
       props.getBreeds();
     }
 
@@ -29,19 +31,19 @@ class QuizForm extends Component {
           elementType: 'input',
           touched: false
         },
-        checkboxes: this.initCheckboxes(props.breedNames),
+        checkboxes: this.initCheckboxes(props.breeds.breedNames),
         isValid: true
       }
     };
   }
 
   componentWillUpdate(nextProps) {
-    if (Object.keys(this.state.quizForm.checkboxes).length === 0) {
+    if (Object.keys(this.state.quizForm.checkboxes).length === 0 && nextProps.breeds.breedNames.length > 0) {
       this.setState({
         ...this.state,
         quizForm: {
           ...this.state.quizForm,
-          checkboxes: this.initCheckboxes(nextProps.breedNames)
+          checkboxes: this.initCheckboxes(nextProps.breeds.breedNames)
         }
       });
     }
@@ -88,7 +90,7 @@ class QuizForm extends Component {
 
   checkAll = checked => {
     let checkboxes = {};
-    this.props.breedNames.forEach(breed => {
+    this.props.breeds.breedNames.forEach(breed => {
       const key = breed.replace(/ /g, '-');
 
       checkboxes = {
@@ -153,9 +155,13 @@ class QuizForm extends Component {
   }
 
   render() {
-    const breedCheckboxes = Object.keys(this.state.quizForm.checkboxes).length === 0
-      ? <p>Loading...</p>
-      : this.props.breedNames.map(breed => {
+    let breedCheckboxes;
+    if (this.props.breeds.loading) {
+      breedCheckboxes = <Loading />;
+    } else if (this.props.breeds.error) {
+      breedCheckboxes = <ErrorMessage message={this.props.breeds.error} />;
+    } else if (Object.keys(this.state.quizForm.checkboxes).length > 0) {
+      breedCheckboxes = this.props.breeds.breedNames.map(breed => {
         const key = breed.replace(/ /g, '-');
         return (
           <Input
@@ -166,9 +172,10 @@ class QuizForm extends Component {
             label={breed} />
         );
       });
+    }
 
     return (
-      <form onSubmit={this.submit}>
+      <form onSubmit={this.submit} action="#">
         <div className="field columns">
           <div className="control column is-narrow">
             <label htmlFor="questions" className="label">Number of questions</label>
@@ -181,7 +188,7 @@ class QuizForm extends Component {
         </div>
 
         <div className="field">
-          <label className="label">Select which breeds you want to test on</label>
+          <p className="label">Select which breeds you want to test on</p>
           <div className="control">
             {breedCheckboxes}
           </div>
@@ -200,7 +207,7 @@ class QuizForm extends Component {
 
         <div className="field">
           <div className="control has-text-centered">
-            <button className="button is-medium is-link is-success">Start quiz</button>
+            <button className="button is-medium is-link is-success" type="submit">Start quiz</button>
           </div>
         </div>
       </form>
@@ -209,7 +216,7 @@ class QuizForm extends Component {
 }
 
 const mapStateToProps = state => ({
-  breedNames: state.breeds.breedNames
+  breeds: state.breeds
 });
 
 const mapDispatchToProps = dispatch => ({

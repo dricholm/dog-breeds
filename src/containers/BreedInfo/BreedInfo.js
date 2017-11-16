@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import * as breedActions from '../../store/actions/breed';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
+import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage'
+import Loading from '../../components/Ui/Loading/Loading'
 import Section from '../../components/Ui/Section/Section';
 
 class BreedInfo extends Component {
@@ -17,9 +19,9 @@ class BreedInfo extends Component {
     let content;
 
     if (this.props.loading) {
-      content = <div className="notification is-info is-size-5">Loading...</div>;
+      content = <Loading />;
     } else if (this.props.error) {
-      content = <div className="notification is-danger is-size-5">{this.props.error}</div>;
+      content = <ErrorMessage message={this.props.error} />;
     } else if (this.props.breedFound) {
       const subtitle = (
         <h2 className="subtitle is-capitalized">
@@ -39,7 +41,7 @@ class BreedInfo extends Component {
         </Auxiliary>
       );
     } else {
-      content = <h1 className="title">Breed not found</h1>;
+      content = <ErrorMessage message="Breed not found" />;
     }
 
     return (

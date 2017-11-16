@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import './BreedList.css';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
+import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage'
+import Input from '../../components/Form/Input/Input'
+import Loading from '../../components/Ui/Loading/Loading'
 import Section from '../../components/Ui/Section/Section';
+import BreedListLinks from '../../components/BreedListLinks/BreedListLinks';
 import * as breedActions from '../../store/actions/breed';
 
 class BreedList extends Component {
@@ -31,46 +34,33 @@ class BreedList extends Component {
         .filter(breed => breed.toLowerCase().includes(this.state.filter.toLowerCase()));
 
       if (this.props.loading) {
-        content = <div className="notification is-info is-size-5">Loading...</div>;
+        content = <Loading />;
       } else if (this.props.error) {
-        content = <div className="notification is-danger is-size-5">{this.props.error}</div>;
+        content = <ErrorMessage message={this.props.error} />;
       } else {
-        const breedList = filtered.map(val => {
-          const split = val.split(' ');
-          const sub = split.length > 1 ? split.slice(0, split.length-1).join('-') : null;
-          const link = sub
-            ? '/breed/' + split[split.length - 1] + '/' + sub
-            : '/breed/' + split[split.length - 1];
-          return (
-            <li key={val}>
-              <Link to={link}>
-                {val}
-              </Link>
-              </li>
-          );
-        });
-
         content = (
           <Auxiliary>
             <div className="field">
               <div className="control">
-                <input
-                  autoFocus
-                  className="input is-info is-medium"
-                  onChange={this.onFilter}
-                  placeholder="Filter breeds"
-                  type="text" />
+                <Input
+                  changed={this.onFilter}
+                  elementConfig={{
+                    autoFocus: true,
+                    className: 'input is-info is-medium',
+                    onChange: this.onFilter,
+                    placeholder: 'Filter breeds',
+                    type: 'text'
+                  }}
+                  elementType="input" />
               </div>
             </div>
 
-            <ul className="is-size-5 is-capitalized">
-              {breedList}
-            </ul>
+            <BreedListLinks breeds={filtered} />
           </Auxiliary>
         );
       }
     } else {
-      content = <h1 className="title has-text-danger">Error: No breeds found</h1>;
+      content = <ErrorMessage message="No breeds found" />;
     }
 
     return (

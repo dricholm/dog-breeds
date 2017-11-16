@@ -3,7 +3,10 @@ import { connect } from 'react-redux';
 
 import * as quizActions from '../../../store/actions/quiz';
 import './QuizGame.css';
+import AnswerButtons from '../../../components/Quiz/AnswerButtons/AnswerButtons';
 import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
+import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
+import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
 
 class QuizGame extends Component {
 
@@ -34,110 +37,33 @@ class QuizGame extends Component {
       return <p>Redirecting</p>;
     }
 
-    const answerButtons = this.props.quiz.choices.map((breed) => {
-      const classNames = ['answer', 'button', 'is-medium', 'is-capitalized'];
-      if (this.props.quiz.chosenAnswer) {
-        if (breed === this.props.quiz.correctAnswer) {
-          classNames.push('is-success');
-        } else if (breed === this.props.quiz.chosenAnswer) {
-            classNames.push('is-danger');
-        } else {
-          classNames.push('is-info', 'is-outlined');
-        }
-      } else {
-        classNames.push('is-info');
-      }
-
-      return (
-        <button
-          key={breed}
-          className={classNames.join(' ')}
-          onClick={(event) => this.buttonClick(breed)}>
-          {breed.replace(/-/g, ' ')}
-        </button>
-      );
-    });
-
-    let overlay = null;
-    if (this.props.quiz.chosenAnswer) {
-      let button;
-      if (this.props.quiz.correct + this.props.quiz.wrong === +this.props.quiz.questionCount) {
-        button = (
-          <div className="has-text-centered">
-            <div className="notification is-link is-size-3">
-              <p className="has-text-weight-bold is-size-1">
-                {Math.round(this.props.quiz.correct / (this.props.quiz.correct + this.props.quiz.wrong) * 100)}%
-              </p>
-              <p>Correct: {this.props.quiz.correct}</p>
-              <p>Wrong: {this.props.quiz.wrong}</p>
-            </div>
-            <a aria-label="next" className="quiz-button" onClick={this.restart}>
-              <i className="fa fa-refresh fa-fw" aria-hidden="true"></i>
-            </a>
-          </div>
-        );
-      } else {
-        button = (
-          <a
-            aria-label="replay"
-            className="quiz-button quiz-next"
-            onClick={() => this.props.nextQuestion(this.props.quiz.selectedBreeds)}>
-            <i className="fa fa-chevron-right fa-fw" aria-hidden="true"></i>
-          </a>
-        );
-      }
-      overlay = (
-        <div className="quiz-overlay">
-          {button}
-        </div>
-      );
-    }
-
-    const progress = (this.props.quiz.correct + this.props.quiz.wrong) / this.props.quiz.questionCount * 100;
     return (
       <Auxiliary>
         <div className="columns">
           <div className="box column is-half is-offset-one-quarter">
-            <figure className="image is-1by1 quiz-image-box next-question" style={{backgroundImage: `url(${this.props.quiz.image})`}}>
-              <div className="quiz-image-fill" style={{ backgroundImage: `url(${this.props.quiz.image})` }}></div>
-              <div className="quiz-image" style={{ backgroundImage: `url(${this.props.quiz.image})` }}></div>
-              {overlay}
-            </figure>
+            <QuizImage
+              chosen={this.props.quiz.chosenAnswer}
+              correct={this.props.quiz.correct}
+              gameEnd={this.props.quiz.correct + this.props.quiz.wrong === +this.props.quiz.questionCount}
+              image={this.props.quiz.image}
+              nextQuestion={() => this.props.nextQuestion(this.props.quiz.selectedBreeds)}
+              restart={this.restart}
+              wrong={this.props.quiz.wrong} />
 
-            <div className="answers">
-              {answerButtons}
+            <div className={this.props.quiz.choices.length === 3 ? 'answers answers-vertical' : 'answers'}>
+              <AnswerButtons
+                choices={this.props.quiz.choices}
+                chosenAnswer={this.props.quiz.chosenAnswer}
+                click={this.buttonClick}
+                correctAnswer={this.props.quiz.correctAnswer} />
             </div>
           </div>
         </div>
 
-        <div className="columns is-multiline">
-          <div className="column is-half is-offset-one-quarter">
-            <progress className="progress is-primary" value={progress.toString()} max="100">{progress}%</progress>
-
-            <div className="level">
-              <div className="level-item has-text-centered">
-                <div>
-                  <p className="heading">Correct</p>
-                  <p className="title has-text-primary">{this.props.quiz.correct}</p>
-                </div>
-              </div>
-              <div className="level-item has-text-centered">
-                <div>
-                  <p className="heading">Progress</p>
-                  <p className="title">
-                    {this.props.quiz.correct + this.props.quiz.wrong}/{this.props.quiz.questionCount}
-                  </p>
-                </div>
-              </div>
-              <div className="level-item has-text-centered">
-                <div>
-                  <p className="heading">Wrong</p>
-                  <p className="title has-text-danger">{this.props.quiz.wrong}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <QuizProgress
+          correct={this.props.quiz.correct}
+          questionCount={this.props.quiz.questionCount}
+          wrong={this.props.quiz.wrong} />
       </Auxiliary>
     );
   }

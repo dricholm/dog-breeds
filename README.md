@@ -1,23 +1,22 @@
 # Dog breeds
 
-A website for listing dog breeds and viewing their pictures.
+A website for listing dog breeds, viewing their pictures and playing a quiz game.
 
 ## API
 
-The site uses [Dog API](https://dog.ceo/dog-api/) for getting breed list and images.
+The site uses the [Dog API](https://dog.ceo/dog-api/) for getting a list of dog breeds and images.
 
 ## Used technologies, packages
 
-- View: React
-- CSS: Bulma, Font Awesome
-- HTTP requests: Axios
-- Routing: React-Router
-- State Management: Redux, Redux-Thunk
+- View: [React](https://reactjs.org/)
+- CSS: [Bulma](https://bulma.io/), [Font Awesome](http://fontawesome.io/), [CSS Loaders](https://github.com/lukehaas/css-loaders)
+- HTTP requests: [Axios](https://github.com/axios/axios)
+- Routing: [React-Router](https://github.com/ReactTraining/react-router)
+- State Management: [Redux](https://redux.js.org/), [React Redux](https://github.com/reactjs/react-redux), [Redux-Thunk](https://github.com/gaearon/redux-thunk)
 
 ## TODO
 
 - Tests
-- Refactor to containers
 - Display info on breed page and below answer box (instagram tags/feed, subreddit)
 - Difficulty (image blur slider, greyscale etc.)
 - Animations

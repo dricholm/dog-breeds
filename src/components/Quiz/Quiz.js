@@ -5,7 +5,7 @@ import Section from '../../components/Ui/Section/Section';
 import QuizForm from '../../containers/Quiz/QuizForm/QuizForm';
 import QuizGame from '../../containers/Quiz/QuizGame/QuizGame';
 
-const quiz = (props) => (
+const quiz = props => (
   <Section>
     <h1 className="title is-capitalized">
       Quiz

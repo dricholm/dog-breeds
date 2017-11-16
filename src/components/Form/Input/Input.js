@@ -1,22 +1,23 @@
 import React from 'react';
 
-const input = (props) => {
+const input = props => {
   switch (props.elementType) {
     case 'input':
       return <input
         className="input"
+        title={props.elementConfig.placeholder}
         {...props.elementConfig}
         onChange={props.changed} />;
     case 'checkbox':
       return (
-        <label className="checkbox is-capitalized">
-          <label className="checkbox" defaultChecked>
-            <input
-              onChange={props.changed}
-              {...props.elementConfig}
-              type="checkbox" />
-            &nbsp;{props.label}&emsp;
-          </label>
+        <label htmlFor={props.label} className="checkbox is-capitalized">
+          <input
+            onChange={props.changed}
+            name={props.label}
+            title={props.label}
+            {...props.elementConfig}
+            type="checkbox" />
+          &nbsp;{props.label}&emsp;
         </label>
       )
     default:
