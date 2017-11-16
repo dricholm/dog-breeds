@@ -14,12 +14,12 @@ const quizImage = props => {
             <div className="message-body is-size-3">
               <p className="has-text-weight-bold is-size-1">
                 {ratio}%
-                </p>
+              </p>
               <p className="has-text-success">Correct: {props.correct}</p>
               <p className="has-text-danger">Wrong: {props.wrong}</p>
             </div>
           </div>
-          <a aria-label="next" className="quiz-button" onClick={props.restart}>
+          <a aria-label="restart" className="quiz-button" onClick={props.restart}>
             <i className="fa fa-refresh fa-fw" aria-hidden="true"></i>
           </a>
         </div>
@@ -27,7 +27,7 @@ const quizImage = props => {
     } else {
       button = (
         <a
-          aria-label="replay"
+          aria-label="next"
           className="quiz-button quiz-next"
           onClick={props.nextQuestion}>
           <i className="fa fa-chevron-right fa-fw" aria-hidden="true"></i>
