@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 
 import * as breedActions from '../../../store/actions/breed';
 import * as quizActions from '../../../store/actions/quiz';
+import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 import Input from '../../../components/Form/Input/Input';
+import ToggleHide from '../../../components/Ui/ToggleHide/ToggleHide';
 import ErrorMessage from '../../../components/Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../../components/Ui/Loading/Loading';
 
@@ -17,69 +19,59 @@ class QuizForm extends Component {
     }
 
     this.state = {
-      quizForm: {
-        questions: {
-          elementConfig: {
-            max: '100',
-            min: '1',
-            name: 'questions',
-            placeholder: '1-100',
-            required: true,
-            type: 'number',
-            value: '20'
-          },
-          elementType: 'input',
-          touched: false
+      questions: {
+        elementConfig: {
+          max: '100',
+          min: '1',
+          name: 'questions',
+          placeholder: '1-100',
+          required: true,
+          type: 'number',
+          value: '20'
         },
-        checkboxes: this.initCheckboxes(props.breeds.breedNames),
-        isValid: true
-      }
+        elementType: 'input',
+        touched: false
+      },
+      checkboxes: this.initCheckboxes(props.breeds.breedNames),
+      isValid: true,
+      showCheckboxes: false
     };
   }
 
   componentWillUpdate(nextProps) {
-    if (Object.keys(this.state.quizForm.checkboxes).length === 0 && nextProps.breeds.breedNames.length > 0) {
+    if (Object.keys(this.state.checkboxes).length === 0 && nextProps.breeds.breedNames.length > 0) {
       this.setState({
         ...this.state,
-        quizForm: {
-          ...this.state.quizForm,
-          checkboxes: this.initCheckboxes(nextProps.breeds.breedNames)
-        }
+        checkboxes: this.initCheckboxes(nextProps.breeds.breedNames)
       });
     }
   }
 
   inputChangedHandler = (event, inputId) => {
-    const elementType = this.state.quizForm[inputId]
-      ? this.state.quizForm[inputId].elementType
+    const elementType = this.state[inputId]
+      ? this.state[inputId].elementType
       : 'checkbox';
     switch (elementType) {
       case 'input':
         this.setState({
           ...this.state,
-          quizForm: {
-            ...this.state.quizForm,
-            [inputId]: {
-              ...this.state.quizForm[inputId],
-              elementConfig: {
-                ...this.state.quizForm[inputId].elementConfig,
-                value: event.target.value
-              },
-              elementType: elementType,
-              touched: true
-            }
+          [inputId]: {
+            ...this.state[inputId],
+            elementConfig: {
+              ...this.state[inputId].elementConfig,
+              value: event.target.value
+            },
+            elementType: elementType,
+            touched: true
           }
         });
         break;
       case 'checkbox':
         this.setState({
           ...this.state,
-          quizForm: {
-            ...this.state.quizForm,
-            checkboxes: {
-              ...this.state.quizForm.checkboxes,
-              [inputId]: event.target.checked
-            }
+          checkboxes: {
+            ...this.state.checkboxes,
+            [inputId]: event.target.checked
           }
         });
         break;
@@ -101,10 +93,7 @@ class QuizForm extends Component {
 
     this.setState({
       ...this.state,
-      quizForm: {
-        ...this.state.quizForm,
-        checkboxes: checkboxes
-      }
+      checkboxes: checkboxes
     });
   }
 
@@ -123,56 +112,80 @@ class QuizForm extends Component {
 
   submit = (event) => {
     event.preventDefault();
-    if (this.state.quizForm.questions.elementConfig.value === '') {
+    if (this.state.questions.elementConfig.value === '') {
       this.setState({
         ...this.state,
-        quizForm: {
-          ...this.state.quizForm,
-          isValid: false
-        }
+        isValid: false
       });
       return;
     }
 
     let checked = [];
-    Object.keys(this.state.quizForm.checkboxes).forEach((box) => {
-      if (this.state.quizForm.checkboxes[box]) {
+    Object.keys(this.state.checkboxes).forEach((box) => {
+      if (this.state.checkboxes[box]) {
         checked.push(box);
       }
     });
     if (checked.length > 1) {
-      this.props.setOptions(this.state.quizForm.questions.elementConfig.value, checked);
+      this.props.setOptions(this.state.questions.elementConfig.value, checked);
       this.props.history.push('/quiz/game');
     } else {
       this.setState({
         ...this.state,
-        quizForm: {
-          ...this.state.quizForm,
-          isValid: false
-        }
+        isValid: false
       });
     }
   }
 
+  toggleHide = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      showCheckboxes: !prevState.showCheckboxes
+    }));
+  }
+
   render() {
     let breedCheckboxes;
+    const checkBoxesClasses= ['control'];
+    if (!this.state.showCheckboxes) {
+      checkBoxesClasses.push('d-none');
+    }
+
     if (this.props.breeds.loading) {
       breedCheckboxes = <Loading />;
     } else if (this.props.breeds.error) {
       breedCheckboxes = <ErrorMessage message={this.props.breeds.error} />;
-    } else if (Object.keys(this.state.quizForm.checkboxes).length > 0) {
+    } else if (Object.keys(this.state.checkboxes).length > 0) {
+      let initial;
       breedCheckboxes = this.props.breeds.breedNames.map(breed => {
+        let separator = null;
+        if (initial !== breed.charAt(0)) {
+          initial = breed.charAt(0);
+          separator = (
+            <Auxiliary>
+              <p className="label is-capitalized">
+                {initial}
+              </p>
+            </Auxiliary>
+          )
+        }
         const key = breed.replace(/ /g, '-');
         return (
-          <Input
-            changed={(event) => this.inputChangedHandler(event, key)}
-            elementType='checkbox'
-            elementConfig={{checked: this.state.quizForm.checkboxes[key]}}
-            key={key}
-            label={breed} />
+          <Auxiliary key={key}>
+            {separator}
+            <Input
+              changed={(event) => this.inputChangedHandler(event, key)}
+              elementType='checkbox'
+              elementConfig={{checked: this.state.checkboxes[key]}}
+              label={breed} />
+          </Auxiliary>
         );
       });
     }
+
+    const checkedCount = Object.keys(this.state.checkboxes).filter(val => {
+      return this.state.checkboxes[val];
+    });
 
     return (
       <form onSubmit={this.submit} action="#">
@@ -181,15 +194,20 @@ class QuizForm extends Component {
             <label htmlFor="questions" className="label">Number of questions</label>
             <Input
               changed={(event) => this.inputChangedHandler(event, 'questions')}
-              elementType={this.state.quizForm.questions.elementType}
-              elementConfig={this.state.quizForm.questions.elementConfig}
-              touched={this.state.quizForm.questions.touched} />
+              elementType={this.state.questions.elementType}
+              elementConfig={this.state.questions.elementConfig}
+              touched={this.state.questions.touched} />
           </div>
         </div>
 
+        <div className="level">
+          <div className="level-left">
+            <p className="label level-item">Select which breeds you want to test on ({checkedCount.length})</p>
+            <ToggleHide className="level-item" shown={this.state.showCheckboxes} click={this.toggleHide} />
+          </div>
+        </div>
         <div className="field">
-          <p className="label">Select which breeds you want to test on</p>
-          <div className="control">
+          <div className={checkBoxesClasses.join(' ')}>
             {breedCheckboxes}
           </div>
         </div>
@@ -203,7 +221,7 @@ class QuizForm extends Component {
           </div>
         </div>
 
-        {this.state.quizForm.isValid ? null : <p className="notification is-warning">Please choose at least two breeds</p>}
+        {this.state.isValid ? null : <p className="notification is-warning">Please choose at least two breeds</p>}
 
         <div className="field">
           <div className="control has-text-centered">

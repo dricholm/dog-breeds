@@ -9,15 +9,19 @@ const input = props => {
         {...props.elementConfig}
         onChange={props.changed} />;
     case 'checkbox':
+      const checkboxClasses = ['checkbox', 'is-capitalized', 'is-medium', 'tag'];
+      if (props.elementConfig.checked) {
+        checkboxClasses.push('is-info');
+      }
       return (
-        <label htmlFor={props.label} className="checkbox is-capitalized">
+        <label htmlFor={props.label} className={checkboxClasses.join(' ')} style={{margin: '0.3em'}}>
           <input
             onChange={props.changed}
             id={props.label}
             title={props.label}
             {...props.elementConfig}
             type="checkbox" />
-          &nbsp;{props.label}&emsp;
+          &nbsp;{props.label}
         </label>
       )
     default:
