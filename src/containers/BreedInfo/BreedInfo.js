@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import InfiniteScroll from 'react-infinite-scroller';
 
-import './BreedInfo.css';
+import axios from '../../shared/axiosDogApi';
 import * as breedActions from '../../store/actions/breed';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
+import BreedGallery from '../../components/BreedInfo/BreedGallery/BreedGallery';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage'
 import Loading from '../../components/Ui/Loading/Loading'
 import Section from '../../components/Ui/Section/Section';
 import SubBreeds from '../../components/BreedInfo/SubBreeds/SubBreeds';
-import axios from '../../shared/axiosDogApi';
 
 class BreedInfo extends Component {
 
@@ -128,32 +127,6 @@ class BreedInfo extends Component {
         ? this.props.match.params.sub.replace(/-/g, ' ') + ' ' + this.props.match.params.breed
         : this.props.match.params.breed;
 
-      let imageArea;
-      if (this.state.imageError) {
-        imageArea = <ErrorMessage message={this.state.imageError} />;
-      } else if (this.state.loadingImages) {
-        imageArea = <Loading />;
-      } else if (this.state.imageUrls.length > 0) {
-        const images = this.state.imageUrls
-          .slice(0, this.state.numberOfImagesLoaded)
-          .map((val, idx) => (
-            <div className="gallery-image" key={idx}>
-              <img src={val} alt={title} />
-            </div>
-          ));
-
-        imageArea = (
-          <InfiniteScroll
-            className="gallery-container"
-            loader={<div className="notification">Loading more images...</div>}
-            loadMore={this.loadMore}
-            hasMore={this.state.numberOfImagesLoaded < this.state.imageUrls.length}
-            threshold="1000">
-            {images}
-          </InfiniteScroll>
-        );
-      }
-
       content = (
         <Auxiliary>
           <h1 className="title is-capitalized">
@@ -166,7 +139,13 @@ class BreedInfo extends Component {
           <h2 className="title is-size-4">
             Images
           </h2>
-          {imageArea}
+          <BreedGallery
+            hasMore={this.state.numberOfImagesLoaded < this.state.imageUrls.length}
+            imageError={this.state.imageError}
+            imageUrls={this.state.imageUrls.slice(0, this.state.numberOfImagesLoaded)}
+            isLoading={this.state.loadingImages}
+            loadMore={this.loadMore}
+            title={title} />
         </Auxiliary>
       );
     } else {
