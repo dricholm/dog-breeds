@@ -10,6 +10,7 @@ const initialState = {
   loading: false,
   questionCount: 0,
   selectedBreeds: [],
+  wasCorrect: null,
   wrong: 0
 };
 
@@ -35,7 +36,8 @@ const reducer = (state = initialState, action) => {
         correctAnswer: null,
         errorMessage: null,
         image: null,
-        loading: true
+        loading: true,
+        wasCorrect: null
       };
 
     case actionTypes.NEXT_QUESTION_SUCCESS:
@@ -61,6 +63,7 @@ const reducer = (state = initialState, action) => {
         chosenAnswer: action.payload.answer,
         correct: action.payload.answer === state.correctAnswer ? state.correct + 1 : state.correct,
         wrong: action.payload.answer === state.correctAnswer ? state.wrong : state.wrong + 1,
+        wasCorrect: action.payload.answer === state.correctAnswer
       };
 
     case actionTypes.RESTART:

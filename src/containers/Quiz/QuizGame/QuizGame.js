@@ -63,7 +63,8 @@ class QuizGame extends Component {
         <QuizProgress
           correct={this.props.quiz.correct}
           questionCount={this.props.quiz.questionCount}
-          wrong={this.props.quiz.wrong} />
+          wrong={this.props.quiz.wrong}
+          wasCorrect={this.props.quiz.wasCorrect} />
       </Auxiliary>
     );
   }

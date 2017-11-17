@@ -1,0 +1,37 @@
+.has-text-success.answer-pop {
+  animation: pop-correct 500ms ease-out;
+}
+
+.has-text-danger.answer-pop {
+  animation: pop-wrong 500ms ease-out;
+}
+
+@keyframes pop-correct {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(2);
+    text-shadow: 0 0 10px #00d1b2;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-wrong {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(2);
+    text-shadow: 0 0 10px #ff3860;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}

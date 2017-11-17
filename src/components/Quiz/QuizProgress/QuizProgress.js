@@ -1,7 +1,17 @@
 import React from 'react';
 
+import './QuizProgress.css';
+
 const quizProgress = props => {
   const progress = (props.correct + props.wrong) / props.questionCount * 100;
+
+  const correctClasses = ['title', 'has-text-success'];
+  const wrongClasses = ['title', 'has-text-danger'];
+  if (props.wasCorrect) {
+    correctClasses.push('answer-pop');
+  } else if (props.wasCorrect === false) {
+    wrongClasses.push('answer-pop');
+  }
 
   return (
     <div className="columns is-multiline">
@@ -12,7 +22,7 @@ const quizProgress = props => {
           <div className="level-item has-text-centered">
             <div>
               <p className="heading">Correct</p>
-              <p className="title has-text-primary">{props.correct}</p>
+              <p className={correctClasses.join(' ')}>{props.correct}</p>
             </div>
           </div>
           <div className="level-item has-text-centered">
@@ -26,7 +36,7 @@ const quizProgress = props => {
           <div className="level-item has-text-centered">
             <div>
               <p className="heading">Wrong</p>
-              <p className="title has-text-danger">{props.wrong}</p>
+              <p className={wrongClasses.join(' ')}>{props.wrong}</p>
             </div>
           </div>
         </div>

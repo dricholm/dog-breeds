@@ -7,10 +7,6 @@ import QuizGame from '../../containers/Quiz/QuizGame/QuizGame';
 
 const quiz = props => (
   <Section>
-    <h1 className="title is-capitalized">
-      Quiz
-    </h1>
-
     <Switch>
       <Route path="/quiz/game" render={() => (<QuizGame {...props} />)} />
       <Route path="/quiz" exact render={() => (<QuizForm {...props} />)} />

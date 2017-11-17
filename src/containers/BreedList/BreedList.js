@@ -65,10 +65,6 @@ class BreedList extends Component {
 
     return (
       <Section>
-        <h1 className="title">
-          List of dog breeds
-        </h1>
-
         {content}
       </Section>
     );
