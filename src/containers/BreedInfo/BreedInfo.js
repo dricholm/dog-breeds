@@ -1,20 +1,108 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import InfiniteScroll from 'react-infinite-scroller';
 
+import './BreedInfo.css';
 import * as breedActions from '../../store/actions/breed';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage'
 import Loading from '../../components/Ui/Loading/Loading'
 import Section from '../../components/Ui/Section/Section';
 import SubBreeds from '../../components/BreedInfo/SubBreeds/SubBreeds';
+import axios from '../../shared/axiosDogApi';
 
 class BreedInfo extends Component {
 
+  state = {
+    currentBreed: {},
+    imageError: null,
+    imageUrls: [],
+    loadingImages: false,
+    numberOfImagesLoaded: 0
+  }
+
   componentDidMount() {
-    if (!this.props.breedsLoaded) {
+    if (this.props.breedsLoaded) {
+      if (this.shouldLoadImages()) this.getImages();
+    } else {
       this.props.getBreeds();
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.shouldLoadImages()) this.getImages();
+  }
+
+  componentDidUpdate() {
+    if (this.shouldLoadImages()) this.getImages();
+  }
+
+  shuffle = (array) => {
+    const ret = array.slice();
+    for (let i = ret.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [ret[i], ret[j]] = [ret[j], ret[i]];
+    }
+    return ret;
+  };
+
+  shouldLoadImages = () =>
+    this.state.currentBreed.main !== this.props.match.params.breed
+    || this.props.match.params.sub !== this.state.currentBreed.sub
+    || (this.state.imageUrls.length === 0 && !this.state.imageError && !this.state.loadingImages);
+
+  getImages = async () => {
+    this.setState({
+      ...this.state,
+      currentBreed: {
+        main: this.props.match.params.breed,
+        sub: this.props.match.params.sub
+      },
+      imageError: null,
+      imageUrls: [],
+      loadingImages: true,
+      numberOfImagesLoaded: 0
+    });
+
+    const url = this.props.match.params.sub
+      ? `/breed/${this.props.match.params.breed}/${this.props.match.params.sub}/images`
+      : `/breed/${this.props.match.params.breed}/images`;
+    let errorMessage;
+    try {
+      const result = await axios.get(url);
+      if (result.status === 200) {
+        this.setState({
+          ...this.state,
+          currentBreed: { ...this.state.currentBreed },
+          imageError: null,
+          imageUrls: this.shuffle(result.data.message),
+          loadingImages: false,
+          numberOfImagesLoaded: 10
+        });
+      } else {
+        errorMessage = result.statusText;
+      }
+    } catch (e) {
+      errorMessage = 'Network error';
+    }
+    if (errorMessage) {
+      this.setState({
+        ...this.state,
+        currentBreed: { ...this.state.currentBreed },
+        imageError: errorMessage,
+        imageUrls: [],
+        loadingImages: false
+      });
+    }
+  }
+
+  loadMore = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      currentBreed: { ...prevState.currentBreed },
+      numberOfImagesLoaded: prevState.numberOfImagesLoaded + 10
+    }));
   }
 
   render() {
@@ -40,14 +128,45 @@ class BreedInfo extends Component {
         ? this.props.match.params.sub.replace(/-/g, ' ') + ' ' + this.props.match.params.breed
         : this.props.match.params.breed;
 
+      let imageArea;
+      if (this.state.imageError) {
+        imageArea = <ErrorMessage message={this.state.imageError} />;
+      } else if (this.state.loadingImages) {
+        imageArea = <Loading />;
+      } else if (this.state.imageUrls.length > 0) {
+        const images = this.state.imageUrls
+          .slice(0, this.state.numberOfImagesLoaded)
+          .map((val, idx) => (
+            <div className="gallery-image" key={idx}>
+              <img src={val} alt={title} />
+            </div>
+          ));
+
+        imageArea = (
+          <InfiniteScroll
+            className="gallery-container"
+            loader={<div className="notification">Loading more images...</div>}
+            loadMore={this.loadMore}
+            hasMore={this.state.numberOfImagesLoaded < this.state.imageUrls.length}
+            threshold="1000">
+            {images}
+          </InfiniteScroll>
+        );
+      }
+
       content = (
         <Auxiliary>
           <h1 className="title is-capitalized">
             {title}
           </h1>
-
           {top}
 
+          <hr />
+
+          <h2 className="title is-size-4">
+            Images
+          </h2>
+          {imageArea}
         </Auxiliary>
       );
     } else {

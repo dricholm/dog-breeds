@@ -1,0 +1,26 @@
+.gallery-container {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.gallery-image {
+  margin: 20px auto;
+  min-height: 400px;
+  min-width: 20vw;
+}
+
+.gallery-image img {
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  max-height: 100%;
+  margin: 0 10px;
+  transition: all 200ms ease-out;
+  max-width: 100%;
+}
+
+.gallery-image img:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
