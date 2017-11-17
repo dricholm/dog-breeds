@@ -6,8 +6,8 @@ const getRandomAnswers = (selectedBreeds) => {
   let answers = [];
   while (answers.length < answerCount) {
     const idx = Math.floor(Math.random() * selectedBreeds.length);
-    if (answers.indexOf(selectedBreeds[idx]) === -1)
-      answers.push(selectedBreeds[idx]);
+    if (answers.indexOf(selectedBreeds[idx].toLowerCase()) === -1)
+      answers.push(selectedBreeds[idx].toLowerCase());
   }
   return answers;
 }

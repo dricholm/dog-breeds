@@ -13,7 +13,7 @@ const input = props => {
         <label htmlFor={props.label} className="checkbox is-capitalized">
           <input
             onChange={props.changed}
-            name={props.label}
+            id={props.label}
             title={props.label}
             {...props.elementConfig}
             type="checkbox" />
