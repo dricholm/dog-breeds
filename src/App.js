@@ -17,7 +17,7 @@ const app = () => (
       <Route path="/about" component={About} />
       <Route path="/quiz" component={Quiz} />
       <Route path="/breed/:breed/:sub?" component={BreedInfo} />
-      <Route path="/" exact component={BreedList} />
+      <Route path="" exact component={BreedList} />
       <Route render={() => (<Section><h1 className="title">Page not found</h1></Section>)} />
     </Switch>
     <Footer />
