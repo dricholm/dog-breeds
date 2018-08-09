@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import './BreedList.css';
-import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage'
 import Input from '../../components/Form/Input/Input'
 import Loading from '../../components/Ui/Loading/Loading'
@@ -39,7 +38,7 @@ class BreedList extends Component {
         content = <ErrorMessage message={this.props.error} />;
       } else {
         content = (
-          <Auxiliary>
+          <React.Fragment>
             <div className="field">
               <div className="control">
                 <Input
@@ -56,7 +55,7 @@ class BreedList extends Component {
             </div>
 
             <BreedListLinks breeds={filtered} />
-          </Auxiliary>
+          </React.Fragment>
         );
       }
     } else {

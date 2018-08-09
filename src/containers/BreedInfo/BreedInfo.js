@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 
 import axios from '../../shared/axiosDogApi';
 import * as breedActions from '../../store/actions/breed';
-import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import BreedGallery from '../../components/BreedInfo/BreedGallery/BreedGallery';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage'
 import Loading from '../../components/Ui/Loading/Loading'
@@ -128,7 +127,7 @@ class BreedInfo extends Component {
         : this.props.match.params.breed;
 
       content = (
-        <Auxiliary>
+        <React.Fragment>
           <h1 className="title is-capitalized">
             {title}
           </h1>
@@ -146,7 +145,7 @@ class BreedInfo extends Component {
             isLoading={this.state.loadingImages}
             loadMore={this.loadMore}
             title={title} />
-        </Auxiliary>
+        </React.Fragment>
       );
     } else {
       content = <ErrorMessage message="Breed not found" />;

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import * as breedActions from '../../../store/actions/breed';
 import * as quizActions from '../../../store/actions/quiz';
-import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 import Input from '../../../components/Form/Input/Input';
 import ToggleHide from '../../../components/Ui/ToggleHide/ToggleHide';
 import ErrorMessage from '../../../components/Ui/ErrorMessage/ErrorMessage';
@@ -162,23 +161,23 @@ class QuizForm extends Component {
         if (initial !== breed.charAt(0)) {
           initial = breed.charAt(0);
           separator = (
-            <Auxiliary>
+            <React.Fragment>
               <p className="label is-capitalized">
                 {initial}
               </p>
-            </Auxiliary>
+            </React.Fragment>
           )
         }
         const key = breed.replace(/ /g, '-');
         return (
-          <Auxiliary key={key}>
+          <React.Fragment key={key}>
             {separator}
             <Input
               changed={(event) => this.inputChangedHandler(event, key)}
               elementType='checkbox'
               elementConfig={{checked: this.state.checkboxes[key]}}
               label={breed} />
-          </Auxiliary>
+          </React.Fragment>
         );
       });
     }

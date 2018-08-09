@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import * as quizActions from '../../../store/actions/quiz';
 import './QuizGame.css';
 import AnswerButtons from '../../../components/Quiz/AnswerButtons/AnswerButtons';
-import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
 import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
 
@@ -38,7 +37,7 @@ class QuizGame extends Component {
     }
 
     return (
-      <Auxiliary>
+      <React.Fragment>
         <div className="columns">
           <div className="box column is-half is-offset-one-quarter">
             <QuizImage
@@ -65,7 +64,7 @@ class QuizGame extends Component {
           questionCount={this.props.quiz.questionCount}
           wrong={this.props.quiz.wrong}
           wasCorrect={this.props.quiz.wasCorrect} />
-      </Auxiliary>
+      </React.Fragment>
     );
   }
 }
