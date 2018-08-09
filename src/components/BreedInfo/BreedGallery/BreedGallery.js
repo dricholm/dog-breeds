@@ -12,20 +12,28 @@ const breedGallery = props => {
   } else if (props.isLoading) {
     gallery = <Loading />;
   } else if (props.imageUrls.length > 0) {
-    const images = props.imageUrls
-      .map((val, idx) => (
-        <div className="gallery-image" key={idx}>
-          <img src={val} alt={`${props.title} #${idx + 1}`} />
-        </div>
-      ));
+    const images = props.imageUrls.map((val, idx) => (
+      <div className="gallery-image" key={idx}>
+        <img
+          src={val}
+          alt={`${props.title} #${idx + 1}`}
+          onClick={() => props.selectImage(val)}
+        />
+      </div>
+    ));
 
     gallery = (
       <InfiniteScroll
         className="gallery-container"
-        loader={<div className="notification" key="loader">Loading more images...</div>}
+        loader={
+          <div className="notification" key="loader">
+            Loading more images...
+          </div>
+        }
         loadMore={props.loadMore}
         hasMore={props.hasMore}
-        threshold={1000}>
+        threshold={1000}
+      >
         {images}
       </InfiniteScroll>
     );
