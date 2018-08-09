@@ -1,4 +1,5 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import Loading from '../../Ui/Loading/Loading';
 
@@ -20,7 +21,7 @@ const quizImage = props => {
             </div>
           </div>
           <a aria-label="restart" className="quiz-button" onClick={props.restart}>
-            <i className="fa fa-refresh fa-fw" aria-hidden="true"></i>
+            <FontAwesomeIcon icon="sync" fixedWidth />
           </a>
         </div>
       );
@@ -30,7 +31,7 @@ const quizImage = props => {
           aria-label="next"
           className="quiz-button quiz-next"
           onClick={props.nextQuestion}>
-          <i className="fa fa-chevron-right fa-fw" aria-hidden="true"></i>
+          <FontAwesomeIcon icon="chevron-right" fixedWidth />
         </a>
       );
     }

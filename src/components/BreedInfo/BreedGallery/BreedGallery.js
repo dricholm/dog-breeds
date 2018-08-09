@@ -22,7 +22,7 @@ const breedGallery = props => {
     gallery = (
       <InfiniteScroll
         className="gallery-container"
-        loader={<div className="notification">Loading more images...</div>}
+        loader={<div className="notification" key="loader">Loading more images...</div>}
         loadMore={props.loadMore}
         hasMore={props.hasMore}
         threshold={1000}>

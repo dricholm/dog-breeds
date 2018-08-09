@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
 import 'bulma/css/bulma.css';
-import 'font-awesome/css/font-awesome.min.css';
+import './shared/fontAwesome.js';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import breedReducer from './store/reducers/breed';
