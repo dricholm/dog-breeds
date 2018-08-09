@@ -3,12 +3,12 @@ import { NavLink } from 'react-router-dom';
 
 class Nav extends Component {
   state = {
-    isMenuActive: false
-  }
+    isMenuActive: false,
+  };
 
   toggleMenu = () => {
-    this.setState((prevState) => ({ isMenuActive: !prevState.isMenuActive }));
-  }
+    this.setState(prevState => ({ isMenuActive: !prevState.isMenuActive }));
+  };
 
   render() {
     const menuClasses = ['navbar-menu'];
@@ -26,14 +26,15 @@ class Nav extends Component {
             activeClassName="is-active"
             className="navbar-item"
             exact
-            to="/">
+            to="/"
+          >
             Dog breeds
           </NavLink>
 
           <button className={burgerClasses.join(' ')} onClick={this.toggleMenu}>
-            <span></span>
-            <span></span>
-            <span></span>
+            <span />
+            <span />
+            <span />
           </button>
         </div>
 
@@ -43,7 +44,8 @@ class Nav extends Component {
               activeClassName="is-active"
               className="navbar-item"
               onClick={this.toggleMenu}
-              to="/quiz">
+              to="/quiz"
+            >
               Quiz
             </NavLink>
           </div>

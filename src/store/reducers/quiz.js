@@ -11,7 +11,7 @@ const initialState = {
   questionCount: 0,
   selectedBreeds: [],
   wasCorrect: null,
-  wrong: 0
+  wrong: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -25,7 +25,7 @@ const reducer = (state = initialState, action) => {
         loading: false,
         questionCount: action.payload.questionCount,
         selectedBreeds: action.payload.selectedBreeds,
-        wrong: 0
+        wrong: 0,
       };
 
     case actionTypes.NEXT_QUESTION:
@@ -37,7 +37,7 @@ const reducer = (state = initialState, action) => {
         errorMessage: null,
         image: null,
         loading: true,
-        wasCorrect: null
+        wasCorrect: null,
       };
 
     case actionTypes.NEXT_QUESTION_SUCCESS:
@@ -47,23 +47,29 @@ const reducer = (state = initialState, action) => {
         correctAnswer: action.payload.correctAnswer,
         errorMessage: null,
         image: action.payload.imageUrl,
-        loading: false
+        loading: false,
       };
 
     case actionTypes.NEXT_QUESTION_FAIL:
       return {
         ...state,
         errorMessage: action.payload.errorMessage,
-        loading: false
+        loading: false,
       };
 
     case actionTypes.ANSWER:
       return {
         ...state,
         chosenAnswer: action.payload.answer,
-        correct: action.payload.answer === state.correctAnswer ? state.correct + 1 : state.correct,
-        wrong: action.payload.answer === state.correctAnswer ? state.wrong : state.wrong + 1,
-        wasCorrect: action.payload.answer === state.correctAnswer
+        correct:
+          action.payload.answer === state.correctAnswer
+            ? state.correct + 1
+            : state.correct,
+        wasCorrect: action.payload.answer === state.correctAnswer,
+        wrong:
+          action.payload.answer === state.correctAnswer
+            ? state.wrong
+            : state.wrong + 1,
       };
 
     case actionTypes.RESTART:
@@ -71,9 +77,9 @@ const reducer = (state = initialState, action) => {
         ...state,
         choices: [],
         chosenAnswer: null,
-        correctAnswer: null,
         correct: 0,
-        wrong: 0
+        correctAnswer: null,
+        wrong: 0,
       };
 
     default:

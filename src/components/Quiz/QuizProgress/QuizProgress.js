@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './QuizProgress.css';
 
 const quizProgress = props => {
-  const progress = (props.correct + props.wrong) / props.questionCount * 100;
+  const progress = ((props.correct + props.wrong) / props.questionCount) * 100;
 
   const correctClasses = ['title', 'has-text-success'];
   const wrongClasses = ['title', 'has-text-danger'];
@@ -16,7 +17,13 @@ const quizProgress = props => {
   return (
     <div className="columns is-multiline">
       <div className="column is-half is-offset-one-quarter">
-        <progress className="progress is-primary" value={progress.toString()} max="100">{progress}%</progress>
+        <progress
+          className="progress is-primary"
+          value={progress.toString()}
+          max="100"
+        >
+          {progress}%
+        </progress>
 
         <div className="level">
           <div className="level-item has-text-centered">
@@ -43,6 +50,13 @@ const quizProgress = props => {
       </div>
     </div>
   );
+};
+
+quizProgress.propTypes = {
+  correct: PropTypes.number,
+  questionCount: PropTypes.number,
+  wasCorrect: PropTypes.bool,
+  wrong: PropTypes.number,
 };
 
 export default quizProgress;

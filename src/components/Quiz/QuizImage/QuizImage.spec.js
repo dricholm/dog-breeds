@@ -28,7 +28,7 @@ describe('<QuizImage />', () => {
   it('should display next button when answered', () => {
     wrapper.setProps({
       chosen: true,
-      image: 'test.jpg'
+      image: 'test.jpg',
     });
     expect(wrapper.find(Loading)).toHaveLength(0);
     expect(wrapper.find('.quiz-image')).toHaveLength(1);
@@ -38,16 +38,15 @@ describe('<QuizImage />', () => {
 
   it('should display results and restart when done', () => {
     wrapper.setProps({
-      correct: 6,
       chosen: true,
+      correct: 6,
       gameEnd: true,
       image: 'test.jpg',
-      wrong: 4
+      wrong: 4,
     });
     expect(wrapper.find(Loading)).toHaveLength(0);
     expect(wrapper.find('.quiz-image')).toHaveLength(1);
     expect(wrapper.find('.message')).toHaveLength(1);
     expect(wrapper.find('[aria-label="restart"]')).toHaveLength(1);
   });
-
 });

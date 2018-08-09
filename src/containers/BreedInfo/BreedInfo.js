@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import axios from '../../shared/axiosDogApi';
 import * as breedActions from '../../store/actions/breed';
@@ -29,7 +30,7 @@ class BreedInfo extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps() {
     if (this.shouldLoadImages()) this.getImages();
   }
 
@@ -207,6 +208,16 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = dispatch => ({
   getBreeds: () => dispatch(breedActions.getBreeds()),
 });
+
+BreedInfo.propTypes = {
+  breedFound: PropTypes.bool,
+  breeds: PropTypes.object,
+  breedsLoaded: PropTypes.bool,
+  error: PropTypes.string,
+  getBreeds: PropTypes.func,
+  loading: PropTypes.bool,
+  match: PropTypes.object,
+};
 
 export default connect(
   mapStateToProps,

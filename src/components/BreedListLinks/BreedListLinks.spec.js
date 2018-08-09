@@ -1,13 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+import React from 'react';
 
-import { configure, shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import { shallow } from 'enzyme';
 
-import BreedListLinks from './BreedListLinks';
 import ErrorMessage from '../Ui/ErrorMessage/ErrorMessage';
-
-configure({ adapter: new Adapter() });
+import BreedListLinks from './BreedListLinks';
 
 describe('<BreedListLinks />', () => {
   let wrapper;
@@ -26,25 +23,26 @@ describe('<BreedListLinks />', () => {
   });
 
   it('should display breeds when passed', () => {
-    const breedNames = [
-      'main',
-      'has sub breed'
-    ];
+    const breedNames = ['main', 'has sub breed'];
     wrapper.setProps({ breeds: breedNames });
     expect(wrapper.find(ErrorMessage)).toHaveLength(0);
-    const sub = breedNames[1].split(' ');
-    expect(wrapper.contains([
-      <li>
-        <Link to={`/breed/${breedNames[0]}`}>
-          {breedNames[0]}
-        </Link>
-      </li>,
-      <li>
-        <Link to={`/breed/${sub[sub.length - 1]}/${sub.slice(0, sub.length - 1).join('-')}`}>
-          {breedNames[1]}
-        </Link>
-      </li>
-    ])).toEqual(true);
-  });
 
+    const sub = breedNames[1].split(' ');
+    expect(
+      wrapper.contains([
+        <li key>
+          <Link to={`/breed/${breedNames[0]}`}>{breedNames[0]}</Link>
+        </li>,
+        <li key>
+          <Link
+            to={`/breed/${sub[sub.length - 1]}/${sub
+              .slice(0, sub.length - 1)
+              .join('-')}`}
+          >
+            {breedNames[1]}
+          </Link>
+        </li>,
+      ])
+    ).toEqual(true);
+  });
 });

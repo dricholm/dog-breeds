@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import './BreedList.css';
-import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage'
-import Input from '../../components/Form/Input/Input'
-import Loading from '../../components/Ui/Loading/Loading'
+import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage';
+import Input from '../../components/Form/Input/Input';
+import Loading from '../../components/Ui/Loading/Loading';
 import Section from '../../components/Ui/Section/Section';
 import BreedListLinks from '../../components/BreedListLinks/BreedListLinks';
 import * as breedActions from '../../store/actions/breed';
 
 class BreedList extends Component {
-
   state = {
-    filter: ''
-  }
+    filter: '',
+  };
 
   componentDidMount() {
     if (this.props.breedNames.length === 0) {
@@ -21,16 +21,17 @@ class BreedList extends Component {
     }
   }
 
-  onFilter = (event) => {
-    this.setState({filter: event.target.value});
-  }
+  onFilter = event => {
+    this.setState({ filter: event.target.value });
+  };
 
   render() {
     let content;
 
     if (this.props.breedNames) {
-      const filtered = this.props.breedNames
-        .filter(breed => breed.toLowerCase().includes(this.state.filter.toLowerCase()));
+      const filtered = this.props.breedNames.filter(breed =>
+        breed.toLowerCase().includes(this.state.filter.toLowerCase())
+      );
 
       if (this.props.loading) {
         content = <Loading />;
@@ -48,9 +49,10 @@ class BreedList extends Component {
                     className: 'input is-info is-medium',
                     onChange: this.onFilter,
                     placeholder: 'Filter breeds',
-                    type: 'text'
+                    type: 'text',
                   }}
-                  elementType="input" />
+                  elementType="input"
+                />
               </div>
             </div>
 
@@ -62,22 +64,28 @@ class BreedList extends Component {
       content = <ErrorMessage message="No breeds found" />;
     }
 
-    return (
-      <Section>
-        {content}
-      </Section>
-    );
+    return <Section>{content}</Section>;
   }
 }
 
 const mapStateToProps = state => ({
   breedNames: state.breeds.breedNames,
   error: state.breeds.error,
-  loading: state.breeds.loading
+  loading: state.breeds.loading,
 });
 
 const mapDispatchToProps = dispatch => ({
-  getBreeds: () => dispatch(breedActions.getBreeds())
+  getBreeds: () => dispatch(breedActions.getBreeds()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(BreedList);
+BreedList.propTypes = {
+  breedNames: PropTypes.array,
+  error: PropTypes.string,
+  getBreeds: PropTypes.func,
+  loading: PropTypes.bool,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(BreedList);

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './ImageModal.css';
 
@@ -8,7 +9,7 @@ const imageModal = props => {
       <div className="modal-background" onClick={props.onClose} />
       <div className="modal-content">
         <p className="image">
-          <img src={props.src} alt={props.alt} />
+          <img src={props.src} alt="Large version" />
         </p>
       </div>
       <button
@@ -18,6 +19,11 @@ const imageModal = props => {
       />
     </div>
   );
+};
+
+imageModal.propTypes = {
+  onClose: PropTypes.func,
+  src: PropTypes.string,
 };
 
 export default imageModal;

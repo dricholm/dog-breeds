@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import * as quizActions from '../../../store/actions/quiz';
 import './QuizGame.css';
@@ -8,9 +9,11 @@ import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
 import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
 
 class QuizGame extends Component {
-
-  componentWillMount() {
-    if (!this.props.quiz.questionCount || this.props.quiz.selectedBreeds.length < 2) {
+  UNSAFE_componentWillMount() {
+    if (
+      !this.props.quiz.questionCount ||
+      this.props.quiz.selectedBreeds.length < 2
+    ) {
       this.props.history.push('/quiz');
     } else {
       this.props.nextQuestion(this.props.quiz.selectedBreeds);
@@ -18,21 +21,30 @@ class QuizGame extends Component {
   }
 
   buttonClick = breed => {
-    if (this.props.quiz.correct + this.props.quiz.wrong === +this.props.quiz.questionCount) return;
+    if (
+      this.props.quiz.correct + this.props.quiz.wrong ===
+      +this.props.quiz.questionCount
+    ) {
+      return;
+    }
+
     if (this.props.quiz.chosenAnswer) {
       this.props.nextQuestion(this.props.quiz.selectedBreeds);
     } else {
       this.props.answer(breed);
     }
-  }
+  };
 
   restart = () => {
     this.props.restart();
     this.props.nextQuestion(this.props.quiz.selectedBreeds);
-  }
+  };
 
   render() {
-    if (!this.props.quiz.questionCount || this.props.quiz.selectedBreeds.length < 2) {
+    if (
+      !this.props.quiz.questionCount ||
+      this.props.quiz.selectedBreeds.length < 2
+    ) {
       return <p>Redirecting</p>;
     }
 
@@ -43,18 +55,31 @@ class QuizGame extends Component {
             <QuizImage
               chosen={this.props.quiz.chosenAnswer}
               correct={this.props.quiz.correct}
-              gameEnd={this.props.quiz.correct + this.props.quiz.wrong === +this.props.quiz.questionCount}
+              gameEnd={
+                this.props.quiz.correct + this.props.quiz.wrong ===
+                +this.props.quiz.questionCount
+              }
               image={this.props.quiz.image}
-              nextQuestion={() => this.props.nextQuestion(this.props.quiz.selectedBreeds)}
+              nextQuestion={() =>
+                this.props.nextQuestion(this.props.quiz.selectedBreeds)
+              }
               restart={this.restart}
-              wrong={this.props.quiz.wrong} />
+              wrong={this.props.quiz.wrong}
+            />
 
-            <div className={this.props.quiz.choices.length === 3 ? 'answers answers-vertical' : 'answers'}>
+            <div
+              className={
+                this.props.quiz.choices.length === 3
+                  ? 'answers answers-vertical'
+                  : 'answers'
+              }
+            >
               <AnswerButtons
                 choices={this.props.quiz.choices}
                 chosenAnswer={this.props.quiz.chosenAnswer}
                 click={this.buttonClick}
-                correctAnswer={this.props.quiz.correctAnswer} />
+                correctAnswer={this.props.quiz.correctAnswer}
+              />
             </div>
           </div>
         </div>
@@ -63,21 +88,35 @@ class QuizGame extends Component {
           correct={this.props.quiz.correct}
           questionCount={this.props.quiz.questionCount}
           wrong={this.props.quiz.wrong}
-          wasCorrect={this.props.quiz.wasCorrect} />
+          wasCorrect={this.props.quiz.wasCorrect}
+        />
       </React.Fragment>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  quiz: state.quiz
+  quiz: state.quiz,
 });
 
 const mapDispatchToProps = dispatch => ({
-  setOptions: (questions, selectedBreeds) => dispatch(quizActions.setOptions(questions, selectedBreeds)),
-  nextQuestion: (selectedBreeds) => dispatch(quizActions.nextQuestion(selectedBreeds)),
-  answer: (breed) => dispatch(quizActions.answer(breed)),
-  restart: () => dispatch(quizActions.restart())
+  answer: breed => dispatch(quizActions.answer(breed)),
+  nextQuestion: selectedBreeds =>
+    dispatch(quizActions.nextQuestion(selectedBreeds)),
+  restart: () => dispatch(quizActions.restart()),
+  setOptions: (questions, selectedBreeds) =>
+    dispatch(quizActions.setOptions(questions, selectedBreeds)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(QuizGame);
+QuizGame.propTypes = {
+  answer: PropTypes.func,
+  history: PropTypes.object,
+  nextQuestion: PropTypes.func,
+  quiz: PropTypes.object,
+  restart: PropTypes.func,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QuizGame);
