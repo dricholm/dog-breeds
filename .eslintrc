@@ -16,6 +16,7 @@
   },
   "rules": {
     "comma-dangle": ["error", "always-multiline"],
+    "quotes": ["error", "single"],
     "sort-keys": "error"
   }
 }

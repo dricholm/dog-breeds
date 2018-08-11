@@ -1,5 +1,6 @@
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
+import PropTypes from 'prop-types';
 
 import './BreedGallery.css';
 import ErrorMessage from '../../Ui/ErrorMessage/ErrorMessage';
@@ -40,6 +41,20 @@ const breedGallery = props => {
   }
 
   return gallery;
+};
+
+breedGallery.propTypes = {
+  hasMore: PropTypes.bool,
+  imageError: PropTypes.string,
+  imageUrls: PropTypes.array,
+  isLoading: PropTypes.bool,
+  loadMore: PropTypes.func,
+  selectImage: PropTypes.func,
+  title: PropTypes.string,
+};
+
+breedGallery.defaultProps = {
+  imageUrls: [],
 };
 
 export default breedGallery;
