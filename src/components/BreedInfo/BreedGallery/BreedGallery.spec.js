@@ -44,7 +44,7 @@ describe('<BreedGallery />', () => {
     expect(imgs.at(1).props().src).toBe('b.jpg');
   });
 
-  it('should display images', () => {
+  it('should call selectImage on click', () => {
     const onClick = jest.fn();
     wrapper.setProps({
       imageUrls: ['a.jpg'],
