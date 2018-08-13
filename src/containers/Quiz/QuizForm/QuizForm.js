@@ -174,9 +174,11 @@ class QuizForm extends Component {
           <React.Fragment key={key}>
             {separator}
             <Input
-              changed={event => this.inputChangedHandler(event, key)}
               elementType="checkbox"
-              elementConfig={{ checked: this.state.checkboxes[key] }}
+              elementConfig={{
+                checked: this.state.checkboxes[key],
+                onChange: event => this.inputChangedHandler(event, key),
+              }}
               label={breed}
             />
           </React.Fragment>
@@ -196,9 +198,11 @@ class QuizForm extends Component {
               Number of questions
             </label>
             <Input
-              changed={event => this.inputChangedHandler(event, 'questions')}
               elementType={this.state.questions.elementType}
-              elementConfig={this.state.questions.elementConfig}
+              elementConfig={{
+                ...this.state.questions.elementConfig,
+                onChange: event => this.inputChangedHandler(event, 'questions'),
+              }}
               touched={this.state.questions.touched}
             />
           </div>

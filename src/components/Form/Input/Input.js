@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const input = props => {
   switch (props.elementType) {
@@ -8,7 +9,6 @@ const input = props => {
           className="input"
           title={props.elementConfig.placeholder}
           {...props.elementConfig}
-          onChange={props.changed}
         />
       );
 
@@ -19,7 +19,10 @@ const input = props => {
         'is-medium',
         'tag',
       ];
-      if (props.elementConfig.checked) {
+      if (
+        typeof props.elementConfig !== 'undefined' &&
+        props.elementConfig.checked
+      ) {
         checkboxClasses.push('is-info');
       }
       return (
@@ -29,7 +32,6 @@ const input = props => {
           style={{ margin: '0.3em' }}
         >
           <input
-            onChange={props.changed}
             id={props.label}
             title={props.label}
             {...props.elementConfig}
@@ -44,6 +46,13 @@ const input = props => {
     default:
       return null;
   }
+};
+
+input.propTypes = {
+  changed: PropTypes.func,
+  elementConfig: PropTypes.object,
+  elementType: PropTypes.string,
+  label: PropTypes.string,
 };
 
 export default input;

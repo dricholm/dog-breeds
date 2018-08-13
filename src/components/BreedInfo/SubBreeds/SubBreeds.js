@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const subBreeds = props => {
   const subs = props.subs
@@ -24,6 +24,10 @@ const subBreeds = props => {
 subBreeds.propTypes = {
   main: PropTypes.string,
   subs: PropTypes.array,
+};
+
+subBreeds.defaultProps = {
+  subs: [],
 };
 
 export default subBreeds;
