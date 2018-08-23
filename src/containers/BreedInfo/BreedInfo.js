@@ -109,12 +109,23 @@ class BreedInfo extends Component {
     }));
   };
 
-  selectImage = imageUrl => {
+  setImage = imageIndex => {
     this.setState(prevState => ({
       ...prevState,
       currentBreed: { ...prevState.currentBreed },
-      modalActive: true,
-      selectedImage: imageUrl,
+      selectedImage: imageIndex,
+    }));
+  };
+
+  changeImage = delta => {
+    this.setState(prevState => ({
+      ...prevState,
+      currentBreed: { ...prevState.currentBreed },
+      numberOfImagesLoaded:
+        prevState.selectedImage + delta >= prevState.numberOfImagesLoaded
+          ? prevState.selectedImage + delta + 1
+          : prevState.numberOfImagesLoaded,
+      selectedImage: prevState.selectedImage + delta,
     }));
   };
 
@@ -171,13 +182,17 @@ class BreedInfo extends Component {
             isLoading={this.state.loadingImages}
             loadMore={this.loadMore}
             title={title}
-            selectImage={this.selectImage}
+            selectImage={this.setImage}
           />
-          {this.state.selectedImage ? (
+          {this.state.selectedImage !== null ? (
             <ImageModal
-              active={this.state.modalActive}
-              src={this.state.selectedImage}
-              onClose={() => this.selectImage(null)}
+              src={this.state.imageUrls[this.state.selectedImage]}
+              onClose={() => this.setImage(null)}
+              hasPrev={this.state.selectedImage > 0}
+              hasNext={
+                this.state.selectedImage < this.state.imageUrls.length - 1
+              }
+              onChange={this.changeImage}
             />
           ) : null}
         </React.Fragment>

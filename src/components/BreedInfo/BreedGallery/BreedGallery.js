@@ -7,23 +7,22 @@ import ErrorMessage from '../../Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../Ui/Loading/Loading';
 
 const breedGallery = props => {
-  let gallery = null;
   if (props.imageError) {
-    gallery = <ErrorMessage message={props.imageError} />;
+    return <ErrorMessage message={props.imageError} />;
   } else if (props.isLoading) {
-    gallery = <Loading />;
+    return <Loading />;
   } else if (props.imageUrls.length > 0) {
     const images = props.imageUrls.map((val, idx) => (
       <div className="gallery-image" key={idx}>
         <img
           src={val}
           alt={`${props.title} #${idx + 1}`}
-          onClick={() => props.selectImage(val)}
+          onClick={() => props.selectImage(idx)}
         />
       </div>
     ));
 
-    gallery = (
+    return (
       <InfiniteScroll
         className="gallery-container"
         loader={
@@ -38,9 +37,9 @@ const breedGallery = props => {
         {images}
       </InfiniteScroll>
     );
+  } else {
+    return null;
   }
-
-  return gallery;
 };
 
 breedGallery.propTypes = {
