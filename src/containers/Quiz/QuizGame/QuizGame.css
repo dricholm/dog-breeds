@@ -57,6 +57,7 @@
 
 .quiz-overlay {
   align-items: center;
+  animation: fade-in 300ms forwards;
   background: rgba(0, 0, 0, 0.3);
   display: flex;
   height: 100%;

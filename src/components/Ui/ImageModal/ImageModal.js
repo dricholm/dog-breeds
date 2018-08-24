@@ -37,10 +37,19 @@ class ImageModal extends Component {
   };
 
   render() {
+    const image = [0].map(() => (
+      <img
+        className="modal-image"
+        src={this.props.src}
+        alt="Large version"
+        key={this.props.src}
+      />
+    ));
+
     return (
       <div className="modal is-active">
         <div className="modal-background" onClick={this.props.onClose} />
-        <img className="modal-image" src={this.props.src} alt="Large version" />
+        {image}
         <button
           className="modal-close is-large"
           aria-label="close"
@@ -80,6 +89,7 @@ ImageModal.propTypes = {
 ImageModal.defaultProps = {
   hasNext: false,
   hasPrev: false,
+  src: '#',
 };
 
 export default ImageModal;
