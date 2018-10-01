@@ -1,6 +1,7 @@
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
+import LazyLoad from 'react-lazyload';
 
 import './BreedGallery.css';
 import ErrorMessage from '../../Ui/ErrorMessage/ErrorMessage';
@@ -14,11 +15,13 @@ const breedGallery = props => {
   } else if (props.imageUrls.length > 0) {
     const images = props.imageUrls.map((val, idx) => (
       <div className="gallery-image" key={idx}>
-        <img
-          src={val}
-          alt={`${props.title} #${idx + 1}`}
-          onClick={() => props.selectImage(idx)}
-        />
+        <LazyLoad height={200} offset={500} once>
+          <img
+            src={val}
+            alt={`${props.title} #${idx + 1}`}
+            onClick={() => props.selectImage(idx)}
+          />
+        </LazyLoad>
       </div>
     ));
 

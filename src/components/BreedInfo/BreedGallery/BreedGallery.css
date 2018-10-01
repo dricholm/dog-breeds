@@ -18,6 +18,7 @@
 }
 
 .gallery-image img {
+  animation: fade-in 300ms ease-out;
   cursor: pointer;
   height: 400px;
   min-width: 100%;
@@ -29,4 +30,13 @@
 
 .gallery-image img:hover {
   filter: brightness(110%);
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
