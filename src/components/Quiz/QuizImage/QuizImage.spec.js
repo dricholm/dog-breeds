@@ -46,7 +46,7 @@ describe('<QuizImage />', () => {
     });
     expect(wrapper.find(Loading)).toHaveLength(0);
     expect(wrapper.find('.quiz-image')).toHaveLength(1);
-    expect(wrapper.find('.message')).toHaveLength(1);
+    expect(wrapper.find('.box')).toHaveLength(1);
     expect(wrapper.find('[aria-label="restart"]')).toHaveLength(1);
   });
 });
