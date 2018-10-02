@@ -1,5 +1,7 @@
 # Dog breeds
 
+[![Build Status](https://travis-ci.com/dricholm/dog-breeds.svg?branch=master)](https://travis-ci.com/dricholm/dog-breeds)
+
 A website for listing dog breeds, viewing their pictures and playing a quiz game.
 
 ## Live demo
@@ -12,9 +14,9 @@ The site uses the [Dog API](https://dog.ceo/dog-api/) for getting a list of dog 
 
 ## Used technologies, packages
 
-* [React](https://reactjs.org/)
-* CSS: [Bulma](https://bulma.io/), [Font Awesome](http://fontawesome.io/), [CSS Loaders](https://github.com/lukehaas/css-loaders)
-* HTTP requests: [Axios](https://github.com/axios/axios)
-* Routing: [React-Router](https://github.com/ReactTraining/react-router)
-* State Management: [Redux](https://redux.js.org/), [React Redux](https://github.com/reactjs/react-redux), [Redux-Thunk](https://github.com/gaearon/redux-thunk)
-* [React Infinite Scroller](https://github.com/CassetteRocks/react-infinite-scroller)
+- [React](https://reactjs.org/)
+- CSS: [Bulma](https://bulma.io/), [Font Awesome](http://fontawesome.io/), [CSS Loaders](https://github.com/lukehaas/css-loaders)
+- HTTP requests: [Axios](https://github.com/axios/axios)
+- Routing: [React-Router](https://github.com/ReactTraining/react-router)
+- State Management: [Redux](https://redux.js.org/), [React Redux](https://github.com/reactjs/react-redux), [Redux-Thunk](https://github.com/gaearon/redux-thunk)
+- [React Infinite Scroller](https://github.com/CassetteRocks/react-infinite-scroller)
