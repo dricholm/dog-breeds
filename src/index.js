@@ -5,7 +5,6 @@ import { applyMiddleware, combineReducers, compose, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import 'bulma/css/bulma.css';
 import './shared/fontAwesome.js';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
