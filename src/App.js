@@ -1,7 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
 import React from 'react';
 
-import './App.css';
+import './App.scss';
 
 import About from './components/About/About';
 import BreedInfo from './containers/BreedInfo/BreedInfo';
