@@ -4,10 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './QuizImage.css';
 import Loading from '../../Ui/Loading/Loading';
 
-const quizImage = props => {
-  let overlay;
+export interface QuizImageProps {
+  chosen: string;
+  correct: number;
+  gameEnd: boolean;
+  image: string;
+  nextQuestion: () => void;
+  restart: () => void;
+  wrong: number;
+}
+
+const quizImage = (props: QuizImageProps) => {
+  let overlay: JSX.Element;
   if (props.chosen) {
-    let button;
+    let button: JSX.Element;
     if (props.gameEnd) {
       const ratio = Math.round(
         (props.correct / (props.correct + props.wrong)) * 100
@@ -16,7 +26,9 @@ const quizImage = props => {
         <div className="has-text-centered">
           <div className="box has-shadow">
             <p className="has-text-weight-bold is-size-1">{ratio}%</p>
-            <p className="has-text-success is-size-4">Correct: {props.correct}</p>
+            <p className="has-text-success is-size-4">
+              Correct: {props.correct}
+            </p>
             <p className="has-text-danger is-size-4">Wrong: {props.wrong}</p>
           </div>
           <button

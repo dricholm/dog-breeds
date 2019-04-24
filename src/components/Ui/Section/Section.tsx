@@ -1,14 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const section = props => (
+export interface SectionProps {
+  children: any;
+}
+const section = (props: SectionProps) => (
   <section className="section">
     <div className="container">{props.children}</div>
   </section>
 );
-
-section.propTypes = {
-  children: PropTypes.node,
-};
 
 export default section;

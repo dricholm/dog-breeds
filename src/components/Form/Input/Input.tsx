@@ -1,7 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { InputHTMLAttributes } from 'react';
 
-const input = props => {
+export interface InputProps {
+  // changed: () => any;
+  elementConfig: any;
+  elementType: string;
+  label?: string;
+  touched?: boolean;
+}
+
+const input = (props: InputProps) => {
   switch (props.elementType) {
     case 'input':
       return (
@@ -46,13 +53,6 @@ const input = props => {
     default:
       return null;
   }
-};
-
-input.propTypes = {
-  changed: PropTypes.func,
-  elementConfig: PropTypes.object,
-  elementType: PropTypes.string,
-  label: PropTypes.string,
 };
 
 export default input;

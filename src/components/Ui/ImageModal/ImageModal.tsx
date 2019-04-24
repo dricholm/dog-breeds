@@ -1,10 +1,23 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './ImageModal.css';
 
-class ImageModal extends Component {
+interface ImageModalProps {
+  hasNext: boolean;
+  hasPrev: boolean;
+  onChange: (direction: number) => void;
+  onClose: () => void;
+  src: string;
+}
+
+class ImageModal extends Component<ImageModalProps> {
+  static defaultProps = {
+    hasNext: false,
+    hasPrev: false,
+    src: '#',
+  };
+
   componentDidMount() {
     document.addEventListener('keyup', this.keyUp);
   }
@@ -13,7 +26,7 @@ class ImageModal extends Component {
     document.removeEventListener('keyup', this.keyUp);
   }
 
-  keyUp = event => {
+  keyUp = (event: KeyboardEvent) => {
     switch (event.keyCode) {
       case 27: // Escape
         this.props.onClose();
@@ -77,19 +90,5 @@ class ImageModal extends Component {
     );
   }
 }
-
-ImageModal.propTypes = {
-  hasNext: PropTypes.bool,
-  hasPrev: PropTypes.bool,
-  onChange: PropTypes.func,
-  onClose: PropTypes.func,
-  src: PropTypes.string,
-};
-
-ImageModal.defaultProps = {
-  hasNext: false,
-  hasPrev: false,
-  src: '#',
-};
 
 export default ImageModal;

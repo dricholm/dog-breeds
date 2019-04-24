@@ -30,10 +30,10 @@ describe('<BreedListLinks />', () => {
     const sub = breedNames[1].split(' ');
     expect(
       wrapper.contains([
-        <li key>
+        <li>
           <Link to={`/breed/${breedNames[0]}`}>{breedNames[0]}</Link>
         </li>,
-        <li key>
+        <li>
           <Link
             to={`/breed/${sub[sub.length - 1]}/${sub
               .slice(0, sub.length - 1)

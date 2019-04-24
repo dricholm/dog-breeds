@@ -1,13 +1,22 @@
 import React from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
-import PropTypes from 'prop-types';
 import LazyLoad from 'react-lazyload';
 
 import './BreedGallery.css';
 import ErrorMessage from '../../Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../Ui/Loading/Loading';
 
-const breedGallery = props => {
+export interface BreedGalleryProps {
+  hasMore: boolean;
+  imageError: string | null;
+  imageUrls: Array<string>;
+  isLoading: boolean;
+  loadMore: () => void;
+  selectImage: (index: number) => void;
+  title: string;
+}
+
+const breedGallery = (props: BreedGalleryProps) => {
   if (props.imageError) {
     return <ErrorMessage message={props.imageError} />;
   } else if (props.isLoading) {
@@ -43,16 +52,6 @@ const breedGallery = props => {
   } else {
     return null;
   }
-};
-
-breedGallery.propTypes = {
-  hasMore: PropTypes.bool,
-  imageError: PropTypes.string,
-  imageUrls: PropTypes.array,
-  isLoading: PropTypes.bool,
-  loadMore: PropTypes.func,
-  selectImage: PropTypes.func,
-  title: PropTypes.string,
 };
 
 breedGallery.defaultProps = {

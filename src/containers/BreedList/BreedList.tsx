@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import './BreedList.css';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage';
@@ -8,9 +7,17 @@ import Input from '../../components/Form/Input/Input';
 import Loading from '../../components/Ui/Loading/Loading';
 import Section from '../../components/Ui/Section/Section';
 import BreedListLinks from '../../components/BreedListLinks/BreedListLinks';
-import * as breedActions from '../../store/actions/breed';
+import { getBreeds } from '../../store/breed/actions';
+import { AppState } from '../../store';
 
-class BreedList extends Component {
+export interface BreedListProps {
+  breedNames: Array<string>;
+  error: string;
+  getBreeds: () => void;
+  loading: boolean;
+}
+
+class BreedList extends Component<BreedListProps> {
   state = {
     filter: '',
   };
@@ -21,7 +28,7 @@ class BreedList extends Component {
     }
   }
 
-  onFilter = event => {
+  onFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ filter: event.target.value });
   };
 
@@ -43,7 +50,7 @@ class BreedList extends Component {
             <div className="field">
               <div className="control">
                 <Input
-                  changed={this.onFilter}
+                  // changed={this.onFilter}
                   elementConfig={{
                     autoFocus: true,
                     className: 'input is-info is-medium',
@@ -68,22 +75,15 @@ class BreedList extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: AppState) => ({
   breedNames: state.breeds.breedNames,
   error: state.breeds.error,
   loading: state.breeds.loading,
 });
 
-const mapDispatchToProps = dispatch => ({
-  getBreeds: () => dispatch(breedActions.getBreeds()),
+const mapDispatchToProps = (dispatch: (action: any) => void) => ({
+  getBreeds: () => dispatch(getBreeds()),
 });
-
-BreedList.propTypes = {
-  breedNames: PropTypes.array,
-  error: PropTypes.string,
-  getBreeds: PropTypes.func,
-  loading: PropTypes.bool,
-};
 
 export default connect(
   mapStateToProps,

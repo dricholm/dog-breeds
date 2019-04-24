@@ -1,14 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-import * as quizActions from '../../../store/actions/quiz';
 import './QuizGame.css';
 import AnswerButtons from '../../../components/Quiz/AnswerButtons/AnswerButtons';
 import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
 import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
+import {
+  answer,
+  nextQuestion,
+  restart,
+  setOptions,
+} from '../../../store/quiz/actions';
+import { AppState } from '../../../store';
+import { QuizState } from '../../../store/quiz/types';
 
-class QuizGame extends Component {
+export interface QuizGameProps {
+  answer: (breed: string) => void;
+  history: any;
+  nextQuestion: (selectedBreeds: Array<string>) => void;
+  quiz: QuizState;
+  restart: () => void;
+}
+
+class QuizGame extends Component<QuizGameProps> {
   UNSAFE_componentWillMount() {
     if (
       !this.props.quiz.questionCount ||
@@ -20,7 +34,7 @@ class QuizGame extends Component {
     }
   }
 
-  buttonClick = breed => {
+  buttonClick = (breed: string) => {
     if (
       this.props.quiz.correct + this.props.quiz.wrong ===
       +this.props.quiz.questionCount
@@ -95,26 +109,18 @@ class QuizGame extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: AppState) => ({
   quiz: state.quiz,
 });
 
-const mapDispatchToProps = dispatch => ({
-  answer: breed => dispatch(quizActions.answer(breed)),
-  nextQuestion: selectedBreeds =>
-    dispatch(quizActions.nextQuestion(selectedBreeds)),
-  restart: () => dispatch(quizActions.restart()),
-  setOptions: (questions, selectedBreeds) =>
-    dispatch(quizActions.setOptions(questions, selectedBreeds)),
+const mapDispatchToProps = (dispatch: (action: any) => void) => ({
+  answer: (breed: string) => dispatch(answer(breed)),
+  nextQuestion: (selectedBreeds: Array<string>) =>
+    dispatch(nextQuestion(selectedBreeds)),
+  restart: () => dispatch(restart()),
+  setOptions: (questionNumber: number, selectedBreeds: Array<string>) =>
+    dispatch(setOptions(questionNumber, selectedBreeds)),
 });
-
-QuizGame.propTypes = {
-  answer: PropTypes.func,
-  history: PropTypes.object,
-  nextQuestion: PropTypes.func,
-  quiz: PropTypes.object,
-  restart: PropTypes.func,
-};
 
 export default connect(
   mapStateToProps,

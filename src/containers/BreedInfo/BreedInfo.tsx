@@ -1,24 +1,52 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 import axios from '../../shared/axiosDogApi';
-import * as breedActions from '../../store/actions/breed';
 import BreedGallery from '../../components/BreedInfo/BreedGallery/BreedGallery';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage';
 import ImageModal from '../../components/Ui/ImageModal/ImageModal';
 import Loading from '../../components/Ui/Loading/Loading';
 import Section from '../../components/Ui/Section/Section';
 import SubBreeds from '../../components/BreedInfo/SubBreeds/SubBreeds';
+import { BreedState, initialBreedState } from '../../store/breed/types';
+import { getBreeds } from '../../store/breed/actions';
+import { AppState } from '../../store';
 
-class BreedInfo extends Component {
-  state = {
+interface BreedInfoProps {
+  breedFound: boolean;
+  breeds: { [breed: string]: Array<string> };
+  breedsLoaded: boolean;
+  error: string;
+  getBreeds: () => void;
+  loading: boolean;
+  match: any;
+}
+
+interface BreedInfoState {
+  breedNames: Array<string>;
+  breeds: { [breed: string]: Array<string> };
+  currentBreed: { main?: string; sub?: string };
+  error: string;
+  imageError: string;
+  imageUrls: Array<string>;
+  loading: boolean;
+  loadingImages: boolean;
+  numberOfImagesLoaded: number;
+  selectedImage: number;
+}
+
+class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
+  state: BreedInfoState = {
+    breedNames: [],
+    breeds: {},
     currentBreed: {},
+    error: null,
     imageError: null,
     imageUrls: [],
-    loadingImages: false,
-    numberOfImagesLoaded: 0,
+    loading: null,
+    loadingImages: null,
+    numberOfImagesLoaded: null,
     selectedImage: null,
   };
 
@@ -38,7 +66,7 @@ class BreedInfo extends Component {
     if (this.shouldLoadImages()) this.getImages();
   }
 
-  shuffle = array => {
+  shuffle = (array: Array<string>) => {
     const ret = array.slice();
     for (let i = ret.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -102,23 +130,23 @@ class BreedInfo extends Component {
   };
 
   loadMore = () => {
-    this.setState(prevState => ({
+    this.setState((prevState: BreedInfoState) => ({
       ...prevState,
       currentBreed: { ...prevState.currentBreed },
       numberOfImagesLoaded: prevState.numberOfImagesLoaded + 10,
     }));
   };
 
-  setImage = imageIndex => {
-    this.setState(prevState => ({
+  setImage = (imageIndex: number) => {
+    this.setState((prevState: BreedInfoState) => ({
       ...prevState,
       currentBreed: { ...prevState.currentBreed },
       selectedImage: imageIndex,
     }));
   };
 
-  changeImage = delta => {
-    this.setState(prevState => ({
+  changeImage = (delta: number) => {
+    this.setState((prevState: BreedInfoState) => ({
       ...prevState,
       currentBreed: { ...prevState.currentBreed },
       numberOfImagesLoaded:
@@ -137,7 +165,7 @@ class BreedInfo extends Component {
     } else if (this.props.error) {
       content = <ErrorMessage message={this.props.error} />;
     } else if (this.props.breedFound) {
-      let top;
+      let top: JSX.Element;
       if (this.props.match.params.sub) {
         top = (
           <h2 className="subtitle is-capitalized">
@@ -205,7 +233,7 @@ class BreedInfo extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state: AppState, ownProps: BreedInfoProps) => ({
   breedFound:
     state.breeds.breeds[ownProps.match.params.breed] &&
     (!ownProps.match.params.sub ||
@@ -220,19 +248,9 @@ const mapStateToProps = (state, ownProps) => ({
   loading: state.breeds.loading,
 });
 
-const mapDispatchToProps = dispatch => ({
-  getBreeds: () => dispatch(breedActions.getBreeds()),
+const mapDispatchToProps = (dispatch: (action: any) => void) => ({
+  getBreeds: () => dispatch(getBreeds()),
 });
-
-BreedInfo.propTypes = {
-  breedFound: PropTypes.bool,
-  breeds: PropTypes.object,
-  breedsLoaded: PropTypes.bool,
-  error: PropTypes.string,
-  getBreeds: PropTypes.func,
-  loading: PropTypes.bool,
-  match: PropTypes.object,
-};
 
 export default connect(
   mapStateToProps,

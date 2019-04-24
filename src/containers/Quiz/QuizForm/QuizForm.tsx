@@ -1,17 +1,46 @@
-import React, { Component } from 'react';
+import React, { Component, FormEvent } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-import * as breedActions from '../../../store/actions/breed';
-import * as quizActions from '../../../store/actions/quiz';
+import * as breedActions from '../../../store/breed/actions';
+import * as quizActions from '../../../store/quiz/actions';
 import Input from '../../../components/Form/Input/Input';
 import ToggleHide from '../../../components/Ui/ToggleHide/ToggleHide';
 import ErrorMessage from '../../../components/Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../../components/Ui/Loading/Loading';
+import { BreedState } from '../../../store/breed/types';
+import { AppState } from '../../../store';
 
-class QuizForm extends Component {
-  constructor(props) {
-    super();
+interface QuizFormProps {
+  breeds: BreedState;
+  getBreeds: () => void;
+  history: any;
+  setOptions: (questionNumber: string, checked: Array<string>) => void;
+}
+
+interface QuizFormState {
+  checkboxes: { [name: string]: boolean };
+  isValid: boolean;
+  questions: {
+    elementConfig: {
+      max: string;
+      min: string;
+      name: string;
+      placeholder: string;
+      required: boolean;
+      type: string;
+      value: string;
+    };
+    elementType: string;
+    touched: boolean;
+  };
+  showCheckboxes: boolean;
+}
+
+class QuizForm extends Component<QuizFormProps, QuizFormState> {
+  state: QuizFormState;
+
+  constructor(props: QuizFormProps) {
+    super(props);
 
     if (props.breeds.breedNames.length === 0) {
       props.getBreeds();
@@ -37,7 +66,7 @@ class QuizForm extends Component {
     };
   }
 
-  UNSAFE_componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps: QuizFormProps) {
     if (
       Object.keys(this.state.checkboxes).length === 0 &&
       nextProps.breeds.breedNames.length > 0
@@ -49,7 +78,10 @@ class QuizForm extends Component {
     }
   }
 
-  inputChangedHandler = (event, inputId) => {
+  inputChangedHandler = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    inputId: any
+  ) => {
     const elementType = this.state[inputId]
       ? this.state[inputId].elementType
       : 'checkbox';
@@ -82,9 +114,9 @@ class QuizForm extends Component {
     }
   };
 
-  checkAll = checked => {
+  checkAll = (checked: any) => {
     let checkboxes = {};
-    this.props.breeds.breedNames.forEach(breed => {
+    this.props.breeds.breedNames.forEach((breed: string) => {
       const key = breed.replace(/ /g, '-');
 
       checkboxes = {
@@ -99,20 +131,13 @@ class QuizForm extends Component {
     });
   };
 
-  initCheckboxes = breedNames => {
-    let checkboxes = {};
-    breedNames.forEach(breed => {
-      const key = breed.replace(/ /g, '-');
-
-      checkboxes = {
-        ...checkboxes,
-        [key]: true,
-      };
-    });
+  initCheckboxes = (breedNames: Array<string>) => {
+    const checkboxes = {};
+    breedNames.forEach(breed => (checkboxes[breed.replace(/ /g, '-')] = true));
     return checkboxes;
   };
 
-  submit = event => {
+  submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (this.state.questions.elementConfig.value === '') {
       this.setState({
@@ -122,7 +147,7 @@ class QuizForm extends Component {
       return;
     }
 
-    let checked = [];
+    const checked: Array<string> = [];
     Object.keys(this.state.checkboxes).forEach(box => {
       if (this.state.checkboxes[box]) {
         checked.push(box);
@@ -140,14 +165,14 @@ class QuizForm extends Component {
   };
 
   toggleHide = () => {
-    this.setState(prevState => ({
+    this.setState((prevState: QuizFormState) => ({
       ...prevState,
       showCheckboxes: !prevState.showCheckboxes,
     }));
   };
 
   render() {
-    let breedCheckboxes;
+    let breedCheckboxes: any;
     const checkBoxesClasses = ['control'];
     if (!this.state.showCheckboxes) {
       checkBoxesClasses.push('d-none');
@@ -158,8 +183,8 @@ class QuizForm extends Component {
     } else if (this.props.breeds.error) {
       breedCheckboxes = <ErrorMessage message={this.props.breeds.error} />;
     } else if (Object.keys(this.state.checkboxes).length > 0) {
-      let initial;
-      breedCheckboxes = this.props.breeds.breedNames.map(breed => {
+      let initial: string;
+      breedCheckboxes = this.props.breeds.breedNames.map((breed: string) => {
         let separator = null;
         if (initial !== breed.charAt(0)) {
           initial = breed.charAt(0);
@@ -177,7 +202,8 @@ class QuizForm extends Component {
               elementType="checkbox"
               elementConfig={{
                 checked: this.state.checkboxes[key],
-                onChange: event => this.inputChangedHandler(event, key),
+                onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                  this.inputChangedHandler(event, key),
               }}
               label={breed}
             />
@@ -201,7 +227,8 @@ class QuizForm extends Component {
               elementType={this.state.questions.elementType}
               elementConfig={{
                 ...this.state.questions.elementConfig,
-                onChange: event => this.inputChangedHandler(event, 'questions'),
+                onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                  this.inputChangedHandler(event, 'questions'),
               }}
               touched={this.state.questions.touched}
             />
@@ -266,22 +293,15 @@ class QuizForm extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: AppState) => ({
   breeds: state.breeds,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch: (action: any) => void) => ({
   getBreeds: () => dispatch(breedActions.getBreeds()),
-  setOptions: (questions, selectedBreeds) =>
-    dispatch(quizActions.setOptions(questions, selectedBreeds)),
+  setOptions: (questionNumber: number, selectedBreeds: Array<string>) =>
+    dispatch(quizActions.setOptions(questionNumber, selectedBreeds)),
 });
-
-QuizForm.propTypes = {
-  breeds: PropTypes.object,
-  getBreeds: PropTypes.func,
-  history: PropTypes.object,
-  setOptions: PropTypes.func,
-};
 
 export default connect(
   mapStateToProps,

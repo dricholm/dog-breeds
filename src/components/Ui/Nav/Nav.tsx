@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 
-class Nav extends Component {
+interface NavState {
+  isMenuActive: boolean;
+}
+
+class Nav extends Component<{}, NavState> {
   state = {
     isMenuActive: false,
   };

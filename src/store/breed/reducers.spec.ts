@@ -1,20 +1,21 @@
-import reducer from './breed';
-import * as actionTypes from '../actions/actionTypes';
+import { breedReducer } from './reducers';
+import {
+  BreedState,
+  GET_BREEDS,
+  GET_BREEDS_FAIL,
+  GET_BREEDS_SUCCESS,
+} from './types';
 
 describe('breed reducer', () => {
-  const initialState = {
+  const initialState: Partial<BreedState> = {
     breedNames: [],
     breeds: {},
     error: null,
     loading: false,
   };
 
-  it('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState);
-  });
-
   it('should set loading when beginning to fetch', () => {
-    expect(reducer(initialState, { type: actionTypes.GET_BREEDS })).toEqual({
+    expect(breedReducer(initialState, { type: GET_BREEDS })).toEqual({
       ...initialState,
       error: null,
       loading: true,
@@ -23,11 +24,11 @@ describe('breed reducer', () => {
 
   it('should set error when failed to fetch', () => {
     expect(
-      reducer(
+      breedReducer(
         { ...initialState, loading: true },
         {
           payload: { errorMessage: 'Error occured' },
-          type: actionTypes.GET_BREEDS_FAIL,
+          type: GET_BREEDS_FAIL,
         }
       )
     ).toEqual({
@@ -44,11 +45,11 @@ describe('breed reducer', () => {
     };
 
     expect(
-      reducer(
+      breedReducer(
         { ...initialState, loading: true },
         {
           payload: { breeds: breeds },
-          type: actionTypes.GET_BREEDS_SUCCESS,
+          type: GET_BREEDS_SUCCESS,
         }
       )
     ).toEqual({

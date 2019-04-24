@@ -1,9 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './QuizProgress.css';
 
-const quizProgress = props => {
+export interface QuizProgressProps {
+  correct: number;
+  questionCount: number;
+  wasCorrect: boolean;
+  wrong: number;
+}
+
+const quizProgress = (props: QuizProgressProps) => {
   const progress = ((props.correct + props.wrong) / props.questionCount) * 100;
 
   const correctClasses = ['title', 'has-text-success'];
@@ -50,13 +56,6 @@ const quizProgress = props => {
       </div>
     </div>
   );
-};
-
-quizProgress.propTypes = {
-  correct: PropTypes.number,
-  questionCount: PropTypes.number,
-  wasCorrect: PropTypes.bool,
-  wrong: PropTypes.number,
 };
 
 export default quizProgress;

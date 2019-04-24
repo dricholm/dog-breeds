@@ -1,6 +1,15 @@
-import * as actionTypes from '../actions/actionTypes';
+import {
+  QuizState,
+  QuizActionTypes,
+  SET_OPTIONS,
+  NEXT_QUESTION,
+  NEXT_QUESTION_SUCCESS,
+  NEXT_QUESTION_FAIL,
+  ANSWER,
+  RESTART,
+} from './types';
 
-const initialState = {
+const initialState: QuizState = {
   choices: [],
   chosenAnswer: null,
   correct: 0,
@@ -14,9 +23,12 @@ const initialState = {
   wrong: 0,
 };
 
-const reducer = (state = initialState, action) => {
+export const quizReducer = (
+  state: QuizState = initialState,
+  action: QuizActionTypes
+) => {
   switch (action.type) {
-    case actionTypes.SET_OPTIONS:
+    case SET_OPTIONS:
       return {
         ...state,
         correct: 0,
@@ -28,7 +40,7 @@ const reducer = (state = initialState, action) => {
         wrong: 0,
       };
 
-    case actionTypes.NEXT_QUESTION:
+    case NEXT_QUESTION:
       return {
         ...state,
         choices: [],
@@ -40,7 +52,7 @@ const reducer = (state = initialState, action) => {
         wasCorrect: null,
       };
 
-    case actionTypes.NEXT_QUESTION_SUCCESS:
+    case NEXT_QUESTION_SUCCESS:
       return {
         ...state,
         choices: action.payload.choices.sort(),
@@ -50,14 +62,14 @@ const reducer = (state = initialState, action) => {
         loading: false,
       };
 
-    case actionTypes.NEXT_QUESTION_FAIL:
+    case NEXT_QUESTION_FAIL:
       return {
         ...state,
         errorMessage: action.payload.errorMessage,
         loading: false,
       };
 
-    case actionTypes.ANSWER:
+    case ANSWER:
       return {
         ...state,
         chosenAnswer: action.payload.answer,
@@ -72,7 +84,7 @@ const reducer = (state = initialState, action) => {
             : state.wrong + 1,
       };
 
-    case actionTypes.RESTART:
+    case RESTART:
       return {
         ...state,
         choices: [],
@@ -86,5 +98,3 @@ const reducer = (state = initialState, action) => {
       return state;
   }
 };
-
-export default reducer;

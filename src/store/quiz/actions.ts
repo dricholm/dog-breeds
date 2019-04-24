@@ -1,7 +1,16 @@
-import * as actionTypes from './actionTypes';
 import axios from '../../shared/axiosDogApi';
 
-const getRandomAnswers = selectedBreeds => {
+import {
+  SET_OPTIONS,
+  NEXT_QUESTION,
+  NEXT_QUESTION_SUCCESS,
+  NEXT_QUESTION_FAIL,
+  ANSWER,
+  RESTART,
+  QuizActionTypes,
+} from './types';
+
+const getRandomAnswers = (selectedBreeds: Array<string>) => {
   const answerCount = Math.min(4, selectedBreeds.length);
   let answers = [];
   while (answers.length < answerCount) {
@@ -12,17 +21,20 @@ const getRandomAnswers = selectedBreeds => {
   return answers;
 };
 
-export const setOptions = (questionCount, selectedBreeds) => ({
+export const setOptions = (
+  questionCount: number,
+  selectedBreeds: Array<string>
+) => ({
   payload: {
     questionCount: +questionCount,
     selectedBreeds: selectedBreeds,
   },
-  type: actionTypes.SET_OPTIONS,
+  type: SET_OPTIONS,
 });
 
-export const nextQuestion = selectedBreeds => {
-  return async dispatch => {
-    dispatch({ type: actionTypes.NEXT_QUESTION });
+export const nextQuestion = (selectedBreeds: Array<string>) => {
+  return async (dispatch: (action: QuizActionTypes) => void) => {
+    dispatch({ type: NEXT_QUESTION });
 
     const choices = getRandomAnswers(selectedBreeds);
     const correctAnswer = choices[Math.floor(Math.random() * choices.length)];
@@ -34,7 +46,7 @@ export const nextQuestion = selectedBreeds => {
             .slice(0, splitAnswer.length - 1)
             .join(' ')}/images/random`;
 
-    let errorMessage;
+    let errorMessage: string;
     try {
       const result = await axios.get(url);
       dispatch({
@@ -43,7 +55,7 @@ export const nextQuestion = selectedBreeds => {
           correctAnswer: correctAnswer,
           imageUrl: result.data.message,
         },
-        type: actionTypes.NEXT_QUESTION_SUCCESS,
+        type: NEXT_QUESTION_SUCCESS,
       });
     } catch (err) {
       errorMessage = 'Network error';
@@ -53,19 +65,19 @@ export const nextQuestion = selectedBreeds => {
         payload: {
           errorMessage: errorMessage,
         },
-        type: actionTypes.NEXT_QUESTION_FAIL,
+        type: NEXT_QUESTION_FAIL,
       });
     }
   };
 };
 
-export const answer = answer => ({
+export const answer = (answer: string) => ({
   payload: {
     answer: answer,
   },
-  type: actionTypes.ANSWER,
+  type: ANSWER,
 });
 
 export const restart = () => ({
-  type: actionTypes.RESTART,
+  type: RESTART,
 });

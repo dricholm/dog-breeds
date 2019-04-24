@@ -5,11 +5,11 @@ import Section from '../../components/Ui/Section/Section';
 import QuizForm from '../../containers/Quiz/QuizForm/QuizForm';
 import QuizGame from '../../containers/Quiz/QuizGame/QuizGame';
 
-const quiz = props => (
+const quiz = (props: any) => (
   <Section>
     <Switch>
-      <Route path="/quiz/game" render={() => (<QuizGame {...props} />)} />
-      <Route path="/quiz" exact render={() => (<QuizForm {...props} />)} />
+      <Route path="/quiz/game" render={() => <QuizGame {...props} />} />
+      <Route path="/quiz" exact render={() => <QuizForm {...props} />} />
     </Switch>
   </Section>
 );

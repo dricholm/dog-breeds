@@ -1,7 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const toggleHide = props => (
+export interface ToggleHideProps {
+  click: () => void;
+  shown: boolean;
+}
+
+const toggleHide = (
+  props: ToggleHideProps & React.HTMLAttributes<HTMLButtonElement>
+) => (
   <button
     className={props.shown ? 'button is-light' : 'button is-primary'}
     type="button"
@@ -10,10 +16,5 @@ const toggleHide = props => (
     {props.shown ? 'Hide' : 'Show'}
   </button>
 );
-
-toggleHide.propTypes = {
-  click: PropTypes.func,
-  shown: PropTypes.bool,
-};
 
 export default toggleHide;

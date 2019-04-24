@@ -1,30 +1,39 @@
-import * as actionTypes from '../actions/actionTypes';
+import {
+  BreedState,
+  BreedActionTypes,
+  GET_BREEDS,
+  GET_BREEDS_SUCCESS,
+  GET_BREEDS_FAIL,
+} from './types';
 
-const initialState = {
+const initialState: Partial<BreedState> = {
   breedNames: [],
   breeds: {},
   error: null,
   loading: false,
 };
 
-const reducer = (state = initialState, action) => {
+export const breedReducer = (
+  state: Partial<BreedState> = initialState,
+  action: BreedActionTypes
+) => {
   switch (action.type) {
-    case actionTypes.GET_BREEDS:
+    case GET_BREEDS:
       return {
         ...state,
         error: null,
         loading: true,
       };
 
-    case actionTypes.GET_BREEDS_SUCCESS: {
-      const breedNames = [];
+    case GET_BREEDS_SUCCESS: {
+      const breedNames: Array<string> = [];
       for (let breed in action.payload.breeds) {
         if (action.payload.breeds[breed].length === 0) {
           breedNames.push(breed.toLowerCase());
         } else {
           breedNames.push(
             ...action.payload.breeds[breed].map(
-              sub => sub.toLowerCase() + ' ' + breed.toLowerCase()
+              (sub: string) => sub.toLowerCase() + ' ' + breed.toLowerCase()
             )
           );
         }
@@ -38,7 +47,7 @@ const reducer = (state = initialState, action) => {
       };
     }
 
-    case actionTypes.GET_BREEDS_FAIL:
+    case GET_BREEDS_FAIL:
       return {
         ...state,
         error: action.payload.errorMessage,
@@ -49,5 +58,3 @@ const reducer = (state = initialState, action) => {
       return state;
   }
 };
-
-export default reducer;

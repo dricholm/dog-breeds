@@ -1,8 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const subBreeds = props => {
+export interface SubBreedsProps {
+  main: string;
+  subs: Array<string>;
+}
+
+const subBreeds = (props: SubBreedsProps) => {
   const subs = props.subs
     .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
     .map(val => (
@@ -19,11 +23,6 @@ const subBreeds = props => {
       <ul className="is-size-5 is-capitalized">{subs}</ul>
     </React.Fragment>
   );
-};
-
-subBreeds.propTypes = {
-  main: PropTypes.string,
-  subs: PropTypes.array,
 };
 
 subBreeds.defaultProps = {

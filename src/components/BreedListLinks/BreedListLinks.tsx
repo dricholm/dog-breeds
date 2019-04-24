@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 import ErrorMessage from '../Ui/ErrorMessage/ErrorMessage';
 
-const breedListLinks = props => {
+export interface BreedListLinksProps {
+  breeds: Array<string>;
+}
+
+const breedListLinks = (props: BreedListLinksProps) => {
   if (!props.breeds || props.breeds.length === 0) {
     return <ErrorMessage message="No breeds matched the filter" />;
   }
@@ -24,10 +27,6 @@ const breedListLinks = props => {
   });
 
   return <ul className="is-size-5 is-capitalized">{breedList}</ul>;
-};
-
-breedListLinks.propTypes = {
-  breeds: PropTypes.array,
 };
 
 export default breedListLinks;

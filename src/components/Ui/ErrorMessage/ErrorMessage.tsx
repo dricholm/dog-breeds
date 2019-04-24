@@ -1,12 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-const errorMessage = props => (
+export interface ErrorMessageProps {
+  message: string;
+};
+
+const errorMessage = (props: ErrorMessageProps) => (
   <div className="notification is-danger is-size-5">{props.message}</div>
 );
-
-errorMessage.propTypes = {
-  message: PropTypes.string,
-};
 
 export default errorMessage;
