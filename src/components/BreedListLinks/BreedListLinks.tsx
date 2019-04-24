@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
 import ErrorMessage from '../Ui/ErrorMessage/ErrorMessage';
@@ -7,7 +7,9 @@ export interface BreedListLinksProps {
   breeds: Array<string>;
 }
 
-const breedListLinks = (props: BreedListLinksProps) => {
+const BreedListLinks: FunctionComponent<BreedListLinksProps> = (
+  props: BreedListLinksProps
+) => {
   if (!props.breeds || props.breeds.length === 0) {
     return <ErrorMessage message="No breeds matched the filter" />;
   }
@@ -29,4 +31,4 @@ const breedListLinks = (props: BreedListLinksProps) => {
   return <ul className="is-size-5 is-capitalized">{breedList}</ul>;
 };
 
-export default breedListLinks;
+export default BreedListLinks;

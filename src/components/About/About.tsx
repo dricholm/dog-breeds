@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import Section from '../Ui/Section/Section';
 
-const about = () => (
+const About: FunctionComponent = () => (
   <Section>
     <h1 className="title is-capitalized">About</h1>
 
@@ -22,4 +22,4 @@ const about = () => (
   </Section>
 );
 
-export default about;
+export default About;

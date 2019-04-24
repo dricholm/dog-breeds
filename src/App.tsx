@@ -1,5 +1,5 @@
 import { Route, Switch } from 'react-router-dom';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import './App.scss';
 
@@ -11,7 +11,7 @@ import Nav from './components/Ui/Nav/Nav';
 import Quiz from './components/Quiz/Quiz';
 import Section from './components/Ui/Section/Section';
 
-const app = () => (
+const App: FunctionComponent = () => (
   <div className="main">
     <Nav />
     <Switch>
@@ -31,4 +31,4 @@ const app = () => (
   </div>
 );
 
-export default app;
+export default App;

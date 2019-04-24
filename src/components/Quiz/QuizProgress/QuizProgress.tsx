@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import './QuizProgress.css';
 
@@ -9,7 +9,9 @@ export interface QuizProgressProps {
   wrong: number;
 }
 
-const quizProgress = (props: QuizProgressProps) => {
+const QuizProgress: FunctionComponent<QuizProgressProps> = (
+  props: QuizProgressProps
+) => {
   const progress = ((props.correct + props.wrong) / props.questionCount) * 100;
 
   const correctClasses = ['title', 'has-text-success'];
@@ -58,4 +60,4 @@ const quizProgress = (props: QuizProgressProps) => {
   );
 };
 
-export default quizProgress;
+export default QuizProgress;

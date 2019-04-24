@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { configure, shallow } from 'enzyme';
+import { configure, shallow, ShallowWrapper } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 import QuizImage from './QuizImage';
@@ -9,7 +8,7 @@ import Loading from '../../Ui/Loading/Loading';
 configure({ adapter: new Adapter() });
 
 describe('<QuizImage />', () => {
-  let wrapper;
+  let wrapper: ShallowWrapper;
 
   beforeEach(() => {
     wrapper = shallow(<QuizImage />);

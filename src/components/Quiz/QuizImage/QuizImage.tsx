@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './QuizImage.css';
@@ -14,7 +14,13 @@ export interface QuizImageProps {
   wrong: number;
 }
 
-const quizImage = (props: QuizImageProps) => {
+const QuizImage: FunctionComponent<QuizImageProps> = (
+  props: QuizImageProps
+) => {
+  if (props.image == null) {
+    return <Loading />;
+  }
+
   let overlay: JSX.Element;
   if (props.chosen) {
     let button: JSX.Element;
@@ -54,27 +60,20 @@ const quizImage = (props: QuizImageProps) => {
     overlay = <div className="quiz-overlay">{button}</div>;
   }
 
-  let content;
-  if (props.image) {
-    content = (
-      <figure className="image is-1by1 quiz-image-box next-question">
-        <div
-          className="quiz-image-fill"
-          style={{ backgroundImage: `url(${props.image})` }}
-        />
-        <div
-          className="quiz-image"
-          style={{ backgroundImage: `url(${props.image})` }}
-        />
+  return (
+    <figure className="image is-1by1 quiz-image-box next-question">
+      <div
+        className="quiz-image-fill"
+        style={{ backgroundImage: `url(${props.image})` }}
+      />
+      <div
+        className="quiz-image"
+        style={{ backgroundImage: `url(${props.image})` }}
+      />
 
-        {overlay}
-      </figure>
-    );
-  } else {
-    content = <Loading />;
-  }
-
-  return content;
+      {overlay}
+    </figure>
+  );
 };
 
-export default quizImage;
+export default QuizImage;

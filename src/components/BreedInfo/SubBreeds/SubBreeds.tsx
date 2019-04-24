@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
 export interface SubBreedsProps {
@@ -6,7 +6,9 @@ export interface SubBreedsProps {
   subs: Array<string>;
 }
 
-const subBreeds = (props: SubBreedsProps) => {
+const SubBreeds: FunctionComponent<SubBreedsProps> = (
+  props: SubBreedsProps
+) => {
   const subs = props.subs
     .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
     .map(val => (
@@ -25,8 +27,8 @@ const subBreeds = (props: SubBreedsProps) => {
   );
 };
 
-subBreeds.defaultProps = {
+SubBreeds.defaultProps = {
   subs: [],
 };
 
-export default subBreeds;
+export default SubBreeds;

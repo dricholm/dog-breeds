@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 
 import ErrorMessage from '../Ui/ErrorMessage/ErrorMessage';
 import BreedListLinks from './BreedListLinks';
 
 describe('<BreedListLinks />', () => {
-  let wrapper;
+  let wrapper: ShallowWrapper;
 
   beforeEach(() => {
     wrapper = shallow(<BreedListLinks />);

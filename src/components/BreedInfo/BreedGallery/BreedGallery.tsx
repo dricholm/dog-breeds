@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import LazyLoad from 'react-lazyload';
 
@@ -16,7 +16,9 @@ export interface BreedGalleryProps {
   title: string;
 }
 
-const breedGallery = (props: BreedGalleryProps) => {
+const BreedGallery: FunctionComponent<BreedGalleryProps> = (
+  props: BreedGalleryProps
+) => {
   if (props.imageError) {
     return <ErrorMessage message={props.imageError} />;
   } else if (props.isLoading) {
@@ -54,8 +56,8 @@ const breedGallery = (props: BreedGalleryProps) => {
   }
 };
 
-breedGallery.defaultProps = {
+BreedGallery.defaultProps = {
   imageUrls: [],
 };
 
-export default breedGallery;
+export default BreedGallery;

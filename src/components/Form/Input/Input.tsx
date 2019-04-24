@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 export interface InputProps {
   elementConfig: any;
@@ -7,7 +7,7 @@ export interface InputProps {
   touched?: boolean;
 }
 
-const input = (props: InputProps) => {
+const Input: FunctionComponent<InputProps> = (props: InputProps) => {
   switch (props.elementType) {
     case 'input':
       return (
@@ -54,4 +54,4 @@ const input = (props: InputProps) => {
   }
 };
 
-export default input;
+export default Input;
