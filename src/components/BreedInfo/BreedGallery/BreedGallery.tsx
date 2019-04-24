@@ -8,7 +8,7 @@ import Loading from '../../Ui/Loading/Loading';
 
 export interface BreedGalleryProps {
   hasMore: boolean;
-  imageError: string | null;
+  imageError: string;
   imageUrls: Array<string>;
   isLoading: boolean;
   loadMore: () => void;

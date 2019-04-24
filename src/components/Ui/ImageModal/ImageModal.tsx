@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './ImageModal.css';
@@ -11,36 +11,30 @@ interface ImageModalProps {
   src: string;
 }
 
-class ImageModal extends Component<ImageModalProps> {
-  static defaultProps = {
-    hasNext: false,
-    hasPrev: false,
-    src: '#',
-  };
+const ImageModal = (props: ImageModalProps) => {
+  useEffect(() => {
+    document.addEventListener('keyup', keyUp);
 
-  componentDidMount() {
-    document.addEventListener('keyup', this.keyUp);
-  }
+    return () => {
+      document.removeEventListener('keyup', keyUp);
+    };
+  });
 
-  componentWillUnmount() {
-    document.removeEventListener('keyup', this.keyUp);
-  }
-
-  keyUp = (event: KeyboardEvent) => {
+  const keyUp = (event: KeyboardEvent) => {
     switch (event.keyCode) {
       case 27: // Escape
-        this.props.onClose();
+        props.onClose();
         break;
 
       case 37: // Left
-        if (this.props.hasPrev) {
-          this.props.onChange(-1);
+        if (props.hasPrev) {
+          props.onChange(-1);
         }
         break;
 
       case 39: // Right
-        if (this.props.hasNext) {
-          this.props.onChange(1);
+        if (props.hasNext) {
+          props.onChange(1);
         }
         break;
 
@@ -49,46 +43,50 @@ class ImageModal extends Component<ImageModalProps> {
     }
   };
 
-  render() {
-    const image = [0].map(() => (
-      <img
-        className="modal-image"
-        src={this.props.src}
-        alt="Large version"
-        key={this.props.src}
-      />
-    ));
+  const image = [0].map(() => (
+    <img
+      className="modal-image"
+      src={props.src}
+      alt="Large version"
+      key={props.src}
+    />
+  ));
 
-    return (
-      <div className="modal is-active">
-        <div className="modal-background" onClick={this.props.onClose} />
-        {image}
+  return (
+    <div className="modal is-active">
+      <div className="modal-background" onClick={props.onClose} />
+      {image}
+      <button
+        className="modal-close is-large"
+        aria-label="close"
+        onClick={props.onClose}
+      />
+      {props.hasPrev ? (
         <button
-          className="modal-close is-large"
-          aria-label="close"
-          onClick={this.props.onClose}
-        />
-        {this.props.hasPrev ? (
-          <button
-            className="button is-large is-dark modal-prev"
-            aria-label="previous"
-            onClick={() => this.props.onChange(-1)}
-          >
-            <FontAwesomeIcon icon="chevron-left" fixedWidth />
-          </button>
-        ) : null}
-        {this.props.hasNext ? (
-          <button
-            className="button is-large is-dark modal-next"
-            aria-label="next"
-            onClick={() => this.props.onChange(1)}
-          >
-            <FontAwesomeIcon icon="chevron-right" fixedWidth />
-          </button>
-        ) : null}
-      </div>
-    );
-  }
-}
+          className="button is-large is-dark modal-prev"
+          aria-label="previous"
+          onClick={() => props.onChange(-1)}
+        >
+          <FontAwesomeIcon icon="chevron-left" fixedWidth />
+        </button>
+      ) : null}
+      {props.hasNext ? (
+        <button
+          className="button is-large is-dark modal-next"
+          aria-label="next"
+          onClick={() => props.onChange(1)}
+        >
+          <FontAwesomeIcon icon="chevron-right" fixedWidth />
+        </button>
+      ) : null}
+    </div>
+  );
+};
+
+ImageModal.defaultProps = {
+  hasNext: false,
+  hasPrev: false,
+  src: '#',
+};
 
 export default ImageModal;

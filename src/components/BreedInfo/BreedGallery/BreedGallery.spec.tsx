@@ -1,12 +1,12 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
 
 import ErrorMessage from '../../Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../Ui/Loading/Loading';
 import BreedGallery from './BreedGallery';
 
 describe('<BreedGallery />', () => {
-  let wrapper;
+  let wrapper: ShallowWrapper;
 
   beforeEach(() => {
     wrapper = shallow(<BreedGallery />);

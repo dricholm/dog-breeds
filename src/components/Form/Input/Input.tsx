@@ -1,7 +1,6 @@
-import React, { InputHTMLAttributes } from 'react';
+import React from 'react';
 
 export interface InputProps {
-  // changed: () => any;
   elementConfig: any;
   elementType: string;
   label?: string;

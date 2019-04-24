@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Section from '../Ui/Section/Section';
-import Loading from '../Ui/Loading/Loading';
 
 const about = () => (
   <Section>
@@ -20,7 +19,6 @@ const about = () => (
         welcome.
       </p>
     </div>
-    <Loading />
   </Section>
 );
 
