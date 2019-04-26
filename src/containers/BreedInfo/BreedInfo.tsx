@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +9,6 @@ import ImageModal from '../../components/Ui/ImageModal/ImageModal';
 import Loading from '../../components/Ui/Loading/Loading';
 import Section from '../../components/Ui/Section/Section';
 import SubBreeds from '../../components/BreedInfo/SubBreeds/SubBreeds';
-import { BreedState, initialBreedState } from '../../store/breed/types';
 import { getBreeds } from '../../store/breed/actions';
 import { AppState } from '../../store';
 
@@ -36,8 +35,10 @@ interface BreedInfoState {
   selectedImage: number;
 }
 
-class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
-  state: BreedInfoState = {
+const BreedInfo: FunctionComponent<BreedInfoProps> = (
+  props: BreedInfoProps
+) => {
+  const initialState: BreedInfoState = {
     breedNames: [],
     breeds: {},
     currentBreed: {},
@@ -50,23 +51,21 @@ class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
     selectedImage: null,
   };
 
-  componentDidMount() {
-    if (this.props.breedsLoaded) {
-      if (this.shouldLoadImages()) this.getImages();
+  const [state, setState] = useState(initialState);
+
+  useEffect(() => {
+    if (props.breedsLoaded) {
+      if (shouldLoadImages()) {
+        getImages();
+      }
     } else {
-      this.props.getBreeds();
+      props.getBreeds();
     }
-  }
+  }, []);
 
-  UNSAFE_componentWillReceiveProps() {
-    if (this.shouldLoadImages()) this.getImages();
-  }
-
-  componentDidUpdate() {
-    if (this.shouldLoadImages()) this.getImages();
-  }
-
-  shuffle = (array: Array<string>) => {
+  const shuffle: (array: Array<string>) => Array<string> = (
+    array: Array<string>
+  ) => {
     const ret = array.slice();
     for (let i = ret.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -75,19 +74,17 @@ class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
     return ret;
   };
 
-  shouldLoadImages = () =>
-    this.state.currentBreed.main !== this.props.match.params.breed ||
-    this.props.match.params.sub !== this.state.currentBreed.sub ||
-    (this.state.imageUrls.length === 0 &&
-      !this.state.imageError &&
-      !this.state.loadingImages);
+  const shouldLoadImages: () => boolean = () =>
+    state.currentBreed.main !== props.match.params.breed ||
+    props.match.params.sub !== state.currentBreed.sub ||
+    (state.imageUrls.length === 0 && !state.imageError && !state.loadingImages);
 
-  getImages = async () => {
-    this.setState({
-      ...this.state,
+  const getImages: () => Promise<void> = async () => {
+    setState({
+      ...state,
       currentBreed: {
-        main: this.props.match.params.breed,
-        sub: this.props.match.params.sub,
+        main: props.match.params.breed,
+        sub: props.match.params.sub,
       },
       imageError: null,
       imageUrls: [],
@@ -95,20 +92,19 @@ class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
       numberOfImagesLoaded: 0,
     });
 
-    const url = this.props.match.params.sub
-      ? `/breed/${this.props.match.params.breed}/${
-          this.props.match.params.sub
-        }/images`
-      : `/breed/${this.props.match.params.breed}/images`;
-    let errorMessage;
+    const url = props.match.params.sub
+      ? `/breed/${props.match.params.breed}/${props.match.params.sub}/images`
+      : `/breed/${props.match.params.breed}/images`;
+
+    let errorMessage: string;
     try {
       const result = await axios.get(url);
       if (result.status === 200) {
-        this.setState({
-          ...this.state,
-          currentBreed: { ...this.state.currentBreed },
+        setState({
+          ...state,
+          currentBreed: { ...state.currentBreed },
           imageError: null,
-          imageUrls: this.shuffle(result.data.message),
+          imageUrls: shuffle(result.data.message),
           loadingImages: false,
           numberOfImagesLoaded: 10,
         });
@@ -118,10 +114,11 @@ class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
     } catch (e) {
       errorMessage = 'Network error';
     }
+
     if (errorMessage) {
-      this.setState({
-        ...this.state,
-        currentBreed: { ...this.state.currentBreed },
+      setState({
+        ...state,
+        currentBreed: { ...state.currentBreed },
         imageError: errorMessage,
         imageUrls: [],
         loadingImages: false,
@@ -129,24 +126,24 @@ class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
     }
   };
 
-  loadMore = () => {
-    this.setState((prevState: BreedInfoState) => ({
+  const loadMore: () => void = () => {
+    setState((prevState: BreedInfoState) => ({
       ...prevState,
       currentBreed: { ...prevState.currentBreed },
       numberOfImagesLoaded: prevState.numberOfImagesLoaded + 10,
     }));
   };
 
-  setImage = (imageIndex: number) => {
-    this.setState((prevState: BreedInfoState) => ({
+  const setImage: (imageIndex: number) => void = (imageIndex: number) => {
+    setState((prevState: BreedInfoState) => ({
       ...prevState,
       currentBreed: { ...prevState.currentBreed },
       selectedImage: imageIndex,
     }));
   };
 
-  changeImage = (delta: number) => {
-    this.setState((prevState: BreedInfoState) => ({
+  const changeImage: (delta: number) => void = (delta: number) => {
+    setState((prevState: BreedInfoState) => ({
       ...prevState,
       currentBreed: { ...prevState.currentBreed },
       numberOfImagesLoaded:
@@ -157,40 +154,49 @@ class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
     }));
   };
 
-  render() {
-    let content;
+  const getTop: () => JSX.Element = () => {
+    if (props.match.params.sub) {
+      return (
+        <h2 className="subtitle is-capitalized">
+          Breed:{' '}
+          <Link to={`/breed/${props.match.params.breed}`}>
+            {props.match.params.breed}
+          </Link>
+        </h2>
+      );
+    } else if (props.breeds[props.match.params.breed].length > 0) {
+      return (
+        <SubBreeds
+          main={props.match.params.breed}
+          subs={props.breeds[props.match.params.breed]}
+        />
+      );
+    }
+  };
 
-    if (this.props.loading) {
-      content = <Loading />;
-    } else if (this.props.error) {
-      content = <ErrorMessage message={this.props.error} />;
-    } else if (this.props.breedFound) {
-      let top: JSX.Element;
-      if (this.props.match.params.sub) {
-        top = (
-          <h2 className="subtitle is-capitalized">
-            Breed:{' '}
-            <Link to={`/breed/${this.props.match.params.breed}`}>
-              {this.props.match.params.breed}
-            </Link>
-          </h2>
-        );
-      } else if (this.props.breeds[this.props.match.params.breed].length > 0) {
-        top = (
-          <SubBreeds
-            main={this.props.match.params.breed}
-            subs={this.props.breeds[this.props.match.params.breed]}
-          />
-        );
-      }
+  if (props.loading) {
+    return (
+      <Section>
+        <Loading />
+      </Section>
+    );
+  } else if (props.error) {
+    return (
+      <Section>
+        <ErrorMessage message={props.error} />
+      </Section>
+    );
+  } else if (props.breedFound) {
+    const top: JSX.Element = getTop();
 
-      const title = this.props.match.params.sub
-        ? this.props.match.params.sub.replace(/-/g, ' ') +
-          ' ' +
-          this.props.match.params.breed
-        : this.props.match.params.breed;
+    const title = props.match.params.sub
+      ? props.match.params.sub.replace(/-/g, ' ') +
+        ' ' +
+        props.match.params.breed
+      : props.match.params.breed;
 
-      content = (
+    return (
+      <Section>
         <React.Fragment>
           <h1 className="title is-capitalized">{title}</h1>
           {top}
@@ -199,39 +205,34 @@ class BreedInfo extends Component<BreedInfoProps, BreedInfoState> {
 
           <h2 className="title is-size-4">Images</h2>
           <BreedGallery
-            hasMore={
-              this.state.numberOfImagesLoaded < this.state.imageUrls.length
-            }
-            imageError={this.state.imageError}
-            imageUrls={this.state.imageUrls.slice(
-              0,
-              this.state.numberOfImagesLoaded
-            )}
-            isLoading={this.state.loadingImages}
-            loadMore={this.loadMore}
+            hasMore={state.numberOfImagesLoaded < state.imageUrls.length}
+            imageError={state.imageError}
+            imageUrls={state.imageUrls.slice(0, state.numberOfImagesLoaded)}
+            isLoading={state.loadingImages}
+            loadMore={loadMore}
             title={title}
-            selectImage={this.setImage}
+            selectImage={setImage}
           />
-          {this.state.selectedImage !== null ? (
+          {state.selectedImage !== null ? (
             <ImageModal
-              src={this.state.imageUrls[this.state.selectedImage]}
-              onClose={() => this.setImage(null)}
-              hasPrev={this.state.selectedImage > 0}
-              hasNext={
-                this.state.selectedImage < this.state.imageUrls.length - 1
-              }
-              onChange={this.changeImage}
+              src={state.imageUrls[state.selectedImage]}
+              onClose={() => setImage(null)}
+              hasPrev={state.selectedImage > 0}
+              hasNext={state.selectedImage < state.imageUrls.length - 1}
+              onChange={changeImage}
             />
           ) : null}
         </React.Fragment>
-      );
-    } else {
-      content = <ErrorMessage message="Breed not found" />;
-    }
-
-    return <Section>{content}</Section>;
+      </Section>
+    );
   }
-}
+
+  return (
+    <Section>
+      <ErrorMessage message="Breed not found" />
+    </Section>
+  );
+};
 
 const mapStateToProps = (state: AppState, ownProps: BreedInfoProps) => ({
   breedFound:
