@@ -5,9 +5,9 @@ interface ToggleHideProps {
   shown: boolean;
 }
 
-const ToggleHide: FunctionComponent<ToggleHideProps> = (
-  props: ToggleHideProps & React.HTMLAttributes<HTMLButtonElement>
-) => (
+const ToggleHide: FunctionComponent<
+  ToggleHideProps & React.HTMLAttributes<HTMLButtonElement>
+> = (props: ToggleHideProps & React.HTMLAttributes<HTMLButtonElement>) => (
   <button
     className={props.shown ? 'button is-light' : 'button is-primary'}
     type="button"
