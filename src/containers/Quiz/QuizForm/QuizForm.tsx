@@ -14,6 +14,7 @@ import ErrorMessage from '../../../components/Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../../components/Ui/Loading/Loading';
 import { BreedState } from '../../../store/breed/types';
 import { AppState } from '../../../store';
+import QuizCheckboxes from '../../../components/Quiz/QuizCheckboxes/QuizCheckboxes';
 
 interface QuizFormProps {
   breeds: BreedState;
@@ -71,40 +72,33 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
     }
   }, [props.breeds]);
 
-  const inputChangedHandler: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    inputId: string
-  ) => void = (event: React.ChangeEvent<HTMLInputElement>, inputId: string) => {
-    const elementType = state[inputId]
-      ? state[inputId].elementType
-      : 'checkbox';
-    switch (elementType) {
-      case 'input':
-        setState({
-          ...state,
-          [inputId]: {
-            ...state[inputId],
-            elementConfig: {
-              ...state[inputId].elementConfig,
-              value: event.target.value,
-            },
-            elementType: elementType,
-            touched: true,
-          },
-        });
-        break;
-      case 'checkbox':
-        setState({
-          ...state,
-          checkboxes: {
-            ...state.checkboxes,
-            [inputId]: event.target.checked,
-          },
-        });
-        break;
-      default:
-        break;
-    }
+  const questionsChanged: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState({
+      ...state,
+      questions: {
+        ...state.questions,
+        elementConfig: {
+          ...state.questions.elementConfig,
+          value: event.target.value,
+        },
+        touched: true,
+      },
+    });
+  };
+
+  const checkboxChanged: (breed: string, value: boolean) => void = (
+    breed: string,
+    value: boolean
+  ) => {
+    setState({
+      ...state,
+      checkboxes: {
+        ...state.checkboxes,
+        [breed]: value,
+      },
+    });
   };
 
   const checkAll: (checked: boolean) => void = (checked: boolean) => {
@@ -183,33 +177,12 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
   } else if (props.breeds.error) {
     breedCheckboxes = <ErrorMessage message={props.breeds.error} />;
   } else if (Object.keys(state.checkboxes).length > 0) {
-    let initial: string;
-    breedCheckboxes = props.breeds.breedNames.map((breed: string) => {
-      let separator = null;
-      if (initial !== breed.charAt(0)) {
-        initial = breed.charAt(0);
-        separator = (
-          <React.Fragment>
-            <p className="label is-capitalized">{initial}</p>
-          </React.Fragment>
-        );
-      }
-      const key = breed.replace(/ /g, '-');
-      return (
-        <React.Fragment key={key}>
-          {separator}
-          <Input
-            elementType="checkbox"
-            elementConfig={{
-              checked: state.checkboxes[key],
-              onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-                inputChangedHandler(event, key),
-            }}
-            label={breed}
-          />
-        </React.Fragment>
-      );
-    });
+    breedCheckboxes = (
+      <QuizCheckboxes
+        checkboxes={state.checkboxes}
+        changeValue={checkboxChanged}
+      />
+    );
   }
 
   const checkedCount = Object.keys(state.checkboxes).filter(val => {
@@ -227,8 +200,7 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
             elementType={state.questions.elementType}
             elementConfig={{
               ...state.questions.elementConfig,
-              onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-                inputChangedHandler(event, 'questions'),
+              onChange: questionsChanged,
             }}
             touched={state.questions.touched}
           />
