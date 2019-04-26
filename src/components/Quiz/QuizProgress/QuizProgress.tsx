@@ -16,10 +16,18 @@ const QuizProgress: FunctionComponent<QuizProgressProps> = (
 
   const correctClasses = ['title', 'has-text-success'];
   const wrongClasses = ['title', 'has-text-danger'];
-  if (props.wasCorrect) {
-    correctClasses.push('answer-pop');
-  } else if (props.wasCorrect === false) {
-    wrongClasses.push('answer-pop');
+
+  switch (props.wasCorrect) {
+    case true:
+      correctClasses.push('answer-pop');
+      break;
+
+    case false:
+      wrongClasses.push('answer-pop');
+      break;
+
+    default:
+      break;
   }
 
   return (
