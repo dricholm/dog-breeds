@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import './BreedList.css';
@@ -17,44 +17,52 @@ export interface BreedListProps {
   loading: boolean;
 }
 
-class BreedList extends Component<BreedListProps> {
-  state = {
-    filter: '',
-  };
+const BreedList: FunctionComponent<BreedListProps> = (
+  props: BreedListProps
+) => {
+  const [filter, setFilter] = useState('');
 
-  componentDidMount() {
-    if (this.props.breedNames.length === 0) {
-      this.props.getBreeds();
+  useEffect(() => {
+    if (props.breedNames.length === 0) {
+      props.getBreeds();
     }
-  }
+  });
 
-  onFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ filter: event.target.value });
+  const onFilter: (event: React.ChangeEvent<HTMLInputElement>) => void = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFilter(event.target.value);
   };
 
-  render() {
-    let content;
+  if (props.breedNames) {
+    const filtered = props.breedNames.filter(breed =>
+      breed.toLowerCase().includes(filter.toLowerCase())
+    );
 
-    if (this.props.breedNames) {
-      const filtered = this.props.breedNames.filter(breed =>
-        breed.toLowerCase().includes(this.state.filter.toLowerCase())
+    if (props.loading) {
+      return (
+        <Section>
+          <Loading />
+        </Section>
       );
-
-      if (this.props.loading) {
-        content = <Loading />;
-      } else if (this.props.error) {
-        content = <ErrorMessage message={this.props.error} />;
-      } else {
-        content = (
+    } else if (props.error) {
+      return (
+        <Section>
+          <ErrorMessage message={props.error} />
+        </Section>
+      );
+    } else {
+      return (
+        <Section>
           <React.Fragment>
             <div className="field">
               <div className="control">
                 <Input
-                  // changed={this.onFilter}
+                  // changed={onFilter}
                   elementConfig={{
                     autoFocus: true,
                     className: 'input is-info is-medium',
-                    onChange: this.onFilter,
+                    onChange: onFilter,
                     placeholder: 'Filter breeds',
                     type: 'text',
                   }}
@@ -65,15 +73,17 @@ class BreedList extends Component<BreedListProps> {
 
             <BreedListLinks breeds={filtered} />
           </React.Fragment>
-        );
-      }
-    } else {
-      content = <ErrorMessage message="No breeds found" />;
+        </Section>
+      );
     }
-
-    return <Section>{content}</Section>;
+  } else {
+    return (
+      <Section>
+        <ErrorMessage message="No breeds found" />
+      </Section>
+    );
   }
-}
+};
 
 const mapStateToProps = (state: AppState) => ({
   breedNames: state.breeds.breedNames,

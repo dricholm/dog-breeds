@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import './QuizGame.css';
@@ -14,7 +14,7 @@ import {
 import { AppState } from '../../../store';
 import { QuizState } from '../../../store/quiz/types';
 
-export interface QuizGameProps {
+interface QuizGameProps {
   answer: (breed: string) => void;
   history: any;
   nextQuestion: (selectedBreeds: Array<string>) => void;
@@ -22,92 +22,79 @@ export interface QuizGameProps {
   restart: () => void;
 }
 
-class QuizGame extends Component<QuizGameProps> {
-  UNSAFE_componentWillMount() {
-    if (
-      !this.props.quiz.questionCount ||
-      this.props.quiz.selectedBreeds.length < 2
-    ) {
-      this.props.history.push('/quiz');
+const QuizGame: FunctionComponent<QuizGameProps> = (props: QuizGameProps) => {
+  useEffect(() => {
+    if (!props.quiz.questionCount || props.quiz.selectedBreeds.length < 2) {
+      props.history.push('/quiz');
     } else {
-      this.props.nextQuestion(this.props.quiz.selectedBreeds);
+      props.nextQuestion(props.quiz.selectedBreeds);
     }
-  }
+  }, []);
 
-  buttonClick = (breed: string) => {
-    if (
-      this.props.quiz.correct + this.props.quiz.wrong ===
-      +this.props.quiz.questionCount
-    ) {
+  const buttonClick: (breed: string) => void = (breed: string) => {
+    if (props.quiz.correct + props.quiz.wrong === +props.quiz.questionCount) {
       return;
     }
 
-    if (this.props.quiz.chosenAnswer) {
-      this.props.nextQuestion(this.props.quiz.selectedBreeds);
+    if (props.quiz.chosenAnswer) {
+      props.nextQuestion(props.quiz.selectedBreeds);
     } else {
-      this.props.answer(breed);
+      props.answer(breed);
     }
   };
 
-  restart = () => {
-    this.props.restart();
-    this.props.nextQuestion(this.props.quiz.selectedBreeds);
+  const restart: () => void = () => {
+    props.restart();
+    props.nextQuestion(props.quiz.selectedBreeds);
   };
 
-  render() {
-    if (
-      !this.props.quiz.questionCount ||
-      this.props.quiz.selectedBreeds.length < 2
-    ) {
-      return <p>Redirecting</p>;
-    }
+  if (!props.quiz.questionCount || props.quiz.selectedBreeds.length < 2) {
+    return <p className="notification is-primary">Redirecting</p>;
+  }
 
-    return (
-      <React.Fragment>
-        <div className="columns">
-          <div className="box column is-half is-offset-one-quarter">
-            <QuizImage
-              chosen={this.props.quiz.chosenAnswer}
-              correct={this.props.quiz.correct}
-              gameEnd={
-                this.props.quiz.correct + this.props.quiz.wrong ===
-                +this.props.quiz.questionCount
-              }
-              image={this.props.quiz.image}
-              nextQuestion={() =>
-                this.props.nextQuestion(this.props.quiz.selectedBreeds)
-              }
-              restart={this.restart}
-              wrong={this.props.quiz.wrong}
+  return (
+    <React.Fragment>
+      <div className="columns">
+        <div className="box column is-half is-offset-one-quarter">
+          <QuizImage
+            chosen={props.quiz.chosenAnswer}
+            correct={props.quiz.correct}
+            gameEnd={
+              props.quiz.correct + props.quiz.wrong ===
+              +props.quiz.questionCount
+            }
+            image={props.quiz.image}
+            nextQuestion={() => props.nextQuestion(props.quiz.selectedBreeds)}
+            restart={restart}
+            wrong={props.quiz.wrong}
+          />
+
+          <div
+            className={
+              props.quiz.choices.length === 3
+                ? 'answers answers-vertical'
+                : 'answers'
+            }
+          >
+            <AnswerButtons
+              choices={props.quiz.choices}
+              chosenAnswer={props.quiz.chosenAnswer}
+              click={buttonClick}
+              correctAnswer={props.quiz.correctAnswer}
             />
-
-            <div
-              className={
-                this.props.quiz.choices.length === 3
-                  ? 'answers answers-vertical'
-                  : 'answers'
-              }
-            >
-              <AnswerButtons
-                choices={this.props.quiz.choices}
-                chosenAnswer={this.props.quiz.chosenAnswer}
-                click={this.buttonClick}
-                correctAnswer={this.props.quiz.correctAnswer}
-              />
-            </div>
           </div>
         </div>
+      </div>
 
-        <QuizProgress
-          correct={this.props.quiz.correct}
-          questionCount={this.props.quiz.questionCount}
-          wrong={this.props.quiz.wrong}
-          wasCorrect={this.props.quiz.wasCorrect}
-        />
-      </React.Fragment>
-    );
-  }
-}
+      <QuizProgress
+        correct={props.quiz.correct}
+        questionCount={props.quiz.questionCount}
+        wrong={props.quiz.wrong}
+        wasCorrect={props.quiz.wasCorrect}
+      />
+    </React.Fragment>
+  );
+};
 
 const mapStateToProps = (state: AppState) => ({
   quiz: state.quiz,

@@ -6,7 +6,6 @@ import QuizForm from '../../containers/Quiz/QuizForm/QuizForm';
 import QuizGame from '../../containers/Quiz/QuizGame/QuizGame';
 
 const Quiz: FunctionComponent<any> = (props: any) => {
-  console.log(props);
   return (
     <Section>
       <Switch>

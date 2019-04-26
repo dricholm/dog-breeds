@@ -1,4 +1,9 @@
-import React, { Component, FormEvent } from 'react';
+import React, {
+  FormEvent,
+  FunctionComponent,
+  useState,
+  useEffect,
+} from 'react';
 import { connect } from 'react-redux';
 
 import * as breedActions from '../../../store/breed/actions';
@@ -36,63 +41,51 @@ interface QuizFormState {
   showCheckboxes: boolean;
 }
 
-class QuizForm extends Component<QuizFormProps, QuizFormState> {
-  state: QuizFormState;
+const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
+  const initialState: QuizFormState = {
+    checkboxes: {},
+    isValid: true,
+    questions: {
+      elementConfig: {
+        max: '100',
+        min: '1',
+        name: 'questions',
+        placeholder: '1-100',
+        required: true,
+        type: 'number',
+        value: '20',
+      },
+      elementType: 'input',
+      touched: false,
+    },
+    showCheckboxes: false,
+  };
 
-  constructor(props: QuizFormProps) {
-    super(props);
+  const [state, setState] = useState(initialState);
 
+  useEffect(() => {
     if (props.breeds.breedNames.length === 0) {
       props.getBreeds();
+    } else {
+      initCheckboxes(props.breeds.breedNames);
     }
+  }, [props.breeds]);
 
-    this.state = {
-      checkboxes: this.initCheckboxes(props.breeds.breedNames),
-      isValid: true,
-      questions: {
-        elementConfig: {
-          max: '100',
-          min: '1',
-          name: 'questions',
-          placeholder: '1-100',
-          required: true,
-          type: 'number',
-          value: '20',
-        },
-        elementType: 'input',
-        touched: false,
-      },
-      showCheckboxes: false,
-    };
-  }
-
-  UNSAFE_componentWillUpdate(nextProps: QuizFormProps) {
-    if (
-      Object.keys(this.state.checkboxes).length === 0 &&
-      nextProps.breeds.breedNames.length > 0
-    ) {
-      this.setState({
-        ...this.state,
-        checkboxes: this.initCheckboxes(nextProps.breeds.breedNames),
-      });
-    }
-  }
-
-  inputChangedHandler = (
+  const inputChangedHandler: (
     event: React.ChangeEvent<HTMLInputElement>,
-    inputId: any
-  ) => {
-    const elementType = this.state[inputId]
-      ? this.state[inputId].elementType
+    inputId: string
+  ) => void = (event: React.ChangeEvent<HTMLInputElement>, inputId: string) => {
+    const elementType = state[inputId]
+      ? state[inputId].elementType
       : 'checkbox';
     switch (elementType) {
       case 'input':
-        this.setState({
-          ...this.state,
+        setState({
+          ...state,
           [inputId]: {
-            ...this.state[inputId],
+            ...state[inputId],
             elementConfig: {
-              ...this.state[inputId].elementConfig,
+              ...state[inputId].elementConfig,
               value: event.target.value,
             },
             elementType: elementType,
@@ -101,10 +94,10 @@ class QuizForm extends Component<QuizFormProps, QuizFormState> {
         });
         break;
       case 'checkbox':
-        this.setState({
-          ...this.state,
+        setState({
+          ...state,
           checkboxes: {
-            ...this.state.checkboxes,
+            ...state.checkboxes,
             [inputId]: event.target.checked,
           },
         });
@@ -114,9 +107,9 @@ class QuizForm extends Component<QuizFormProps, QuizFormState> {
     }
   };
 
-  checkAll = (checked: any) => {
+  const checkAll: (checked: boolean) => void = (checked: boolean) => {
     let checkboxes = {};
-    this.props.breeds.breedNames.forEach((breed: string) => {
+    props.breeds.breedNames.forEach((breed: string) => {
       const key = breed.replace(/ /g, '-');
 
       checkboxes = {
@@ -125,173 +118,176 @@ class QuizForm extends Component<QuizFormProps, QuizFormState> {
       };
     });
 
-    this.setState({
-      ...this.state,
+    setState({
+      ...state,
       checkboxes: checkboxes,
     });
   };
 
-  initCheckboxes = (breedNames: Array<string>) => {
+  const initCheckboxes: (breedNames: Array<string>) => void = (
+    breedNames: Array<string>
+  ) => {
     const checkboxes = {};
     breedNames.forEach(breed => (checkboxes[breed.replace(/ /g, '-')] = true));
-    return checkboxes;
+
+    setState({
+      ...state,
+      checkboxes,
+    });
   };
 
-  submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit: (event: FormEvent<HTMLFormElement>) => void = (
+    event: FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    if (this.state.questions.elementConfig.value === '') {
-      this.setState({
-        ...this.state,
+    if (state.questions.elementConfig.value === '') {
+      setState({
+        ...state,
         isValid: false,
       });
       return;
     }
 
     const checked: Array<string> = [];
-    Object.keys(this.state.checkboxes).forEach(box => {
-      if (this.state.checkboxes[box]) {
+    Object.keys(state.checkboxes).forEach(box => {
+      if (state.checkboxes[box]) {
         checked.push(box);
       }
     });
     if (checked.length > 1) {
-      this.props.setOptions(this.state.questions.elementConfig.value, checked);
-      this.props.history.push('/quiz/game');
+      props.setOptions(state.questions.elementConfig.value, checked);
+      props.history.push('/quiz/game');
     } else {
-      this.setState({
-        ...this.state,
+      setState({
+        ...state,
         isValid: false,
       });
     }
   };
 
-  toggleHide = () => {
-    this.setState((prevState: QuizFormState) => ({
+  const toggleHide: () => void = () => {
+    setState((prevState: QuizFormState) => ({
       ...prevState,
       showCheckboxes: !prevState.showCheckboxes,
     }));
   };
 
-  render() {
-    let breedCheckboxes: any;
-    const checkBoxesClasses = ['control'];
-    if (!this.state.showCheckboxes) {
-      checkBoxesClasses.push('d-none');
-    }
+  let breedCheckboxes: any;
+  const checkBoxesClasses = ['control'];
+  if (!state.showCheckboxes) {
+    checkBoxesClasses.push('d-none');
+  }
 
-    if (this.props.breeds.loading) {
-      breedCheckboxes = <Loading />;
-    } else if (this.props.breeds.error) {
-      breedCheckboxes = <ErrorMessage message={this.props.breeds.error} />;
-    } else if (Object.keys(this.state.checkboxes).length > 0) {
-      let initial: string;
-      breedCheckboxes = this.props.breeds.breedNames.map((breed: string) => {
-        let separator = null;
-        if (initial !== breed.charAt(0)) {
-          initial = breed.charAt(0);
-          separator = (
-            <React.Fragment>
-              <p className="label is-capitalized">{initial}</p>
-            </React.Fragment>
-          );
-        }
-        const key = breed.replace(/ /g, '-');
-        return (
-          <React.Fragment key={key}>
-            {separator}
-            <Input
-              elementType="checkbox"
-              elementConfig={{
-                checked: this.state.checkboxes[key],
-                onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-                  this.inputChangedHandler(event, key),
-              }}
-              label={breed}
-            />
+  if (props.breeds.loading) {
+    breedCheckboxes = <Loading />;
+  } else if (props.breeds.error) {
+    breedCheckboxes = <ErrorMessage message={props.breeds.error} />;
+  } else if (Object.keys(state.checkboxes).length > 0) {
+    let initial: string;
+    breedCheckboxes = props.breeds.breedNames.map((breed: string) => {
+      let separator = null;
+      if (initial !== breed.charAt(0)) {
+        initial = breed.charAt(0);
+        separator = (
+          <React.Fragment>
+            <p className="label is-capitalized">{initial}</p>
           </React.Fragment>
         );
-      });
-    }
-
-    const checkedCount = Object.keys(this.state.checkboxes).filter(val => {
-      return this.state.checkboxes[val];
+      }
+      const key = breed.replace(/ /g, '-');
+      return (
+        <React.Fragment key={key}>
+          {separator}
+          <Input
+            elementType="checkbox"
+            elementConfig={{
+              checked: state.checkboxes[key],
+              onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                inputChangedHandler(event, key),
+            }}
+            label={breed}
+          />
+        </React.Fragment>
+      );
     });
-
-    return (
-      <form onSubmit={this.submit} action="#">
-        <div className="field columns">
-          <div className="control column is-narrow">
-            <label htmlFor="questions" className="label">
-              Number of questions
-            </label>
-            <Input
-              elementType={this.state.questions.elementType}
-              elementConfig={{
-                ...this.state.questions.elementConfig,
-                onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-                  this.inputChangedHandler(event, 'questions'),
-              }}
-              touched={this.state.questions.touched}
-            />
-          </div>
-        </div>
-
-        <div className="level">
-          <div className="level-left">
-            <p className="label level-item">
-              Select which breeds you want to test on ({checkedCount.length})
-            </p>
-            <ToggleHide
-              className="level-item"
-              shown={this.state.showCheckboxes}
-              click={this.toggleHide}
-            />
-          </div>
-        </div>
-        <div className="field">
-          <div className={checkBoxesClasses.join(' ')}>{breedCheckboxes}</div>
-        </div>
-
-        <div className="field is-grouped">
-          <div className="control">
-            <button
-              className="button is-link"
-              type="button"
-              onClick={() => this.checkAll(true)}
-            >
-              Select all
-            </button>
-          </div>
-          <div className="control">
-            <button
-              className="button is-link"
-              type="button"
-              onClick={() => this.checkAll(false)}
-            >
-              Select none
-            </button>
-          </div>
-        </div>
-
-        {this.state.isValid ? null : (
-          <p className="notification is-warning">
-            Please choose at least two breeds
-          </p>
-        )}
-
-        <div className="field">
-          <div className="control has-text-centered">
-            <button
-              className="button is-medium is-link is-success"
-              type="submit"
-            >
-              Start quiz
-            </button>
-          </div>
-        </div>
-      </form>
-    );
   }
-}
+
+  const checkedCount = Object.keys(state.checkboxes).filter(val => {
+    return state.checkboxes[val];
+  });
+
+  return (
+    <form onSubmit={submit} action="#">
+      <div className="field columns">
+        <div className="control column is-narrow">
+          <label htmlFor="questions" className="label">
+            Number of questions
+          </label>
+          <Input
+            elementType={state.questions.elementType}
+            elementConfig={{
+              ...state.questions.elementConfig,
+              onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                inputChangedHandler(event, 'questions'),
+            }}
+            touched={state.questions.touched}
+          />
+        </div>
+      </div>
+
+      <div className="level">
+        <div className="level-left">
+          <p className="label level-item">
+            Select which breeds you want to test on ({checkedCount.length})
+          </p>
+          <ToggleHide
+            className="level-item"
+            shown={state.showCheckboxes}
+            click={toggleHide}
+          />
+        </div>
+      </div>
+      <div className="field">
+        <div className={checkBoxesClasses.join(' ')}>{breedCheckboxes}</div>
+      </div>
+
+      <div className="field is-grouped">
+        <div className="control">
+          <button
+            className="button is-link"
+            type="button"
+            onClick={() => checkAll(true)}
+          >
+            Select all
+          </button>
+        </div>
+        <div className="control">
+          <button
+            className="button is-link"
+            type="button"
+            onClick={() => checkAll(false)}
+          >
+            Select none
+          </button>
+        </div>
+      </div>
+
+      {state.isValid ? null : (
+        <p className="notification is-warning">
+          Please choose at least two breeds
+        </p>
+      )}
+
+      <div className="field">
+        <div className="control has-text-centered">
+          <button className="button is-medium is-link is-success" type="submit">
+            Start quiz
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+};
 
 const mapStateToProps = (state: AppState) => ({
   breeds: state.breeds,
