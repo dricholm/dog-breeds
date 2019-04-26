@@ -12,6 +12,20 @@ export interface QuizState {
   wrong: number;
 }
 
+export const initialQuizState: QuizState = {
+  choices: [],
+  chosenAnswer: null,
+  correct: null,
+  correctAnswer: null,
+  errorMessage: null,
+  image: null,
+  loading: null,
+  questionCount: null,
+  selectedBreeds: [],
+  wasCorrect: null,
+  wrong: null,
+};
+
 export const SET_OPTIONS = 'SET_OPTIONS';
 export const NEXT_QUESTION = 'NEXT_QUESTION';
 export const NEXT_QUESTION_SUCCESS = 'NEXT_QUESTION_SUCCESS';

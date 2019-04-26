@@ -1,61 +1,55 @@
 import { breedReducer } from './reducers';
 import {
-  BreedState,
+  initialBreedState,
+  BreedActionTypes,
   GET_BREEDS,
   GET_BREEDS_FAIL,
   GET_BREEDS_SUCCESS,
 } from './types';
 
 describe('breed reducer', () => {
-  const initialState: Partial<BreedState> = {
-    breedNames: [],
-    breeds: {},
-    error: null,
-    loading: false,
-  };
-
   it('should set loading when beginning to fetch', () => {
-    expect(breedReducer(initialState, { type: GET_BREEDS })).toEqual({
-      ...initialState,
+    const action: BreedActionTypes = {
+      type: GET_BREEDS,
+    };
+    expect(breedReducer(initialBreedState, action)).toEqual({
+      ...initialBreedState,
       error: null,
       loading: true,
     });
   });
 
   it('should set error when failed to fetch', () => {
+    const action: BreedActionTypes = {
+      type: GET_BREEDS_FAIL,
+      payload: { errorMessage: 'Error occured' },
+    };
     expect(
-      breedReducer(
-        { ...initialState, loading: true },
-        {
-          payload: { errorMessage: 'Error occured' },
-          type: GET_BREEDS_FAIL,
-        }
-      )
+      breedReducer({ ...initialBreedState, loading: true }, action)
     ).toEqual({
-      ...initialState,
+      ...initialBreedState,
       error: 'Error occured',
       loading: false,
     });
   });
 
   it('should set breeds when fetch was successful', () => {
-    const breeds = {
-      akita: [],
-      corgi: ['cardigan', 'pembroke welsh'],
+    const action: BreedActionTypes = {
+      type: GET_BREEDS_SUCCESS,
+      payload: {
+        breeds: {
+          akita: [],
+          corgi: ['cardigan', 'pembroke welsh'],
+        },
+      },
     };
 
     expect(
-      breedReducer(
-        { ...initialState, loading: true },
-        {
-          payload: { breeds: breeds },
-          type: GET_BREEDS_SUCCESS,
-        }
-      )
+      breedReducer({ ...initialBreedState, loading: true }, action)
     ).toEqual({
-      ...initialState,
+      ...initialBreedState,
       breedNames: ['akita', 'cardigan corgi', 'pembroke welsh corgi'],
-      breeds: breeds,
+      breeds: action.payload.breeds,
       loading: false,
     });
   });
