@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FunctionComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import './ImageModal.css';
@@ -11,7 +11,9 @@ interface ImageModalProps {
   src: string;
 }
 
-const ImageModal = (props: ImageModalProps) => {
+const ImageModal: FunctionComponent<ImageModalProps> = (
+  props: ImageModalProps
+) => {
   useEffect(() => {
     document.addEventListener('keyup', keyUp);
 

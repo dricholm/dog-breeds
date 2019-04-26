@@ -2,7 +2,7 @@ import React from 'react';
 
 import './Loading.scss';
 
-const loading = () => (
+const Loading = () => (
   <div className="dog-loader">
     <div className="ears" />
     <div className="body">
@@ -15,4 +15,4 @@ const loading = () => (
   </div>
 );
 
-export default loading;
+export default Loading;

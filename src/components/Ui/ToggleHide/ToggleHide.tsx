@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
-export interface ToggleHideProps {
+interface ToggleHideProps {
   click: () => void;
   shown: boolean;
 }
 
-const toggleHide = (
+const ToggleHide: FunctionComponent<ToggleHideProps> = (
   props: ToggleHideProps & React.HTMLAttributes<HTMLButtonElement>
 ) => (
   <button
@@ -17,4 +17,4 @@ const toggleHide = (
   </button>
 );
 
-export default toggleHide;
+export default ToggleHide;
