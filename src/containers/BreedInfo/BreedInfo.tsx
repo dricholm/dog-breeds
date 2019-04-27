@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useReducer } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import Section from '../../components/Ui/Section/Section';
 import SubBreeds from '../../components/BreedInfo/SubBreeds/SubBreeds';
 import { getBreeds } from '../../store/breed/actions';
 import { AppState } from '../../store';
+import { breedInfoReducer, initialState } from './reducers';
 
 interface BreedInfoProps {
   breedFound: boolean;
@@ -22,136 +23,78 @@ interface BreedInfoProps {
   match: any;
 }
 
-interface BreedInfoState {
-  breedNames: Array<string>;
-  breeds: { [breed: string]: Array<string> };
-  currentBreed: { main?: string; sub?: string };
-  error: string;
-  imageError: string;
-  imageUrls: Array<string>;
-  loading: boolean;
-  loadingImages: boolean;
-  numberOfImagesLoaded: number;
-  selectedImage: number;
-}
-
 const BreedInfo: FunctionComponent<BreedInfoProps> = (
   props: BreedInfoProps
 ) => {
-  const initialState: BreedInfoState = {
-    breedNames: [],
-    breeds: {},
-    currentBreed: {},
-    error: null,
-    imageError: null,
-    imageUrls: [],
-    loading: null,
-    loadingImages: null,
-    numberOfImagesLoaded: null,
-    selectedImage: null,
-  };
+  const [state, dispatch] = useReducer(breedInfoReducer, initialState);
 
-  const [state, setState] = useState(initialState);
+  const { breedsLoaded, getBreeds } = props;
+  const { breed, sub } = props.match.params;
+
+  const shouldLoad: boolean =
+    (breedsLoaded && state.currentBreed.main !== breed) ||
+    state.currentBreed.sub !== sub ||
+    (state.imageUrls.length === 0 && !state.imageError && !state.loadingImages);
 
   useEffect(() => {
-    if (props.breedsLoaded) {
-      if (shouldLoadImages()) {
+    const shuffle: (array: Array<string>) => Array<string> = (
+      array: Array<string>
+    ) => {
+      const ret = array.slice();
+      for (let i = ret.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [ret[i], ret[j]] = [ret[j], ret[i]];
+      }
+      return ret;
+    };
+
+    const getImages: () => Promise<void> = async () => {
+      dispatch({ type: 'INIT_REQUEST', payload: { breed, sub } });
+
+      const url = sub
+        ? `/breed/${breed}/${sub}/images`
+        : `/breed/${breed}/images`;
+
+      let errorMessage: string;
+      try {
+        const result = await axios.get(url);
+
+        if (result.status === 200) {
+          dispatch({
+            type: 'SET_IMAGES',
+            payload: { imageUrls: shuffle(result.data.message) },
+          });
+        } else {
+          errorMessage = result.statusText;
+        }
+      } catch (e) {
+        errorMessage = 'Network error';
+      }
+
+      if (errorMessage) {
+        dispatch({ type: 'SET_ERROR', payload: { errorMessage } });
+      }
+    };
+
+    if (breedsLoaded) {
+      if (shouldLoad) {
         getImages();
       }
     } else {
-      props.getBreeds();
+      getBreeds();
     }
-  }, []);
-
-  const shuffle: (array: Array<string>) => Array<string> = (
-    array: Array<string>
-  ) => {
-    const ret = array.slice();
-    for (let i = ret.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [ret[i], ret[j]] = [ret[j], ret[i]];
-    }
-    return ret;
-  };
-
-  const shouldLoadImages: () => boolean = () =>
-    state.currentBreed.main !== props.match.params.breed ||
-    props.match.params.sub !== state.currentBreed.sub ||
-    (state.imageUrls.length === 0 && !state.imageError && !state.loadingImages);
-
-  const getImages: () => Promise<void> = async () => {
-    setState({
-      ...state,
-      currentBreed: {
-        main: props.match.params.breed,
-        sub: props.match.params.sub,
-      },
-      imageError: null,
-      imageUrls: [],
-      loadingImages: true,
-      numberOfImagesLoaded: 0,
-    });
-
-    const url = props.match.params.sub
-      ? `/breed/${props.match.params.breed}/${props.match.params.sub}/images`
-      : `/breed/${props.match.params.breed}/images`;
-
-    let errorMessage: string;
-    try {
-      const result = await axios.get(url);
-      if (result.status === 200) {
-        setState({
-          ...state,
-          currentBreed: { ...state.currentBreed },
-          imageError: null,
-          imageUrls: shuffle(result.data.message),
-          loadingImages: false,
-          numberOfImagesLoaded: 10,
-        });
-      } else {
-        errorMessage = result.statusText;
-      }
-    } catch (e) {
-      errorMessage = 'Network error';
-    }
-
-    if (errorMessage) {
-      setState({
-        ...state,
-        currentBreed: { ...state.currentBreed },
-        imageError: errorMessage,
-        imageUrls: [],
-        loadingImages: false,
-      });
-    }
-  };
+  }, [breedsLoaded, getBreeds, breed, sub, shouldLoad]);
 
   const loadMore: () => void = () => {
-    setState((prevState: BreedInfoState) => ({
-      ...prevState,
-      currentBreed: { ...prevState.currentBreed },
-      numberOfImagesLoaded: prevState.numberOfImagesLoaded + 10,
-    }));
+    dispatch({ type: 'LOAD_MORE_IMAGES' });
   };
 
   const setImage: (imageIndex: number) => void = (imageIndex: number) => {
-    setState((prevState: BreedInfoState) => ({
-      ...prevState,
-      currentBreed: { ...prevState.currentBreed },
-      selectedImage: imageIndex,
-    }));
+    dispatch({ type: 'SELECT_IMAGE', payload: { imageIndex } });
   };
 
   const changeImage: (delta: number) => void = (delta: number) => {
-    setState((prevState: BreedInfoState) => ({
-      ...prevState,
-      currentBreed: { ...prevState.currentBreed },
-      numberOfImagesLoaded:
-        prevState.selectedImage + delta >= prevState.numberOfImagesLoaded
-          ? prevState.selectedImage + delta + 1
-          : prevState.numberOfImagesLoaded,
-      selectedImage: prevState.selectedImage + delta,
-    }));
+    dispatch({ type: 'CHANGE_IMAGE', payload: { delta } });
   };
 
   const getTop: () => JSX.Element = () => {

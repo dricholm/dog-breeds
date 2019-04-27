@@ -1,8 +1,8 @@
 import React, {
   FormEvent,
   FunctionComponent,
-  useState,
   useEffect,
+  useReducer,
 } from 'react';
 import { connect } from 'react-redux';
 
@@ -15,76 +15,47 @@ import Loading from '../../../components/Ui/Loading/Loading';
 import { BreedState } from '../../../store/breed/types';
 import { AppState } from '../../../store';
 import QuizCheckboxes from '../../../components/Quiz/QuizCheckboxes/QuizCheckboxes';
+import { quizFormReducer, initialState } from './reducers';
 
 interface QuizFormProps {
   breeds: BreedState;
   getBreeds: () => void;
   history: any;
-  setOptions: (questionNumber: string, checked: Array<string>) => void;
-}
-
-interface QuizFormState {
-  checkboxes: { [name: string]: boolean };
-  isValid: boolean;
-  questions: {
-    elementConfig: {
-      max: string;
-      min: string;
-      name: string;
-      placeholder: string;
-      required: boolean;
-      type: string;
-      value: string;
-    };
-    elementType: string;
-    touched: boolean;
-  };
-  showCheckboxes: boolean;
+  setOptions: (questionNumber: number, checked: Array<string>) => void;
 }
 
 const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
-  const initialState: QuizFormState = {
-    checkboxes: {},
-    isValid: true,
-    questions: {
-      elementConfig: {
-        max: '100',
-        min: '1',
-        name: 'questions',
-        placeholder: '1-100',
-        required: true,
-        type: 'number',
-        value: '20',
-      },
-      elementType: 'input',
-      touched: false,
-    },
-    showCheckboxes: false,
-  };
+  const [state, dispatch] = useReducer(quizFormReducer, initialState);
 
-  const [state, setState] = useState(initialState);
+  const { getBreeds } = props;
+  const { breedNames } = props.breeds;
+  const breedsLoaded: boolean = props.breeds.breedNames.length > 0;
 
   useEffect(() => {
-    if (props.breeds.breedNames.length === 0) {
-      props.getBreeds();
+    const initCheckboxes: (breedNames: Array<string>) => void = (
+      breedNames: Array<string>
+    ) => {
+      const checkboxes = {};
+      breedNames.forEach(
+        breed => (checkboxes[breed.replace(/ /g, '-')] = true)
+      );
+
+      dispatch({ type: 'SET_CHECKBOXES', payload: { checkboxes } });
+    };
+
+    if (breedsLoaded) {
+      initCheckboxes(breedNames);
     } else {
-      initCheckboxes(props.breeds.breedNames);
+      getBreeds();
     }
-  }, [props.breeds]);
+  }, [breedsLoaded, getBreeds, breedNames]);
 
   const questionsChanged: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      ...state,
-      questions: {
-        ...state.questions,
-        elementConfig: {
-          ...state.questions.elementConfig,
-          value: event.target.value,
-        },
-        touched: true,
-      },
+    dispatch({
+      type: 'SET_QUESTION_NUMBER',
+      payload: { questionNumber: event.target.value },
     });
   };
 
@@ -92,12 +63,9 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
     breed: string,
     value: boolean
   ) => {
-    setState({
-      ...state,
-      checkboxes: {
-        ...state.checkboxes,
-        [breed]: value,
-      },
+    dispatch({
+      type: 'SET_CHECKBOX_MARK',
+      payload: { breed, value },
     });
   };
 
@@ -112,35 +80,13 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
       };
     });
 
-    setState({
-      ...state,
-      checkboxes: checkboxes,
-    });
-  };
-
-  const initCheckboxes: (breedNames: Array<string>) => void = (
-    breedNames: Array<string>
-  ) => {
-    const checkboxes = {};
-    breedNames.forEach(breed => (checkboxes[breed.replace(/ /g, '-')] = true));
-
-    setState({
-      ...state,
-      checkboxes,
-    });
+    dispatch({ type: 'SET_CHECKBOXES', payload: { checkboxes } });
   };
 
   const submit: (event: FormEvent<HTMLFormElement>) => void = (
     event: FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    if (state.questions.elementConfig.value === '') {
-      setState({
-        ...state,
-        isValid: false,
-      });
-      return;
-    }
 
     const checked: Array<string> = [];
     Object.keys(state.checkboxes).forEach(box => {
@@ -149,21 +95,15 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
       }
     });
     if (checked.length > 1) {
-      props.setOptions(state.questions.elementConfig.value, checked);
+      props.setOptions(Number(state.questions.elementConfig.value), checked);
       props.history.push('/quiz/game');
     } else {
-      setState({
-        ...state,
-        isValid: false,
-      });
+      dispatch({ type: 'SET_INVALID' });
     }
   };
 
   const toggleHide: () => void = () => {
-    setState((prevState: QuizFormState) => ({
-      ...prevState,
-      showCheckboxes: !prevState.showCheckboxes,
-    }));
+    dispatch({ type: 'TOGGLE_HIDE' });
   };
 
   let breedCheckboxes: any;

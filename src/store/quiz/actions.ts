@@ -1,5 +1,4 @@
 import axios from '../../shared/axiosDogApi';
-
 import {
   SET_OPTIONS,
   NEXT_QUESTION,
@@ -26,7 +25,7 @@ export const setOptions = (
   selectedBreeds: Array<string>
 ) => ({
   payload: {
-    questionCount: +questionCount,
+    questionCount,
     selectedBreeds: selectedBreeds,
   },
   type: SET_OPTIONS,

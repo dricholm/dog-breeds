@@ -1,35 +1,35 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 
 import './QuizGame.css';
 import AnswerButtons from '../../../components/Quiz/AnswerButtons/AnswerButtons';
 import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
 import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
-import {
-  answer,
-  nextQuestion,
-  restart,
-  setOptions,
-} from '../../../store/quiz/actions';
+import { answer, nextQuestion, restart } from '../../../store/quiz/actions';
 import { AppState } from '../../../store';
 import { QuizState } from '../../../store/quiz/types';
 
 interface QuizGameProps {
   answer: (breed: string) => void;
-  history: any;
   nextQuestion: (selectedBreeds: Array<string>) => void;
   quiz: QuizState;
   restart: () => void;
 }
 
 const QuizGame: FunctionComponent<QuizGameProps> = (props: QuizGameProps) => {
+  const { nextQuestion } = props;
+  const { selectedBreeds } = props.quiz;
+
   useEffect(() => {
-    if (!props.quiz.questionCount || props.quiz.selectedBreeds.length < 2) {
-      props.history.push('/quiz');
-    } else {
-      props.nextQuestion(props.quiz.selectedBreeds);
+    if (selectedBreeds.length > 0) {
+      nextQuestion(selectedBreeds);
     }
-  }, []);
+  }, [nextQuestion, selectedBreeds]);
+
+  if (!props.quiz.questionCount || props.quiz.selectedBreeds.length < 2) {
+    return <Redirect to="/quiz" />;
+  }
 
   const buttonClick: (breed: string) => void = (breed: string) => {
     if (props.quiz.correct + props.quiz.wrong === +props.quiz.questionCount) {
@@ -105,8 +105,6 @@ const mapDispatchToProps = (dispatch: (action: any) => void) => ({
   nextQuestion: (selectedBreeds: Array<string>) =>
     dispatch(nextQuestion(selectedBreeds)),
   restart: () => dispatch(restart()),
-  setOptions: (questionNumber: number, selectedBreeds: Array<string>) =>
-    dispatch(setOptions(questionNumber, selectedBreeds)),
 });
 
 export default connect(
