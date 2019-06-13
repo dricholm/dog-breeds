@@ -1,7 +1,7 @@
 export interface QuizState {
   choices: Array<string>;
   chosenAnswer: string;
-  correct: number;
+  numberOfCorrect: number;
   correctAnswer: string;
   errorMessage: string;
   image: string;
@@ -9,13 +9,13 @@ export interface QuizState {
   questionCount: number;
   selectedBreeds: Array<string>;
   wasCorrect: boolean;
-  wrong: number;
+  numberOfWrong: number;
 }
 
 export const initialQuizState: QuizState = {
   choices: [],
   chosenAnswer: null,
-  correct: null,
+  numberOfCorrect: null,
   correctAnswer: null,
   errorMessage: null,
   image: null,
@@ -23,7 +23,7 @@ export const initialQuizState: QuizState = {
   questionCount: null,
   selectedBreeds: [],
   wasCorrect: null,
-  wrong: null,
+  numberOfWrong: null,
 };
 
 export const SET_OPTIONS = 'SET_OPTIONS';

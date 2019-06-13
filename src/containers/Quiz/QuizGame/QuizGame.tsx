@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { FunctionComponent, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 
 import './QuizGame.css';
@@ -8,47 +8,48 @@ import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
 import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
 import { answer, nextQuestion, restart } from '../../../store/quiz/actions';
 import { AppState } from '../../../store';
-import { QuizState } from '../../../store/quiz/types';
 
-interface QuizGameProps {
-  answer: (breed: string) => void;
-  nextQuestion: (selectedBreeds: Array<string>) => void;
-  quiz: QuizState;
-  restart: () => void;
-}
+const QuizGame: FunctionComponent = () => {
+  const quiz = useSelector((state: AppState) => state.quiz);
 
-const QuizGame: FunctionComponent<QuizGameProps> = (props: QuizGameProps) => {
-  const { nextQuestion } = props;
-  const { selectedBreeds } = props.quiz;
+  const dispatch = useDispatch();
+  const dispatchAnswer = (breed: string) => dispatch(answer(breed));
+  const { selectedBreeds } = quiz;
+  const dispatchNextQuestion = useCallback(
+    () => dispatch(nextQuestion(selectedBreeds)),
+    [dispatch, selectedBreeds]
+  );
+
+  const breedsLoaded = quiz.selectedBreeds.length > 0;
 
   useEffect(() => {
-    if (selectedBreeds.length > 0) {
-      nextQuestion(selectedBreeds);
+    if (breedsLoaded) {
+      dispatchNextQuestion();
     }
-  }, [nextQuestion, selectedBreeds]);
+  }, [dispatchNextQuestion, breedsLoaded]);
 
-  if (!props.quiz.questionCount || props.quiz.selectedBreeds.length < 2) {
+  const restartQuiz = useCallback(() => {
+    dispatch(restart());
+    dispatchNextQuestion();
+  }, [dispatch, dispatchNextQuestion]);
+
+  if (!quiz.questionCount || quiz.selectedBreeds.length < 2) {
     return <Redirect to="/quiz" />;
   }
 
-  const buttonClick: (breed: string) => void = (breed: string) => {
-    if (props.quiz.correct + props.quiz.wrong === +props.quiz.questionCount) {
+  const buttonClick = (breed: string) => {
+    if (quiz.numberOfCorrect + quiz.numberOfWrong === +quiz.questionCount) {
       return;
     }
 
-    if (props.quiz.chosenAnswer) {
-      props.nextQuestion(props.quiz.selectedBreeds);
+    if (quiz.chosenAnswer) {
+      dispatchNextQuestion();
     } else {
-      props.answer(breed);
+      dispatchAnswer(breed);
     }
   };
 
-  const restart: () => void = () => {
-    props.restart();
-    props.nextQuestion(props.quiz.selectedBreeds);
-  };
-
-  if (!props.quiz.questionCount || props.quiz.selectedBreeds.length < 2) {
+  if (!quiz.questionCount || quiz.selectedBreeds.length < 2) {
     return <p className="notification is-primary">Redirecting</p>;
   }
 
@@ -57,57 +58,40 @@ const QuizGame: FunctionComponent<QuizGameProps> = (props: QuizGameProps) => {
       <div className="columns">
         <div className="box column is-half is-offset-one-quarter">
           <QuizImage
-            chosen={props.quiz.chosenAnswer}
-            correct={props.quiz.correct}
+            chosen={quiz.chosenAnswer}
+            correct={quiz.numberOfCorrect}
             gameEnd={
-              props.quiz.correct + props.quiz.wrong ===
-              +props.quiz.questionCount
+              quiz.numberOfCorrect + quiz.numberOfWrong === +quiz.questionCount
             }
-            image={props.quiz.image}
-            nextQuestion={() => props.nextQuestion(props.quiz.selectedBreeds)}
-            restart={restart}
-            wrong={props.quiz.wrong}
+            image={quiz.image}
+            nextQuestion={dispatchNextQuestion}
+            restart={restartQuiz}
+            wrong={quiz.numberOfWrong}
           />
 
           <div
             className={
-              props.quiz.choices.length === 3
-                ? 'answers answers-vertical'
-                : 'answers'
+              quiz.choices.length === 3 ? 'answers answers-vertical' : 'answers'
             }
           >
             <AnswerButtons
-              choices={props.quiz.choices}
-              chosenAnswer={props.quiz.chosenAnswer}
+              choices={quiz.choices}
+              chosenAnswer={quiz.chosenAnswer}
               click={buttonClick}
-              correctAnswer={props.quiz.correctAnswer}
+              correctAnswer={quiz.correctAnswer}
             />
           </div>
         </div>
       </div>
 
       <QuizProgress
-        correct={props.quiz.correct}
-        questionCount={props.quiz.questionCount}
-        wrong={props.quiz.wrong}
-        wasCorrect={props.quiz.wasCorrect}
+        correct={quiz.numberOfCorrect}
+        questionCount={quiz.questionCount}
+        wrong={quiz.numberOfWrong}
+        wasCorrect={quiz.wasCorrect}
       />
     </React.Fragment>
   );
 };
 
-const mapStateToProps = (state: AppState) => ({
-  quiz: state.quiz,
-});
-
-const mapDispatchToProps = (dispatch: (action: any) => void) => ({
-  answer: (breed: string) => dispatch(answer(breed)),
-  nextQuestion: (selectedBreeds: Array<string>) =>
-    dispatch(nextQuestion(selectedBreeds)),
-  restart: () => dispatch(restart()),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(QuizGame);
+export default QuizGame;

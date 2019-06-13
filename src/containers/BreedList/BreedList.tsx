@@ -1,5 +1,10 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, {
+  FunctionComponent,
+  useEffect,
+  useState,
+  useCallback,
+} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import './BreedList.css';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage';
@@ -10,23 +15,25 @@ import BreedListLinks from '../../components/BreedListLinks/BreedListLinks';
 import { getBreeds } from '../../store/breed/actions';
 import { AppState } from '../../store';
 
-export interface BreedListProps {
-  breedNames: Array<string>;
-  error: string;
-  getBreeds: () => void;
-  loading: boolean;
-}
+const BreedList: FunctionComponent = () => {
+  const { breedNames, error, loading } = useSelector(
+    (state: AppState) => state.breeds
+  );
+  const dispatch = useDispatch();
+  const dispatchGetBreeds = useCallback(() => dispatch(getBreeds()), [
+    dispatch,
+  ]);
 
-const BreedList: FunctionComponent<BreedListProps> = (
-  props: BreedListProps
-) => {
   const [filter, setFilter] = useState('');
 
+  const breedsLoaded = breedNames.length > 0;
+
   useEffect(() => {
-    if (props.breedNames.length === 0) {
-      props.getBreeds();
+    if (breedsLoaded) {
+      return;
     }
-  });
+    dispatchGetBreeds();
+  }, [breedsLoaded, dispatchGetBreeds]);
 
   const onFilter: (event: React.ChangeEvent<HTMLInputElement>) => void = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -34,21 +41,21 @@ const BreedList: FunctionComponent<BreedListProps> = (
     setFilter(event.target.value);
   };
 
-  if (props.breedNames) {
-    const filtered = props.breedNames.filter(breed =>
+  if (breedNames) {
+    const filtered = breedNames.filter(breed =>
       breed.toLowerCase().includes(filter.toLowerCase())
     );
 
-    if (props.loading) {
+    if (loading) {
       return (
         <Section>
           <Loading />
         </Section>
       );
-    } else if (props.error) {
+    } else if (error) {
       return (
         <Section>
-          <ErrorMessage message={props.error} />
+          <ErrorMessage message={error} />
         </Section>
       );
     } else {
@@ -58,7 +65,6 @@ const BreedList: FunctionComponent<BreedListProps> = (
             <div className="field">
               <div className="control">
                 <Input
-                  // changed={onFilter}
                   elementConfig={{
                     autoFocus: true,
                     className: 'input is-info is-medium',
@@ -85,17 +91,4 @@ const BreedList: FunctionComponent<BreedListProps> = (
   }
 };
 
-const mapStateToProps = (state: AppState) => ({
-  breedNames: state.breeds.breedNames,
-  error: state.breeds.error,
-  loading: state.breeds.loading,
-});
-
-const mapDispatchToProps = (dispatch: (action: any) => void) => ({
-  getBreeds: () => dispatch(getBreeds()),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BreedList);
+export default BreedList;

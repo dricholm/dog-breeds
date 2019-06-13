@@ -3,8 +3,9 @@ import React, {
   FunctionComponent,
   useEffect,
   useReducer,
+  useCallback,
 } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import * as breedActions from '../../../store/breed/actions';
 import * as quizActions from '../../../store/quiz/actions';
@@ -12,24 +13,27 @@ import Input from '../../../components/Form/Input/Input';
 import ToggleHide from '../../../components/Ui/ToggleHide/ToggleHide';
 import ErrorMessage from '../../../components/Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../../components/Ui/Loading/Loading';
-import { BreedState } from '../../../store/breed/types';
-import { AppState } from '../../../store';
 import QuizCheckboxes from '../../../components/Quiz/QuizCheckboxes/QuizCheckboxes';
 import { quizFormReducer, initialState } from './reducers';
+import { AppState } from '../../../store';
 
 interface QuizFormProps {
-  breeds: BreedState;
-  getBreeds: () => void;
   history: any;
-  setOptions: (questionNumber: number, checked: Array<string>) => void;
 }
 
 const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
-  const [state, dispatch] = useReducer(quizFormReducer, initialState);
+  const breeds = useSelector((state: AppState) => state.breeds);
 
-  const { getBreeds } = props;
-  const { breedNames } = props.breeds;
-  const breedsLoaded: boolean = props.breeds.breedNames.length > 0;
+  const reduxDispatch = useDispatch();
+  const getBreeds = useCallback(() => reduxDispatch(breedActions.getBreeds()), [
+    reduxDispatch,
+  ]);
+  const setOptions = (questionNumber: number, selectedBreeds: Array<string>) =>
+    reduxDispatch(quizActions.setOptions(questionNumber, selectedBreeds));
+
+  const [state, dispatch] = useReducer(quizFormReducer, initialState);
+  const { breedNames } = breeds;
+  const breedsLoaded = breeds.breedNames.length > 0;
 
   useEffect(() => {
     const initCheckboxes: (breedNames: Array<string>) => void = (
@@ -71,7 +75,7 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
 
   const checkAll: (checked: boolean) => void = (checked: boolean) => {
     let checkboxes = {};
-    props.breeds.breedNames.forEach((breed: string) => {
+    breeds.breedNames.forEach((breed: string) => {
       const key = breed.replace(/ /g, '-');
 
       checkboxes = {
@@ -95,7 +99,7 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
       }
     });
     if (checked.length > 1) {
-      props.setOptions(Number(state.questions.elementConfig.value), checked);
+      setOptions(Number(state.questions.elementConfig.value), checked);
       props.history.push('/quiz/game');
     } else {
       dispatch({ type: 'SET_INVALID' });
@@ -112,10 +116,10 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
     checkBoxesClasses.push('d-none');
   }
 
-  if (props.breeds.loading) {
+  if (breeds.loading) {
     breedCheckboxes = <Loading />;
-  } else if (props.breeds.error) {
-    breedCheckboxes = <ErrorMessage message={props.breeds.error} />;
+  } else if (breeds.error) {
+    breedCheckboxes = <ErrorMessage message={breeds.error} />;
   } else if (Object.keys(state.checkboxes).length > 0) {
     breedCheckboxes = (
       <QuizCheckboxes
@@ -201,17 +205,4 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
   );
 };
 
-const mapStateToProps = (state: AppState) => ({
-  breeds: state.breeds,
-});
-
-const mapDispatchToProps = (dispatch: (action: any) => void) => ({
-  getBreeds: () => dispatch(breedActions.getBreeds()),
-  setOptions: (questionNumber: number, selectedBreeds: Array<string>) =>
-    dispatch(quizActions.setOptions(questionNumber, selectedBreeds)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(QuizForm);
+export default QuizForm;

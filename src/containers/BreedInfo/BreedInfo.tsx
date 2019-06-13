@@ -1,5 +1,10 @@
-import React, { FunctionComponent, useEffect, useReducer } from 'react';
-import { connect } from 'react-redux';
+import React, {
+  FunctionComponent,
+  useEffect,
+  useReducer,
+  useCallback,
+} from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import axios from '../../shared/axiosDogApi';
@@ -14,12 +19,6 @@ import { AppState } from '../../store';
 import { breedInfoReducer, initialState } from './reducers';
 
 interface BreedInfoProps {
-  breedFound: boolean;
-  breeds: { [breed: string]: Array<string> };
-  breedsLoaded: boolean;
-  error: string;
-  getBreeds: () => void;
-  loading: boolean;
   match: any;
 }
 
@@ -28,10 +27,25 @@ const BreedInfo: FunctionComponent<BreedInfoProps> = (
 ) => {
   const [state, dispatch] = useReducer(breedInfoReducer, initialState);
 
-  const { breedsLoaded, getBreeds } = props;
+  const { breeds, breedNames, error, loading } = useSelector(
+    (state: AppState) => state.breeds
+  );
+  const breedFound =
+    breeds[props.match.params.breed] &&
+    (!props.match.params.sub ||
+      breeds[props.match.params.breed].indexOf(
+        props.match.params.sub.replace(/-/g, ' ')
+      ) > -1);
+  const breedsLoaded = breedNames.length > 0;
+
+  const reduxDispatch = useDispatch();
+  const dispatchGetBreeds = useCallback(() => reduxDispatch(getBreeds()), [
+    reduxDispatch,
+  ]);
+
   const { breed, sub } = props.match.params;
 
-  const shouldLoad: boolean =
+  const shouldLoad =
     (breedsLoaded && state.currentBreed.main !== breed) ||
     state.currentBreed.sub !== sub ||
     (state.imageUrls.length === 0 && !state.imageError && !state.loadingImages);
@@ -81,19 +95,19 @@ const BreedInfo: FunctionComponent<BreedInfoProps> = (
         getImages();
       }
     } else {
-      getBreeds();
+      dispatchGetBreeds();
     }
-  }, [breedsLoaded, getBreeds, breed, sub, shouldLoad]);
+  }, [breedsLoaded, dispatchGetBreeds, breed, sub, shouldLoad]);
 
-  const loadMore: () => void = () => {
+  const loadMore = () => {
     dispatch({ type: 'LOAD_MORE_IMAGES' });
   };
 
-  const setImage: (imageIndex: number) => void = (imageIndex: number) => {
+  const setImage = (imageIndex: number) => {
     dispatch({ type: 'SELECT_IMAGE', payload: { imageIndex } });
   };
 
-  const changeImage: (delta: number) => void = (delta: number) => {
+  const changeImage = (delta: number) => {
     dispatch({ type: 'CHANGE_IMAGE', payload: { delta } });
   };
 
@@ -107,29 +121,29 @@ const BreedInfo: FunctionComponent<BreedInfoProps> = (
           </Link>
         </h2>
       );
-    } else if (props.breeds[props.match.params.breed].length > 0) {
+    } else if (breeds[props.match.params.breed].length > 0) {
       return (
         <SubBreeds
           main={props.match.params.breed}
-          subs={props.breeds[props.match.params.breed]}
+          subs={breeds[props.match.params.breed]}
         />
       );
     }
   };
 
-  if (props.loading) {
+  if (loading) {
     return (
       <Section>
         <Loading />
       </Section>
     );
-  } else if (props.error) {
+  } else if (error) {
     return (
       <Section>
-        <ErrorMessage message={props.error} />
+        <ErrorMessage message={error} />
       </Section>
     );
-  } else if (props.breedFound) {
+  } else if (breedFound) {
     const top: JSX.Element = getTop();
 
     const title = props.match.params.sub
@@ -177,26 +191,4 @@ const BreedInfo: FunctionComponent<BreedInfoProps> = (
   );
 };
 
-const mapStateToProps = (state: AppState, ownProps: BreedInfoProps) => ({
-  breedFound:
-    state.breeds.breeds[ownProps.match.params.breed] &&
-    (!ownProps.match.params.sub ||
-      state.breeds.breeds[ownProps.match.params.breed].indexOf(
-        ownProps.match.params.sub.replace(/-/g, ' ')
-      ) > -1)
-      ? true
-      : false,
-  breeds: state.breeds.breeds,
-  breedsLoaded: state.breeds.breedNames.length > 0,
-  error: state.breeds.error,
-  loading: state.breeds.loading,
-});
-
-const mapDispatchToProps = (dispatch: (action: any) => void) => ({
-  getBreeds: () => dispatch(getBreeds()),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BreedInfo);
+export default BreedInfo;

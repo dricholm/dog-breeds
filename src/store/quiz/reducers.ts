@@ -12,7 +12,7 @@ import {
 const initialState: QuizState = {
   choices: [],
   chosenAnswer: null,
-  correct: 0,
+  numberOfCorrect: 0,
   correctAnswer: null,
   errorMessage: null,
   image: null,
@@ -20,7 +20,7 @@ const initialState: QuizState = {
   questionCount: 0,
   selectedBreeds: [],
   wasCorrect: null,
-  wrong: 0,
+  numberOfWrong: 0,
 };
 
 export const quizReducer = (
@@ -31,13 +31,13 @@ export const quizReducer = (
     case SET_OPTIONS:
       return {
         ...state,
-        correct: 0,
+        numberOfCorrect: 0,
         errorMessage: null,
         image: null,
         loading: false,
         questionCount: action.payload.questionCount,
         selectedBreeds: action.payload.selectedBreeds,
-        wrong: 0,
+        numberOfWrong: 0,
       };
 
     case NEXT_QUESTION:
@@ -73,15 +73,15 @@ export const quizReducer = (
       return {
         ...state,
         chosenAnswer: action.payload.answer,
-        correct:
+        numberOfCorrect:
           action.payload.answer === state.correctAnswer
-            ? state.correct + 1
-            : state.correct,
+            ? state.numberOfCorrect + 1
+            : state.numberOfCorrect,
         wasCorrect: action.payload.answer === state.correctAnswer,
-        wrong:
+        numberOfWrong:
           action.payload.answer === state.correctAnswer
-            ? state.wrong
-            : state.wrong + 1,
+            ? state.numberOfWrong
+            : state.numberOfWrong + 1,
       };
 
     case RESTART:
@@ -89,9 +89,9 @@ export const quizReducer = (
         ...state,
         choices: [],
         chosenAnswer: null,
-        correct: 0,
+        numberOfCorrect: 0,
         correctAnswer: null,
-        wrong: 0,
+        numberOfWrong: 0,
       };
 
     default:

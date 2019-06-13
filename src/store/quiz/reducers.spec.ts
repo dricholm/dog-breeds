@@ -3,9 +3,6 @@ import {
   initialQuizState,
   QuizActionTypes,
   SET_OPTIONS,
-  NEXT_QUESTION,
-  NEXT_QUESTION_SUCCESS,
-  NEXT_QUESTION_FAIL,
   ANSWER,
   RESTART,
 } from './types';
@@ -21,11 +18,11 @@ describe('quiz reducer', () => {
     };
     expect(quizReducer(initialQuizState, action)).toEqual({
       ...initialQuizState,
-      correct: 0,
+      numberOfCorrect: 0,
       loading: false,
       questionCount: 2,
       selectedBreeds: ['Test'],
-      wrong: 0,
+      numberOfWrong: 0,
     });
   });
 
@@ -36,16 +33,21 @@ describe('quiz reducer', () => {
     };
     expect(
       quizReducer(
-        { ...initialQuizState, correctAnswer: 'Test', correct: 0, wrong: 0 },
+        {
+          ...initialQuizState,
+          correctAnswer: 'Test',
+          numberOfCorrect: 0,
+          numberOfWrong: 0,
+        },
         action
       )
     ).toEqual({
       ...initialQuizState,
       chosenAnswer: action.payload.answer,
-      correct: 1,
+      numberOfCorrect: 1,
       correctAnswer: 'Test',
       wasCorrect: true,
-      wrong: 0,
+      numberOfWrong: 0,
     });
   });
 
@@ -56,16 +58,21 @@ describe('quiz reducer', () => {
     };
     expect(
       quizReducer(
-        { ...initialQuizState, correctAnswer: 'Test', correct: 0, wrong: 0 },
+        {
+          ...initialQuizState,
+          correctAnswer: 'Test',
+          numberOfCorrect: 0,
+          numberOfWrong: 0,
+        },
         action
       )
     ).toEqual({
       ...initialQuizState,
       chosenAnswer: action.payload.answer,
       correctAnswer: 'Test',
-      correct: 0,
+      numberOfCorrect: 0,
       wasCorrect: false,
-      wrong: 1,
+      numberOfWrong: 1,
     });
   });
 
@@ -79,12 +86,12 @@ describe('quiz reducer', () => {
           ...initialQuizState,
           choices: ['A'],
           chosenAnswer: 'A',
-          correct: 2,
+          numberOfCorrect: 2,
           correctAnswer: 'A',
-          wrong: 1,
+          numberOfWrong: 1,
         },
         action
       )
-    ).toEqual({ ...initialQuizState, correct: 0, wrong: 0 });
+    ).toEqual({ ...initialQuizState, numberOfCorrect: 0, numberOfWrong: 0 });
   });
 });
