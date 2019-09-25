@@ -5,7 +5,7 @@ import React, {
   useCallback,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import axios from '../../shared/axiosDogApi';
 import BreedGallery from '../../components/BreedInfo/BreedGallery/BreedGallery';
@@ -18,32 +18,24 @@ import { getBreeds } from '../../store/breed/actions';
 import { AppState } from '../../store';
 import { breedInfoReducer, initialState } from './reducers';
 
-interface BreedInfoProps {
-  match: any;
-}
-
-const BreedInfo: FunctionComponent<BreedInfoProps> = (
-  props: BreedInfoProps
-) => {
+const BreedInfo: FunctionComponent = () => {
   const [state, dispatch] = useReducer(breedInfoReducer, initialState);
+
+  const { breed, sub } = useParams();
 
   const { breeds, breedNames, error, loading } = useSelector(
     (state: AppState) => state.breeds
   );
+
   const breedFound =
-    breeds[props.match.params.breed] &&
-    (!props.match.params.sub ||
-      breeds[props.match.params.breed].indexOf(
-        props.match.params.sub.replace(/-/g, ' ')
-      ) > -1);
+    breeds[breed] &&
+    (!sub || breeds[breed].indexOf(sub.replace(/-/g, ' ')) > -1);
   const breedsLoaded = breedNames.length > 0;
 
   const reduxDispatch = useDispatch();
   const dispatchGetBreeds = useCallback(() => reduxDispatch(getBreeds()), [
     reduxDispatch,
   ]);
-
-  const { breed, sub } = props.match.params;
 
   const shouldLoad =
     (breedsLoaded && state.currentBreed.main !== breed) ||
@@ -112,22 +104,14 @@ const BreedInfo: FunctionComponent<BreedInfoProps> = (
   };
 
   const getTop: () => JSX.Element = () => {
-    if (props.match.params.sub) {
+    if (sub) {
       return (
         <h2 className="subtitle is-capitalized">
-          Breed:{' '}
-          <Link to={`/breed/${props.match.params.breed}`}>
-            {props.match.params.breed}
-          </Link>
+          Breed: <Link to={`/breed/${breed}`}>{breed}</Link>
         </h2>
       );
-    } else if (breeds[props.match.params.breed].length > 0) {
-      return (
-        <SubBreeds
-          main={props.match.params.breed}
-          subs={breeds[props.match.params.breed]}
-        />
-      );
+    } else if (breeds[breed].length > 0) {
+      return <SubBreeds main={breed} subs={breeds[breed]} />;
     }
   };
 
@@ -146,11 +130,7 @@ const BreedInfo: FunctionComponent<BreedInfoProps> = (
   } else if (breedFound) {
     const top: JSX.Element = getTop();
 
-    const title = props.match.params.sub
-      ? props.match.params.sub.replace(/-/g, ' ') +
-        ' ' +
-        props.match.params.breed
-      : props.match.params.breed;
+    const title = sub ? sub.replace(/-/g, ' ') + ' ' + breed : breed;
 
     return (
       <Section>

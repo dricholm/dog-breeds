@@ -10,7 +10,7 @@ describe('<BreedListLinks />', () => {
   let wrapper: ShallowWrapper;
 
   beforeEach(() => {
-    wrapper = shallow(<BreedListLinks />);
+    wrapper = shallow(<BreedListLinks breeds={[]} />);
   });
 
   it('should display error message when no breeds passed', () => {
