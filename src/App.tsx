@@ -15,17 +15,23 @@ const App: FunctionComponent = () => (
   <div className="main">
     <Nav />
     <Switch>
-      <Route path="/about" component={About} />
-      <Route path="/quiz" component={Quiz} />
-      <Route path="/breed/:breed/:sub?" component={BreedInfo} />
-      <Route path="" exact component={BreedList} />
-      <Route
-        render={() => (
-          <Section>
-            <h1 className="title">Page not found</h1>
-          </Section>
-        )}
-      />
+      <Route path="/about">
+        <About />
+      </Route>
+      <Route path="/quiz">
+        <Quiz />
+      </Route>
+      <Route path="/breed/:breed/:sub?">
+        <BreedInfo />
+      </Route>
+      <Route path="" exact>
+        <BreedList />
+      </Route>
+      <Route>
+        <Section>
+          <h1 className="title">Page not found</h1>
+        </Section>
+      </Route>
     </Switch>
     <Footer />
   </div>

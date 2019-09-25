@@ -16,13 +16,12 @@ import Loading from '../../../components/Ui/Loading/Loading';
 import QuizCheckboxes from '../../../components/Quiz/QuizCheckboxes/QuizCheckboxes';
 import { quizFormReducer, initialState } from './reducers';
 import { AppState } from '../../../store';
+import { useHistory } from 'react-router';
 
-interface QuizFormProps {
-  history: any;
-}
-
-const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
+const QuizForm: FunctionComponent = () => {
   const breeds = useSelector((state: AppState) => state.breeds);
+
+  const history = useHistory();
 
   const reduxDispatch = useDispatch();
   const getBreeds = useCallback(() => reduxDispatch(breedActions.getBreeds()), [
@@ -100,7 +99,7 @@ const QuizForm: FunctionComponent<QuizFormProps> = (props: QuizFormProps) => {
     });
     if (checked.length > 1) {
       setOptions(Number(state.questions.elementConfig.value), checked);
-      props.history.push('/quiz/game');
+      history.push('/quiz/game');
     } else {
       dispatch({ type: 'SET_INVALID' });
     }

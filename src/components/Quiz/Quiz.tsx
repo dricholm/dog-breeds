@@ -9,8 +9,12 @@ const Quiz: FunctionComponent<any> = (props: any) => {
   return (
     <Section>
       <Switch>
-        <Route path="/quiz/game" render={() => <QuizGame />} />
-        <Route path="/quiz" exact render={() => <QuizForm {...props} />} />
+        <Route path="/quiz/game">
+          <QuizGame />
+        </Route>
+        <Route path="/quiz" exact>
+          <QuizForm {...props} />
+        </Route>
       </Switch>
     </Section>
   );
