@@ -1,21 +1,20 @@
 import React, {
   FunctionComponent,
+  useCallback,
   useEffect,
   useReducer,
-  useCallback,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-
-import axios from '../../shared/axiosDogApi';
 import BreedGallery from '../../components/BreedInfo/BreedGallery/BreedGallery';
+import SubBreeds from '../../components/BreedInfo/SubBreeds/SubBreeds';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage';
 import ImageModal from '../../components/Ui/ImageModal/ImageModal';
 import Loading from '../../components/Ui/Loading/Loading';
 import Section from '../../components/Ui/Section/Section';
-import SubBreeds from '../../components/BreedInfo/SubBreeds/SubBreeds';
-import { getBreeds } from '../../store/breed/actions';
+import { fetchImages } from '../../shared/dogApi';
 import { AppState } from '../../store';
+import { getBreeds } from '../../store/breed/actions';
 import { breedInfoReducer, initialState } from './reducers';
 
 const BreedInfo: FunctionComponent = () => {
@@ -57,28 +56,18 @@ const BreedInfo: FunctionComponent = () => {
     const getImages: () => Promise<void> = async () => {
       dispatch({ type: 'INIT_REQUEST', payload: { breed, sub } });
 
-      const url = sub
-        ? `/breed/${breed}/${sub}/images`
-        : `/breed/${breed}/images`;
-
-      let errorMessage: string;
       try {
-        const result = await axios.get(url);
+        const images = await fetchImages(breed, sub);
 
-        if (result.status === 200) {
-          dispatch({
-            type: 'SET_IMAGES',
-            payload: { imageUrls: shuffle(result.data.message) },
-          });
-        } else {
-          errorMessage = result.statusText;
-        }
+        dispatch({
+          type: 'SET_IMAGES',
+          payload: { imageUrls: shuffle(images) },
+        });
       } catch (e) {
-        errorMessage = 'Network error';
-      }
-
-      if (errorMessage) {
-        dispatch({ type: 'SET_ERROR', payload: { errorMessage } });
+        dispatch({
+          type: 'SET_ERROR',
+          payload: { errorMessage: 'Network error' },
+        });
       }
     };
 

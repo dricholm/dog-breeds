@@ -1,21 +1,22 @@
-import axios from '../../shared/axiosDogApi';
+import { fetchRandomImage } from '../../shared/dogApi';
 import {
-  SET_OPTIONS,
-  NEXT_QUESTION,
-  NEXT_QUESTION_SUCCESS,
-  NEXT_QUESTION_FAIL,
   ANSWER,
-  RESTART,
+  NEXT_QUESTION,
+  NEXT_QUESTION_FAIL,
+  NEXT_QUESTION_SUCCESS,
   QuizActionTypes,
+  RESTART,
+  SET_OPTIONS,
 } from './types';
 
-const getRandomAnswers = (selectedBreeds: Array<string>) => {
+const getRandomAnswers = (selectedBreeds: Array<string>): string[] => {
   const answerCount = Math.min(4, selectedBreeds.length);
-  let answers = [];
+  let answers: string[] = [];
   while (answers.length < answerCount) {
     const idx = Math.floor(Math.random() * selectedBreeds.length);
-    if (answers.indexOf(selectedBreeds[idx].toLowerCase()) === -1)
+    if (answers.indexOf(selectedBreeds[idx].toLowerCase()) === -1) {
       answers.push(selectedBreeds[idx].toLowerCase());
+    }
   }
   return answers;
 };
@@ -38,31 +39,26 @@ export const nextQuestion = (selectedBreeds: Array<string>) => {
     const choices = getRandomAnswers(selectedBreeds);
     const correctAnswer = choices[Math.floor(Math.random() * choices.length)];
     const splitAnswer = correctAnswer.split('-');
-    const url =
+    const breed = splitAnswer[splitAnswer.length - 1];
+    const sub =
       splitAnswer.length === 1
-        ? `/breed/${splitAnswer[0]}/images/random`
-        : `/breed/${splitAnswer[splitAnswer.length - 1]}/${splitAnswer
-            .slice(0, splitAnswer.length - 1)
-            .join(' ')}/images/random`;
+        ? null
+        : splitAnswer.slice(0, splitAnswer.length - 1).join(' ');
 
-    let errorMessage: string;
     try {
-      const result = await axios.get(url);
+      const imageUrl = await fetchRandomImage(breed, sub);
       dispatch({
         payload: {
           choices: choices,
           correctAnswer: correctAnswer,
-          imageUrl: result.data.message,
+          imageUrl,
         },
         type: NEXT_QUESTION_SUCCESS,
       });
     } catch (err) {
-      errorMessage = 'Network error';
-    }
-    if (errorMessage) {
       dispatch({
         payload: {
-          errorMessage: errorMessage,
+          errorMessage: 'Network error',
         },
         type: NEXT_QUESTION_FAIL,
       });
