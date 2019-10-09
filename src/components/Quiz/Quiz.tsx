@@ -5,7 +5,7 @@ import Section from '../../components/Ui/Section/Section';
 import QuizForm from '../../containers/Quiz/QuizForm/QuizForm';
 import QuizGame from '../../containers/Quiz/QuizGame/QuizGame';
 
-const Quiz: FunctionComponent<any> = (props: any) => {
+const Quiz: FunctionComponent<any> = () => {
   return (
     <Section>
       <Switch>
@@ -13,7 +13,7 @@ const Quiz: FunctionComponent<any> = (props: any) => {
           <QuizGame />
         </Route>
         <Route path="/quiz" exact>
-          <QuizForm {...props} />
+          <QuizForm />
         </Route>
       </Switch>
     </Section>

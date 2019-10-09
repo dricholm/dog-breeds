@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 
-import './QuizGame.css';
+import './QuizGame.scss';
 import AnswerButtons from '../../../components/Quiz/AnswerButtons/AnswerButtons';
 import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
 import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
