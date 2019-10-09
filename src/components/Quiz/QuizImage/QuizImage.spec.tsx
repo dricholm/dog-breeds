@@ -1,51 +1,69 @@
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { configure, shallow, ShallowWrapper } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
 import QuizImage from './QuizImage';
-import Loading from '../../Ui/Loading/Loading';
-
-configure({ adapter: new Adapter() });
 
 describe('<QuizImage />', () => {
-  let wrapper: ShallowWrapper;
-
-  beforeEach(() => {
-    wrapper = shallow(<QuizImage />);
-  });
-
   it('should display loading when no image is set', () => {
-    expect(wrapper.find(Loading)).toHaveLength(1);
+    const utils = render(
+      <QuizImage nextQuestion={() => null} restart={() => null} />
+    );
+
+    expect(utils.getByLabelText('Loading')).toBeDefined();
   });
 
   it('should display image when set', () => {
-    wrapper.setProps({ image: 'test.jpg' });
-    expect(wrapper.find(Loading)).toHaveLength(0);
-    expect(wrapper.find('.quiz-image')).toHaveLength(1);
+    const image = 'test.jpg';
+    const utils = render(
+      <QuizImage image={image} nextQuestion={() => null} restart={() => null} />
+    );
+
+    expect(utils.queryByLabelText('Loading')).toBeNull();
+    expect(utils.container.querySelector('figure')).toBeDefined();
   });
 
-  it('should display next button when answered', () => {
-    wrapper.setProps({
-      chosen: true,
-      image: 'test.jpg',
-    });
-    expect(wrapper.find(Loading)).toHaveLength(0);
-    expect(wrapper.find('.quiz-image')).toHaveLength(1);
-    expect(wrapper.find('.quiz-next')).toHaveLength(1);
-    expect(wrapper.find('[aria-label="next"]')).toHaveLength(1);
+  it('should call nextQuestion when next is clicked', () => {
+    const nextQuestion = jest.fn();
+    const utils = render(
+      <QuizImage
+        chosen="Test"
+        image="test.jpg"
+        nextQuestion={nextQuestion}
+        restart={() => null}
+      />
+    );
+
+    expect(utils.queryByLabelText('Loading')).toBeNull();
+    expect(utils.container.querySelector('figure')).toBeDefined();
+    const nextQuestionButton = utils.getByLabelText('Next');
+    expect(nextQuestionButton).toBeDefined();
+    fireEvent.click(nextQuestionButton);
+    expect(nextQuestion).toHaveBeenCalledTimes(1);
   });
 
   it('should display results and restart when done', () => {
-    wrapper.setProps({
-      chosen: true,
-      correct: 6,
-      gameEnd: true,
-      image: 'test.jpg',
-      wrong: 4,
-    });
-    expect(wrapper.find(Loading)).toHaveLength(0);
-    expect(wrapper.find('.quiz-image')).toHaveLength(1);
-    expect(wrapper.find('.box')).toHaveLength(1);
-    expect(wrapper.find('[aria-label="restart"]')).toHaveLength(1);
+    const restart = jest.fn();
+    const correct = 6;
+    const wrong = 4;
+    const utils = render(
+      <QuizImage
+        chosen="Test"
+        image="test.jpg"
+        correct={correct}
+        gameEnd={true}
+        wrong={wrong}
+        restart={restart}
+        nextQuestion={() => null}
+      />
+    );
+
+    expect(utils.queryByLabelText('Loading')).toBeNull();
+    expect(utils.container.querySelector('figure')).toBeDefined();
+    expect(utils.getByText(`Correct: ${correct}`)).toBeDefined();
+    expect(utils.getByText(`Wrong: ${wrong}`)).toBeDefined();
+    expect(utils.queryByLabelText('Next')).toBeNull();
+    const restartButton = utils.getByLabelText('Restart');
+    expect(restartButton).toBeDefined();
+    fireEvent.click(restartButton);
+    expect(restart).toHaveBeenCalledTimes(1);
   });
 });

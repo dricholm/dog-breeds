@@ -2,9 +2,9 @@ import React, { Fragment, FunctionComponent } from 'react';
 
 export interface AnswerButtonsProps {
   choices: Array<string>;
-  chosenAnswer: string;
+  chosenAnswer?: string;
   click: (breed: string) => void;
-  correctAnswer: string;
+  correctAnswer?: string;
 }
 
 const AnswerButtons: FunctionComponent<AnswerButtonsProps> = (

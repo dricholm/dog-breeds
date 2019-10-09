@@ -1,48 +1,29 @@
-import { Link } from 'react-router-dom';
+import { render } from '@testing-library/react';
 import React from 'react';
-
-import { shallow, ShallowWrapper } from 'enzyme';
-
-import ErrorMessage from '../Ui/ErrorMessage/ErrorMessage';
+import { MemoryRouter } from 'react-router-dom';
 import BreedListLinks from './BreedListLinks';
 
 describe('<BreedListLinks />', () => {
-  let wrapper: ShallowWrapper;
+  it('should display error message when no breeds are set', () => {
+    const utils = render(<BreedListLinks />);
 
-  beforeEach(() => {
-    wrapper = shallow(<BreedListLinks breeds={[]} />);
-  });
-
-  it('should display error message when no breeds passed', () => {
-    expect(wrapper.find(ErrorMessage)).toHaveLength(1);
-  });
-
-  it('should display error message when no breeds found', () => {
-    wrapper.setProps({ breeds: [] });
-    expect(wrapper.find(ErrorMessage)).toHaveLength(1);
+    const alert = utils.getByRole('alert');
+    expect(alert.textContent).toBe('No breeds matched the filter');
   });
 
   it('should display breeds when passed', () => {
-    const breedNames = ['main', 'has sub breed'];
-    wrapper.setProps({ breeds: breedNames });
-    expect(wrapper.find(ErrorMessage)).toHaveLength(0);
+    const breeds = ['main', 'has sub breed'];
+    const utils = render(<BreedListLinks breeds={breeds} />, {
+      wrapper: MemoryRouter,
+    });
 
-    const sub = breedNames[1].split(' ');
-    expect(
-      wrapper.contains([
-        <li>
-          <Link to={`/breed/${breedNames[0]}`}>{breedNames[0]}</Link>
-        </li>,
-        <li>
-          <Link
-            to={`/breed/${sub[sub.length - 1]}/${sub
-              .slice(0, sub.length - 1)
-              .join('-')}`}
-          >
-            {breedNames[1]}
-          </Link>
-        </li>,
-      ])
-    ).toEqual(true);
+    expect(utils.queryByText('No breeds matched the filter')).toBeNull();
+    const link1 = utils.getByText(breeds[0]);
+    expect(link1.getAttribute('href')).toBe(`/breed/${breeds[0]}`);
+    const link2 = utils.getByText(breeds[1]);
+    const sub = breeds[1].split(' ');
+    expect(link2.getAttribute('href')).toBe(
+      `/breed/${sub[sub.length - 1]}/${sub.slice(0, sub.length - 1).join('-')}`
+    );
   });
 });

@@ -26,7 +26,7 @@ const Input: FunctionComponent<InputProps> = (props: InputProps) => {
         'tag',
       ];
       if (
-        typeof props.elementConfig !== 'undefined' &&
+        typeof props.elementConfig != 'undefined' &&
         props.elementConfig.checked
       ) {
         checkboxClasses.push('is-info');

@@ -1,17 +1,16 @@
-import React, { FunctionComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import './QuizImage.css';
+import React, { FunctionComponent } from 'react';
 import Loading from '../../Ui/Loading/Loading';
+import './QuizImage.scss';
 
 export interface QuizImageProps {
-  chosen: string;
-  correct: number;
-  gameEnd: boolean;
-  image: string;
+  chosen?: string;
+  correct?: number;
+  gameEnd?: boolean;
+  image?: string;
   nextQuestion: () => void;
   restart: () => void;
-  wrong: number;
+  wrong?: number;
 }
 
 const QuizImage: FunctionComponent<QuizImageProps> = (
@@ -38,7 +37,7 @@ const QuizImage: FunctionComponent<QuizImageProps> = (
             <p className="has-text-danger is-size-4">Wrong: {props.wrong}</p>
           </div>
           <button
-            aria-label="restart"
+            aria-label="Restart"
             className="quiz-button"
             onClick={props.restart}
           >
@@ -49,7 +48,7 @@ const QuizImage: FunctionComponent<QuizImageProps> = (
     } else {
       button = (
         <button
-          aria-label="next"
+          aria-label="Next"
           className="quiz-button quiz-next"
           onClick={props.nextQuestion}
         >

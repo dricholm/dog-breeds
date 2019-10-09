@@ -1,76 +1,73 @@
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
-
-import AnswerButtons, { AnswerButtonsProps } from './AnswerButtons';
+import AnswerButtons from './AnswerButtons';
 
 describe('<AnswerButtons />', () => {
-  let wrapper: ShallowWrapper<AnswerButtonsProps>;
-
-  beforeEach(() => {
-    wrapper = shallow(<AnswerButtons />);
-  });
-
   it('should display choices', () => {
-    const props: AnswerButtonsProps = {
-      choices: ['First', 'Second'],
-      chosenAnswer: null,
-      click: jest.fn(),
-      correctAnswer: null,
-    };
-    wrapper.setProps(props);
-    const buttons = wrapper.find('button');
-    expect(buttons.length).toBe(2);
-    expect(buttons.at(0).text()).toBe(props.choices[0]);
-    expect(buttons.at(1).text()).toBe(props.choices[1]);
-    expect(buttons.at(0).hasClass('is-info')).toBe(true);
-    expect(buttons.at(1).hasClass('is-info')).toBe(true);
-    expect(buttons.at(0).hasClass('is-outlined')).toBe(false);
-    expect(buttons.at(1).hasClass('is-outlined')).toBe(false);
+    const choices = ['First', 'Second'];
+    const click = jest.fn();
+    const utils = render(<AnswerButtons choices={choices} click={click} />);
+
+    choices.forEach(choice => {
+      const button = utils.getByText(choice);
+      expect(button.classList.contains('is-info')).toBe(true);
+      expect(button.classList.contains('is-outlined')).toBe(false);
+    });
   });
 
   it('should call props.click on click', () => {
-    const props: AnswerButtonsProps = {
-      choices: ['Test click'],
-      chosenAnswer: null,
-      click: jest.fn(),
-      correctAnswer: null,
-    };
-    wrapper.setProps(props);
-    wrapper
-      .find('button')
-      .at(0)
-      .simulate('click');
-    expect(props.click).toHaveBeenCalledWith('Test click');
+    const choices = ['First', 'Second'];
+    const click = jest.fn();
+    const utils = render(<AnswerButtons choices={choices} click={click} />);
+
+    const choice = utils.getByText(choices[1]);
+    fireEvent.click(choice);
+
+    expect(click).toHaveBeenCalledWith(choices[1]);
   });
 
   it('should display correct choice', () => {
-    const props: AnswerButtonsProps = {
-      choices: ['First', 'Second'],
-      chosenAnswer: 'First',
-      click: jest.fn(),
-      correctAnswer: 'First',
-    };
-    wrapper.setProps(props);
-    const buttons = wrapper.find('button');
-    expect(buttons.at(0).text()).toBe(props.choices[0]);
-    expect(buttons.at(1).text()).toBe(props.choices[1]);
-    expect(buttons.at(0).hasClass('is-success')).toBe(true);
-    expect(buttons.at(1).hasClass('is-info')).toBe(true);
-    expect(buttons.at(1).hasClass('is-outlined')).toBe(true);
+    const choices = ['First', 'Second'];
+    const chosenAnswer = choices[0];
+    const click = jest.fn();
+    const correctAnswer = choices[0];
+    const utils = render(
+      <AnswerButtons
+        choices={choices}
+        click={click}
+        chosenAnswer={chosenAnswer}
+        correctAnswer={correctAnswer}
+      />
+    );
+
+    const buttons = utils.container.querySelectorAll('button');
+    expect(buttons.length).toBe(2);
+    expect(buttons[0].textContent).toBe(choices[0]);
+    expect(buttons[1].textContent).toBe(choices[1]);
+    expect(buttons[0].classList.contains('is-success')).toBe(true);
+    expect(buttons[1].classList.contains('is-info')).toBe(true);
+    expect(buttons[1].classList.contains('is-outlined')).toBe(true);
   });
 
   it('should display wrong choice', () => {
-    const props: AnswerButtonsProps = {
-      choices: ['First', 'Second'],
-      chosenAnswer: 'First',
-      click: jest.fn(),
-      correctAnswer: 'Second',
-    };
-    wrapper.setProps(props);
-    const buttons = wrapper.find('button');
-    expect(buttons.at(0).text()).toBe(props.choices[0]);
-    expect(buttons.at(1).text()).toBe(props.choices[1]);
-    expect(buttons.at(0).hasClass('is-danger')).toBe(true);
-    expect(buttons.at(1).hasClass('is-success')).toBe(true);
+    const choices = ['First', 'Second'];
+    const chosenAnswer = choices[0];
+    const click = jest.fn();
+    const correctAnswer = choices[1];
+    const utils = render(
+      <AnswerButtons
+        choices={choices}
+        click={click}
+        chosenAnswer={chosenAnswer}
+        correctAnswer={correctAnswer}
+      />
+    );
+
+    const buttons = utils.container.querySelectorAll('button');
+    expect(buttons.length).toBe(2);
+    expect(buttons[0].textContent).toBe(choices[0]);
+    expect(buttons[1].textContent).toBe(choices[1]);
+    expect(buttons[0].classList.contains('is-danger')).toBe(true);
+    expect(buttons[1].classList.contains('is-success')).toBe(true);
   });
 });

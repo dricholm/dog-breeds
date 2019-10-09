@@ -1,24 +1,20 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { configure, shallow, ShallowWrapper } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import { NavLink } from 'react-router-dom';
-
+import { MemoryRouter } from 'react-router';
 import Nav from './Nav';
 
-configure({ adapter: new Adapter() });
-
 describe('<Nav />', () => {
-  let wrapper: ShallowWrapper;
+  it('should display header', () => {
+    const utils = render(<Nav />, { wrapper: MemoryRouter });
 
-  beforeEach(() => {
-    wrapper = shallow(<Nav />);
+    const header = utils.getByText('Dog breeds');
+    expect(header.getAttribute('href')).toBe('/');
   });
 
-  it('should display nav', () => {
-    expect(wrapper.find('nav').exists()).toBe(true);
-    const navLinks = wrapper.find(NavLink);
-    expect(navLinks.length).toBe(2);
-    expect(navLinks.at(0).prop('to')).toBe('/');
-    expect(navLinks.at(1).prop('to')).toBe('/quiz');
+  it('should display quiz link', () => {
+    const utils = render(<Nav />, { wrapper: MemoryRouter });
+
+    const quiz = utils.getByText('Quiz');
+    expect(quiz.getAttribute('href')).toBe('/quiz');
   });
 });

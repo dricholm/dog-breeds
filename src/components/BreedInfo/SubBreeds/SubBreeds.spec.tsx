@@ -1,23 +1,19 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { shallow, ShallowWrapper } from 'enzyme';
-
+import { MemoryRouter } from 'react-router-dom';
 import SubBreeds from './SubBreeds';
 
 describe('<SubBreeds />', () => {
-  let wrapper: ShallowWrapper;
-
-  beforeEach(() => {
-    wrapper = shallow(<SubBreeds main="" subs={[]} />);
-  });
-
   it('should display sub breed list', () => {
-    wrapper.setProps({ main: 'main', subs: ['sub1', 'sub2'] });
-    const links = wrapper.find(Link);
-    expect(links.length).toBe(2);
-    expect(links.at(0).props().to).toBe('/breed/main/sub1');
-    expect(links.at(0).text()).toBe('sub1 main');
-    expect(links.at(1).props().to).toBe('/breed/main/sub2');
-    expect(links.at(1).text()).toBe('sub2 main');
+    const main = 'main';
+    const subs = ['sub1', 'sub2'];
+    const utils = render(<SubBreeds main={main} subs={subs} />, {
+      wrapper: MemoryRouter,
+    });
+
+    subs.forEach(sub => {
+      const link = utils.getByText(`${sub} ${main}`);
+      expect(link.getAttribute('href')).toBe(`/breed/${main}/${sub}`);
+    });
   });
 });

@@ -6,6 +6,10 @@ export interface ErrorMessageProps {
 
 const ErrorMessage: FunctionComponent<ErrorMessageProps> = (
   props: ErrorMessageProps
-) => <div className="notification is-danger is-size-5">{props.message}</div>;
+) => (
+  <div className="notification is-danger is-size-5" role="alert">
+    {props.message}
+  </div>
+);
 
 export default ErrorMessage;

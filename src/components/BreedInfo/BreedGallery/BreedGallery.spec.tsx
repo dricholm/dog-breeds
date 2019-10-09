@@ -1,63 +1,73 @@
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
-
-import ErrorMessage from '../../Ui/ErrorMessage/ErrorMessage';
-import Loading from '../../Ui/Loading/Loading';
 import BreedGallery from './BreedGallery';
 
 describe('<BreedGallery />', () => {
-  let wrapper: ShallowWrapper;
-
-  beforeEach(() => {
-    wrapper = shallow(<BreedGallery />);
-  });
-
   it('should display error message when error is passed', () => {
-    wrapper.setProps({ imageError: 'Test error message' });
-    expect(wrapper.find(ErrorMessage).exists()).toBe(true);
-    expect(wrapper.find(Loading).exists()).toBe(false);
-    expect(wrapper.find('.gallery-image').exists()).toBe(false);
-    expect(wrapper.find(ErrorMessage).props().message).toBe(
-      'Test error message'
+    const errorMessage = 'Test error message';
+    const utils = render(
+      <BreedGallery
+        imageError={errorMessage}
+        loadMore={() => null}
+        selectImage={() => null}
+      />
     );
+
+    const alert = utils.getByRole('alert');
+    expect(alert.textContent).toBe(errorMessage);
+    expect(utils.queryByLabelText('Loading')).toBeNull();
+    expect(utils.container.querySelector('img')).toBeNull();
   });
 
   it('should display loading', () => {
-    wrapper.setProps({ isLoading: true });
-    expect(wrapper.find(ErrorMessage).exists()).toBe(false);
-    expect(wrapper.find(Loading).exists()).toBe(true);
-    expect(wrapper.find('.gallery-image').exists()).toBe(false);
+    const utils = render(
+      <BreedGallery
+        isLoading={true}
+        loadMore={() => null}
+        selectImage={() => null}
+      />
+    );
+
+    utils.getByLabelText('Loading');
+    expect(utils.container.querySelector('img')).toBeNull();
   });
 
   it('should display images', () => {
-    wrapper.setProps({
-      imageUrls: ['a.jpg', 'b.jpg'],
-      loadMore: () => null,
-    });
-    expect(wrapper.find(ErrorMessage).exists()).toBe(false);
-    expect(wrapper.find(Loading).exists()).toBe(false);
-    expect(wrapper.find('.gallery-image').exists()).toBe(true);
+    const imageUrls = ['a.jpg', 'b.jpg'];
+    const loadMore = jest.fn();
+    const title = 'Test title';
+    const utils = render(
+      <BreedGallery
+        imageUrls={imageUrls}
+        loadMore={loadMore}
+        title={title}
+        selectImage={() => null}
+      />
+    );
 
-    const imgs = wrapper.find('img');
-    expect(imgs).toHaveLength(2);
-    expect(imgs.at(0).props().src).toBe('a.jpg');
-    expect(imgs.at(1).props().src).toBe('b.jpg');
+    const images = utils.container.querySelectorAll('img');
+    expect(images.length).toBe(imageUrls.length);
+    imageUrls.forEach((url, idx) => {
+      expect(images[idx].getAttribute('src')).toBe(url);
+      expect(images[idx].getAttribute('alt')).toBe(`${title} #${idx + 1}`);
+    });
+    expect(utils.queryByLabelText('Loading')).toBeNull();
   });
 
   it('should call selectImage on click', () => {
-    const onClick = jest.fn();
-    wrapper.setProps({
-      imageUrls: ['a.jpg'],
-      loadMore: () => null,
-      selectImage: onClick,
-    });
-    expect(wrapper.find(ErrorMessage).exists()).toBe(false);
-    expect(wrapper.find(Loading).exists()).toBe(false);
-    expect(wrapper.find('.gallery-image').exists()).toBe(true);
+    const selectImage = jest.fn();
+    const loadMore = jest.fn();
+    const utils = render(
+      <BreedGallery
+        imageUrls={['a.jpg']}
+        title={'Test'}
+        selectImage={selectImage}
+        loadMore={loadMore}
+      />
+    );
 
-    const imgs = wrapper.find('img');
-    expect(onClick).toHaveBeenCalledTimes(0);
-    imgs.at(0).simulate('click');
-    expect(onClick).toHaveBeenCalledTimes(1);
+    fireEvent.click(utils.container.querySelector('img'));
+
+    expect(selectImage).toHaveBeenCalledWith(0);
   });
 });
