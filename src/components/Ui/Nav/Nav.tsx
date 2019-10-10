@@ -28,7 +28,13 @@ const Nav: FunctionComponent = () => {
           Dog breeds
         </NavLink>
 
-        <div className={burgerClasses.join(' ')} onClick={toggleMenu}>
+        <div
+          role="button"
+          className={burgerClasses.join(' ')}
+          onClick={toggleMenu}
+          aria-label="Menu"
+          aria-expanded={active}
+        >
           <span />
           <span />
           <span />

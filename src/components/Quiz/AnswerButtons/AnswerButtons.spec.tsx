@@ -10,8 +10,8 @@ describe('<AnswerButtons />', () => {
 
     choices.forEach(choice => {
       const button = utils.getByText(choice);
-      expect(button.classList.contains('is-info')).toBe(true);
-      expect(button.classList.contains('is-outlined')).toBe(false);
+      expect(button).toHaveClass('is-info');
+      expect(button).not.toHaveClass('is-outlined');
     });
   });
 
@@ -44,9 +44,9 @@ describe('<AnswerButtons />', () => {
     expect(buttons.length).toBe(2);
     expect(buttons[0].textContent).toBe(choices[0]);
     expect(buttons[1].textContent).toBe(choices[1]);
-    expect(buttons[0].classList.contains('is-success')).toBe(true);
-    expect(buttons[1].classList.contains('is-info')).toBe(true);
-    expect(buttons[1].classList.contains('is-outlined')).toBe(true);
+    expect(buttons[0]).toHaveClass('is-success');
+    expect(buttons[1]).toHaveClass('is-info');
+    expect(buttons[1]).toHaveClass('is-outlined');
   });
 
   it('should display wrong choice', () => {
@@ -67,7 +67,7 @@ describe('<AnswerButtons />', () => {
     expect(buttons.length).toBe(2);
     expect(buttons[0].textContent).toBe(choices[0]);
     expect(buttons[1].textContent).toBe(choices[1]);
-    expect(buttons[0].classList.contains('is-danger')).toBe(true);
-    expect(buttons[1].classList.contains('is-success')).toBe(true);
+    expect(buttons[0]).toHaveClass('is-danger');
+    expect(buttons[1]).toHaveClass('is-success');
   });
 });

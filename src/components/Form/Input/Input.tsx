@@ -14,6 +14,7 @@ const Input: FunctionComponent<InputProps> = (props: InputProps) => {
         <input
           className="input"
           title={props.elementConfig.placeholder}
+          aria-label={props.label}
           {...props.elementConfig}
         />
       );

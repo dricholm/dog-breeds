@@ -19,10 +19,10 @@ describe('<QuizProgress />', () => {
 
     const texts = utils.container.querySelectorAll('.title');
     expect(texts.length).toBe(3);
-    expect(texts[0].classList.contains('has-text-success')).toBe(true);
+    expect(texts[0]).toHaveClass('has-text-success');
     expect(texts[0].textContent).toBe('1');
     expect(texts[1].textContent).toBe('3/5');
-    expect(texts[2].classList.contains('has-text-danger')).toBe(true);
+    expect(texts[2]).toHaveClass('has-text-danger');
     expect(texts[2].textContent).toBe('2');
   });
 
@@ -42,10 +42,10 @@ describe('<QuizProgress />', () => {
 
     const texts = utils.container.querySelectorAll('.title');
     expect(texts.length).toBe(3);
-    expect(texts[0].classList.contains('has-text-success')).toBe(true);
-    expect(texts[0].classList.contains('answer-pop')).toBe(true);
-    expect(texts[2].classList.contains('has-text-danger')).toBe(true);
-    expect(texts[2].classList.contains('answer-pop')).toBe(false);
+    expect(texts[0]).toHaveClass('has-text-success');
+    expect(texts[0]).toHaveClass('answer-pop');
+    expect(texts[2]).toHaveClass('has-text-danger');
+    expect(texts[2]).not.toHaveClass('answer-pop');
   });
 
   it('should pop wrong', () => {
@@ -64,9 +64,9 @@ describe('<QuizProgress />', () => {
 
     const texts = utils.container.querySelectorAll('.title');
     expect(texts.length).toBe(3);
-    expect(texts[0].classList.contains('has-text-success')).toBe(true);
-    expect(texts[0].classList.contains('answer-pop')).toBe(false);
-    expect(texts[2].classList.contains('has-text-danger')).toBe(true);
-    expect(texts[2].classList.contains('answer-pop')).toBe(true);
+    expect(texts[0]).toHaveClass('has-text-success');
+    expect(texts[0]).not.toHaveClass('answer-pop');
+    expect(texts[2]).toHaveClass('has-text-danger');
+    expect(texts[2]).toHaveClass('answer-pop');
   });
 });

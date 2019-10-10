@@ -49,10 +49,6 @@ const QuizGame: FunctionComponent = () => {
     }
   };
 
-  if (!quiz.questionCount || quiz.selectedBreeds.length < 2) {
-    return <p className="notification is-primary">Redirecting</p>;
-  }
-
   return (
     <React.Fragment>
       <div className="columns">

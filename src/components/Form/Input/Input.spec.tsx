@@ -21,7 +21,7 @@ describe('<Input />', () => {
     expect(onChange).toHaveBeenCalledTimes(0);
     fireEvent.change(inputElement, { target: { value: 'Entering' } });
     expect(onChange).toHaveBeenCalledTimes(1);
-    expect(inputElement.value).toBe('Entering');
+    expect(inputElement).toHaveValue('Entering');
   });
 
   it('should work with checkbox', () => {

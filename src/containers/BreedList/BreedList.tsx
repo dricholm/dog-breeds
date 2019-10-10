@@ -72,6 +72,7 @@ const BreedList: FunctionComponent = () => {
                     placeholder: 'Filter breeds',
                     type: 'text',
                   }}
+                  label="Filter breeds"
                   elementType="input"
                 />
               </div>
