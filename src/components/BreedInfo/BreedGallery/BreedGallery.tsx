@@ -1,19 +1,18 @@
 import React, { FunctionComponent } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import LazyLoad from 'react-lazyload';
-
-import './BreedGallery.css';
 import ErrorMessage from '../../Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../Ui/Loading/Loading';
+import './BreedGallery.scss';
 
 export interface BreedGalleryProps {
-  hasMore: boolean;
-  imageError: string;
-  imageUrls: Array<string>;
-  isLoading: boolean;
+  hasMore?: boolean;
+  imageError?: string;
+  imageUrls?: Array<string>;
+  isLoading?: boolean;
   loadMore: () => void;
   selectImage: (index: number) => void;
-  title: string;
+  title?: string;
 }
 
 const BreedGallery: FunctionComponent<BreedGalleryProps> = (

@@ -1,61 +1,72 @@
+import { render } from '@testing-library/react';
 import React from 'react';
-import { configure, shallow, ShallowWrapper } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
 import QuizProgress from './QuizProgress';
 
-configure({ adapter: new Adapter() });
-
 describe('<QuizProgress />', () => {
-  let wrapper: ShallowWrapper;
-
-  beforeEach(() => {
-    wrapper = shallow(<QuizProgress />);
-  });
-
   it('should display information', () => {
-    wrapper.setProps({
-      correct: 1,
-      questionCount: 5,
-      wasCorrect: null,
-      wrong: 2,
-    });
-    const texts = wrapper.find('.title');
+    const correct = 1;
+    const questionCount = 5;
+    const wasCorrect = null;
+    const wrong = 2;
+    const utils = render(
+      <QuizProgress
+        correct={correct}
+        questionCount={questionCount}
+        wasCorrect={wasCorrect}
+        wrong={wrong}
+      />
+    );
+
+    const texts = utils.container.querySelectorAll('.title');
     expect(texts.length).toBe(3);
-    expect(texts.at(0).hasClass('has-text-success')).toBe(true);
-    expect(texts.at(0).text()).toBe('1');
-    expect(texts.at(1).text()).toBe('3/5');
-    expect(texts.at(2).hasClass('has-text-danger')).toBe(true);
-    expect(texts.at(2).text()).toBe('2');
+    expect(texts[0]).toHaveClass('has-text-success');
+    expect(texts[0].textContent).toBe('1');
+    expect(texts[1].textContent).toBe('3/5');
+    expect(texts[2]).toHaveClass('has-text-danger');
+    expect(texts[2].textContent).toBe('2');
   });
 
   it('should pop correct', () => {
-    wrapper.setProps({
-      correct: 1,
-      questionCount: 5,
-      wasCorrect: true,
-      wrong: 2,
-    });
-    const texts = wrapper.find('.title');
+    const correct = 1;
+    const questionCount = 5;
+    const wasCorrect = true;
+    const wrong = 2;
+    const utils = render(
+      <QuizProgress
+        correct={correct}
+        questionCount={questionCount}
+        wasCorrect={wasCorrect}
+        wrong={wrong}
+      />
+    );
+
+    const texts = utils.container.querySelectorAll('.title');
     expect(texts.length).toBe(3);
-    expect(texts.at(0).hasClass('has-text-success')).toBe(true);
-    expect(texts.at(0).hasClass('answer-pop')).toBe(true);
-    expect(texts.at(2).hasClass('has-text-danger')).toBe(true);
-    expect(texts.at(2).hasClass('answer-pop')).toBe(false);
+    expect(texts[0]).toHaveClass('has-text-success');
+    expect(texts[0]).toHaveClass('answer-pop');
+    expect(texts[2]).toHaveClass('has-text-danger');
+    expect(texts[2]).not.toHaveClass('answer-pop');
   });
 
-  it('should pop correct', () => {
-    wrapper.setProps({
-      correct: 1,
-      questionCount: 5,
-      wasCorrect: false,
-      wrong: 2,
-    });
-    const texts = wrapper.find('.title');
+  it('should pop wrong', () => {
+    const correct = 1;
+    const questionCount = 5;
+    const wasCorrect = false;
+    const wrong = 2;
+    const utils = render(
+      <QuizProgress
+        correct={correct}
+        questionCount={questionCount}
+        wasCorrect={wasCorrect}
+        wrong={wrong}
+      />
+    );
+
+    const texts = utils.container.querySelectorAll('.title');
     expect(texts.length).toBe(3);
-    expect(texts.at(0).hasClass('has-text-success')).toBe(true);
-    expect(texts.at(0).hasClass('answer-pop')).toBe(false);
-    expect(texts.at(2).hasClass('has-text-danger')).toBe(true);
-    expect(texts.at(2).hasClass('answer-pop')).toBe(true);
+    expect(texts[0]).toHaveClass('has-text-success');
+    expect(texts[0]).not.toHaveClass('answer-pop');
+    expect(texts[2]).toHaveClass('has-text-danger');
+    expect(texts[2]).toHaveClass('answer-pop');
   });
 });

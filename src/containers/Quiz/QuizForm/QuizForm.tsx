@@ -1,22 +1,21 @@
 import React, {
   FormEvent,
   FunctionComponent,
+  useCallback,
   useEffect,
   useReducer,
-  useCallback,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-
-import * as breedActions from '../../../store/breed/actions';
-import * as quizActions from '../../../store/quiz/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 import Input from '../../../components/Form/Input/Input';
-import ToggleHide from '../../../components/Ui/ToggleHide/ToggleHide';
+import QuizCheckboxes from '../../../components/Quiz/QuizCheckboxes/QuizCheckboxes';
 import ErrorMessage from '../../../components/Ui/ErrorMessage/ErrorMessage';
 import Loading from '../../../components/Ui/Loading/Loading';
-import QuizCheckboxes from '../../../components/Quiz/QuizCheckboxes/QuizCheckboxes';
-import { quizFormReducer, initialState } from './reducers';
+import ToggleHide from '../../../components/Ui/ToggleHide/ToggleHide';
 import { AppState } from '../../../store';
-import { useHistory } from 'react-router';
+import * as breedActions from '../../../store/breed/actions';
+import * as quizActions from '../../../store/quiz/actions';
+import { initialState, quizFormReducer } from './reducers';
 
 const QuizForm: FunctionComponent = () => {
   const breeds = useSelector((state: AppState) => state.breeds);

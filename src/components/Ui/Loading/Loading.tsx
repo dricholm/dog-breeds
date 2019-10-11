@@ -3,7 +3,7 @@ import React from 'react';
 import './Loading.scss';
 
 const Loading = () => (
-  <div className="dog-loader">
+  <div className="dog-loader" aria-label="Loading">
     <div className="ears" />
     <div className="body">
       <div className="eyebrows" />

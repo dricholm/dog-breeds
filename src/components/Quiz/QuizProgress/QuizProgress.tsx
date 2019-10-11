@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import './QuizProgress.css';
+import './QuizProgress.scss';
 
 export interface QuizProgressProps {
   correct: number;

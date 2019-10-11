@@ -14,6 +14,7 @@ const Input: FunctionComponent<InputProps> = (props: InputProps) => {
         <input
           className="input"
           title={props.elementConfig.placeholder}
+          aria-label={props.label}
           {...props.elementConfig}
         />
       );
@@ -26,7 +27,7 @@ const Input: FunctionComponent<InputProps> = (props: InputProps) => {
         'tag',
       ];
       if (
-        typeof props.elementConfig !== 'undefined' &&
+        typeof props.elementConfig != 'undefined' &&
         props.elementConfig.checked
       ) {
         checkboxClasses.push('is-info');

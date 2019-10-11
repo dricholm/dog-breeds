@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router';
 
-import './QuizGame.css';
+import './QuizGame.scss';
 import AnswerButtons from '../../../components/Quiz/AnswerButtons/AnswerButtons';
 import QuizImage from '../../../components/Quiz/QuizImage/QuizImage';
 import QuizProgress from '../../../components/Quiz/QuizProgress/QuizProgress';
@@ -48,10 +48,6 @@ const QuizGame: FunctionComponent = () => {
       dispatchAnswer(breed);
     }
   };
-
-  if (!quiz.questionCount || quiz.selectedBreeds.length < 2) {
-    return <p className="notification is-primary">Redirecting</p>;
-  }
 
   return (
     <React.Fragment>

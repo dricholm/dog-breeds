@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import ErrorMessage from '../Ui/ErrorMessage/ErrorMessage';
 
 export interface BreedListLinksProps {
-  breeds: Array<string>;
+  breeds?: Array<string>;
 }
 
 const BreedListLinks: FunctionComponent<BreedListLinksProps> = (
@@ -29,6 +29,10 @@ const BreedListLinks: FunctionComponent<BreedListLinksProps> = (
   });
 
   return <ul className="is-size-5 is-capitalized">{breedList}</ul>;
+};
+
+BreedListLinks.defaultProps = {
+  breeds: [],
 };
 
 export default BreedListLinks;

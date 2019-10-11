@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-
 import Section from '../Ui/Section/Section';
 
 const About: FunctionComponent = () => (

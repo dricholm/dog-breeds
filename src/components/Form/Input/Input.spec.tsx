@@ -1,59 +1,71 @@
+import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { shallow, ShallowWrapper } from 'enzyme';
-
 import Input from './Input';
 
 describe('<Input />', () => {
-  let wrapper: ShallowWrapper;
+  it('should work with input text', () => {
+    const onChange = jest.fn();
+    const elementConfig = {
+      onChange,
+      placeholder: 'Placeholder test',
+      type: 'text',
+    };
+    const elementType = 'input';
+    const utils = render(
+      <Input elementType={elementType} elementConfig={elementConfig} />
+    );
 
-  beforeEach(() => {
-    wrapper = shallow(<Input />);
+    const inputElement = utils.getByPlaceholderText(
+      elementConfig.placeholder
+    ) as HTMLInputElement;
+    expect(onChange).toHaveBeenCalledTimes(0);
+    fireEvent.change(inputElement, { target: { value: 'Entering' } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(inputElement).toHaveValue('Entering');
   });
 
   it('should work with checkbox', () => {
     const onChange = jest.fn();
-    wrapper.setProps({
-      elementConfig: { onChange },
-      elementType: 'checkbox',
-      label: 'LabelTest',
-    });
-    const label = wrapper.find('label');
-    const input = wrapper.find('input');
+    const elementConfig = {
+      onChange,
+    };
+    const elementType = 'checkbox';
+    const label = 'LabelTest';
+    const utils = render(
+      <Input
+        elementType={elementType}
+        elementConfig={elementConfig}
+        label={label}
+      />
+    );
 
-    expect(label.exists()).toBe(true);
-    expect(label.props().htmlFor).toBe('LabelTest');
-    expect(label.text().trim()).toBe('LabelTest');
+    const labelElement = utils.getByLabelText(label) as HTMLInputElement;
 
-    expect(input.exists()).toBe(true);
-    expect(input.props().id).toBe('LabelTest');
-    expect(input.props().title).toBe('LabelTest');
-    expect(input.props().type).toBe('checkbox');
+    expect(labelElement.checked).toBe(false);
 
-    expect(onChange).toHaveBeenCalledTimes(0);
-    input.simulate('change', { target: { checked: true } });
+    fireEvent.click(labelElement);
     expect(onChange).toHaveBeenCalledTimes(1);
+    expect(labelElement.checked).toBe(true);
   });
 
-  it('should work with input text', () => {
+  it('should set checkbox as checked', () => {
     const onChange = jest.fn();
-    wrapper.setProps({
-      elementConfig: {
-        onChange,
-        placeholder: 'Placeholder test',
-        type: 'text',
-      },
-      elementType: 'input',
-    });
-    const input = wrapper.find('input[type="text"]');
+    const elementConfig = {
+      checked: true,
+      onChange,
+    };
+    const elementType = 'checkbox';
+    const label = 'LabelTest';
+    const utils = render(
+      <Input
+        elementType={elementType}
+        elementConfig={elementConfig}
+        label={label}
+      />
+    );
 
-    expect(input.exists()).toBe(true);
-    expect(input.props().placeholder).toBe('Placeholder test');
+    const labelElement = utils.getByLabelText(label) as HTMLInputElement;
 
-    expect(onChange).toHaveBeenCalledTimes(0);
-    input.simulate('change', { target: { value: 'Entering' } });
-    expect(onChange).toHaveBeenCalledTimes(1);
-    expect(onChange).toHaveBeenCalledWith({
-      target: { value: 'Entering' },
-    });
+    expect(labelElement.checked).toBe(true);
   });
 });

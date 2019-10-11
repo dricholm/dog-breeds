@@ -1,10 +1,9 @@
-import axios from '../../shared/axiosDogApi';
-
+import { fetchBreedList } from '../../shared/dogApi';
 import {
-  GET_BREEDS,
-  GET_BREEDS_SUCCESS,
-  GET_BREEDS_FAIL,
   BreedActionTypes,
+  GET_BREEDS,
+  GET_BREEDS_FAIL,
+  GET_BREEDS_SUCCESS,
 } from './types';
 
 export const getBreeds = () => {
@@ -12,23 +11,14 @@ export const getBreeds = () => {
     dispatch({ type: GET_BREEDS });
 
     try {
-      const result = await axios.get('/breeds/list/all');
+      const breeds = await fetchBreedList();
 
-      if (result.status === 200) {
-        dispatch({
-          payload: {
-            breeds: result.data.message,
-          },
-          type: GET_BREEDS_SUCCESS,
-        });
-      } else {
-        dispatch({
-          payload: {
-            errorMessage: 'Failed to get breeds',
-          },
-          type: GET_BREEDS_FAIL,
-        });
-      }
+      dispatch({
+        payload: {
+          breeds,
+        },
+        type: GET_BREEDS_SUCCESS,
+      });
     } catch (err) {
       dispatch({
         payload: {

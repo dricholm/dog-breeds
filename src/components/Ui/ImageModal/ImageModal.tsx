@@ -1,14 +1,14 @@
-import React, { useEffect, FunctionComponent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import './ImageModal.css';
+import React, { FunctionComponent, useEffect } from 'react';
+import './ImageModal.scss';
 
 interface ImageModalProps {
-  hasNext: boolean;
-  hasPrev: boolean;
+  hasNext?: boolean;
+  hasPrev?: boolean;
   onChange: (direction: number) => void;
   onClose: () => void;
   src: string;
+  alt?: string;
 }
 
 const ImageModal: FunctionComponent<ImageModalProps> = (
@@ -49,7 +49,7 @@ const ImageModal: FunctionComponent<ImageModalProps> = (
     <img
       className="modal-image"
       src={props.src}
-      alt="Large version"
+      alt={props.alt}
       key={props.src}
     />
   ));
@@ -60,13 +60,13 @@ const ImageModal: FunctionComponent<ImageModalProps> = (
       {image}
       <button
         className="modal-close is-large"
-        aria-label="close"
+        aria-label="Close"
         onClick={props.onClose}
       />
       {props.hasPrev ? (
         <button
           className="button is-large is-dark modal-prev"
-          aria-label="previous"
+          aria-label="Previous"
           onClick={() => props.onChange(-1)}
         >
           <FontAwesomeIcon icon="chevron-left" fixedWidth />
@@ -75,7 +75,7 @@ const ImageModal: FunctionComponent<ImageModalProps> = (
       {props.hasNext ? (
         <button
           className="button is-large is-dark modal-next"
-          aria-label="next"
+          aria-label="Next"
           onClick={() => props.onChange(1)}
         >
           <FontAwesomeIcon icon="chevron-right" fixedWidth />
@@ -88,7 +88,7 @@ const ImageModal: FunctionComponent<ImageModalProps> = (
 ImageModal.defaultProps = {
   hasNext: false,
   hasPrev: false,
-  src: '#',
+  alt: 'Large version',
 };
 
 export default ImageModal;

@@ -1,76 +1,217 @@
+import { render, fireEvent } from '@testing-library/react';
 import React from 'react';
-import { shallow } from 'enzyme';
-
 import ImageModal from './ImageModal';
 
 describe('<ImageModal />', () => {
-  let wrapper;
+  const src = 'test.jpg';
+  const alt = 'Image alt';
+  const onChange = jest.fn();
+  const onClose = jest.fn();
 
-  beforeEach(() => {
-    wrapper = shallow(<ImageModal />);
+  afterEach(() => {
+    onChange.mockClear();
+    onClose.mockClear();
   });
 
   it('should display image', () => {
-    wrapper.setProps({ src: 'test.jpg' });
-    expect(wrapper.find('img').exists()).toBe(true);
-    expect(wrapper.find('img').props().src).toBe('test.jpg');
+    const utils = render(
+      <ImageModal src={src} onChange={onChange} onClose={onClose} alt={alt} />
+    );
+
+    const img = utils.getByAltText(alt);
+    expect(img.getAttribute('src')).toBe(src);
   });
 
   it('should call close on background click', () => {
-    const onClose = jest.fn();
-    wrapper.setProps({ onClose });
+    const utils = render(
+      <ImageModal src={src} onChange={onChange} onClose={onClose} alt={alt} />
+    );
 
     expect(onClose).toHaveBeenCalledTimes(0);
-    wrapper.find('.modal-background').simulate('click');
+    const background = utils.container.querySelector('.modal-background');
+    fireEvent.click(background);
+
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('should call close on button click', () => {
-    const onClose = jest.fn();
-    wrapper.setProps({ onClose });
+    const utils = render(
+      <ImageModal src={src} onChange={onChange} onClose={onClose} alt={alt} />
+    );
 
     expect(onClose).toHaveBeenCalledTimes(0);
-    wrapper.find('.modal-close').simulate('click');
+    const close = utils.getByLabelText('Close');
+    fireEvent.click(close);
+
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('should display prev', () => {
-    wrapper.setProps({ hasPrev: true });
-    expect(wrapper.find('.modal-prev').exists()).toBe(true);
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={true}
+      />
+    );
+
+    utils.getByLabelText('Previous');
   });
 
   it('should display next', () => {
-    wrapper.setProps({ hasNext: true });
-    expect(wrapper.find('.modal-next').exists()).toBe(true);
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasNext={true}
+      />
+    );
+
+    utils.getByLabelText('Next');
   });
 
   it('should not display prev', () => {
-    wrapper.setProps({ hasPrev: false });
-    expect(wrapper.find('.modal-prev').exists()).toBe(false);
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={false}
+      />
+    );
+
+    expect(utils.queryByLabelText('Previous')).toBeNull();
   });
 
   it('should not display next', () => {
-    wrapper.setProps({ hasNext: false });
-    expect(wrapper.find('.modal-next').exists()).toBe(false);
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasNext={false}
+      />
+    );
+
+    expect(utils.queryByLabelText('Next')).toBeNull();
   });
 
   it('should call onChange with -1', () => {
-    const onChange = jest.fn();
-    wrapper.setProps({ hasPrev: true, onChange });
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
 
     expect(onChange).toHaveBeenCalledTimes(0);
-    wrapper.find('.modal-prev').simulate('click');
+    const prev = utils.getByLabelText('Previous');
+    fireEvent.click(prev);
+
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith(-1);
   });
 
   it('should call onChange with 1', () => {
-    const onChange = jest.fn();
-    wrapper.setProps({ hasNext: true, onChange });
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
 
     expect(onChange).toHaveBeenCalledTimes(0);
-    wrapper.find('.modal-next').simulate('click');
+    const prev = utils.getByLabelText('Next');
+    fireEvent.click(prev);
+
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith(1);
+  });
+
+  it('should call onClose when escape is pressed', () => {
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+
+    expect(onClose).toHaveBeenCalledTimes(0);
+    fireEvent.keyUp(utils.container, { key: 'Escape', keyCode: '27' });
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call onChange when left is pressed', () => {
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+
+    expect(onChange).toHaveBeenCalledTimes(0);
+    fireEvent.keyUp(utils.container, { key: 'ArrowLeft', keyCode: '37' });
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith(-1);
+  });
+
+  it('should call onChange when right is pressed', () => {
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+
+    expect(onChange).toHaveBeenCalledTimes(0);
+    fireEvent.keyUp(utils.container, { key: 'ArrowRight', keyCode: '39' });
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith(1);
+  });
+
+  it('should not call functions when a random key is pressed', () => {
+    const utils = render(
+      <ImageModal
+        src={src}
+        onChange={onChange}
+        onClose={onClose}
+        alt={alt}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+
+    fireEvent.keyUp(utils.container, { key: 'ArrowUp', keyCode: '38' });
+    expect(onChange).toHaveBeenCalledTimes(0);
+    expect(onClose).toHaveBeenCalledTimes(0);
   });
 });

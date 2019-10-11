@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import './BreedList.css';
+import './BreedList.scss';
 import ErrorMessage from '../../components/Ui/ErrorMessage/ErrorMessage';
 import Input from '../../components/Form/Input/Input';
 import Loading from '../../components/Ui/Loading/Loading';
@@ -72,6 +72,7 @@ const BreedList: FunctionComponent = () => {
                     placeholder: 'Filter breeds',
                     type: 'text',
                   }}
+                  label="Filter breeds"
                   elementType="input"
                 />
               </div>

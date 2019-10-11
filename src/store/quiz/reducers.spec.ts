@@ -1,10 +1,13 @@
 import { quizReducer } from './reducers';
 import {
-  initialQuizState,
-  QuizActionTypes,
-  SET_OPTIONS,
   ANSWER,
+  initialQuizState,
+  NEXT_QUESTION,
+  NEXT_QUESTION_FAIL,
+  NEXT_QUESTION_SUCCESS,
+  QuizActionTypes,
   RESTART,
+  SET_OPTIONS,
 } from './types';
 
 describe('quiz reducer', () => {
@@ -23,6 +26,53 @@ describe('quiz reducer', () => {
       questionCount: 2,
       selectedBreeds: ['Test'],
       numberOfWrong: 0,
+    });
+  });
+
+  it('should start next question', () => {
+    const action: QuizActionTypes = {
+      type: NEXT_QUESTION,
+    };
+    expect(quizReducer(initialQuizState, action)).toEqual({
+      ...initialQuizState,
+      choices: [],
+      chosenAnswer: null,
+      correctAnswer: null,
+      errorMessage: null,
+      image: null,
+      loading: true,
+      wasCorrect: null,
+    });
+  });
+
+  it('should set next question', () => {
+    const action: QuizActionTypes = {
+      type: NEXT_QUESTION_SUCCESS,
+      payload: {
+        choices: ['corgi', 'akita', 'husky'],
+        correctAnswer: 'akita',
+        imageUrl: 'akita.jpg',
+      },
+    };
+    expect(quizReducer(initialQuizState, action)).toEqual({
+      ...initialQuizState,
+      choices: action.payload.choices.sort(),
+      correctAnswer: action.payload.correctAnswer,
+      errorMessage: null,
+      image: action.payload.imageUrl,
+      loading: false,
+    });
+  });
+
+  it('should fail to set next question', () => {
+    const action: QuizActionTypes = {
+      type: NEXT_QUESTION_FAIL,
+      payload: { errorMessage: 'Error message' },
+    };
+    expect(quizReducer(initialQuizState, action)).toEqual({
+      ...initialQuizState,
+      errorMessage: action.payload.errorMessage,
+      loading: false,
     });
   });
 

@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-
 import Input from '../../Form/Input/Input';
 
 interface QuizCheckboxesProps {
@@ -44,11 +43,6 @@ const QuizCheckboxes: FunctionComponent<QuizCheckboxesProps> = (
   });
 
   return <React.Fragment>{checkboxes}</React.Fragment>;
-};
-
-QuizCheckboxes.defaultProps = {
-  checkboxes: {},
-  changeValue: () => null,
 };
 
 export default QuizCheckboxes;
