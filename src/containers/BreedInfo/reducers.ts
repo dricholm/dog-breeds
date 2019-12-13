@@ -1,12 +1,12 @@
 import {
-  BreedInfoState,
   BreedInfoActionTypes,
+  BreedInfoState,
+  CHANGE_IMAGE,
   INIT_REQUEST,
-  SET_IMAGES,
-  SET_ERROR,
   LOAD_MORE_IMAGES,
   SELECT_IMAGE,
-  CHANGE_IMAGE,
+  SET_ERROR,
+  SET_IMAGES,
 } from './types';
 
 export const initialState: BreedInfoState = {
@@ -25,7 +25,7 @@ export const initialState: BreedInfoState = {
 export const breedInfoReducer: (
   state: BreedInfoState,
   action: BreedInfoActionTypes
-) => BreedInfoState = (state, action) => {
+) => BreedInfoState = (state = initialState, action) => {
   switch (action.type) {
     case INIT_REQUEST:
       return {
@@ -86,7 +86,6 @@ export const breedInfoReducer: (
       };
 
     default:
-      console.error('Invalid QuizFormAction type', action);
       return state;
   }
 };
