@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/dog-breeds/static/css/main.b6cfff15.chunk.css",
+    "main.js": "/dog-breeds/static/js/main.cde37969.chunk.js",
+    "main.js.map": "/dog-breeds/static/js/main.cde37969.chunk.js.map",
+    "runtime-main.js": "/dog-breeds/static/js/runtime-main.6c4eadfe.js",
+    "runtime-main.js.map": "/dog-breeds/static/js/runtime-main.6c4eadfe.js.map",
+    "static/js/2.ab7f12af.chunk.js": "/dog-breeds/static/js/2.ab7f12af.chunk.js",
+    "static/js/2.ab7f12af.chunk.js.map": "/dog-breeds/static/js/2.ab7f12af.chunk.js.map",
+    "index.html": "/dog-breeds/index.html",
+    "precache-manifest.b3706f6ef826a3cd3bc8875eb3a4ec9e.js": "/dog-breeds/precache-manifest.b3706f6ef826a3cd3bc8875eb3a4ec9e.js",
+    "service-worker.js": "/dog-breeds/service-worker.js",
+    "static/css/main.b6cfff15.chunk.css.map": "/dog-breeds/static/css/main.b6cfff15.chunk.css.map",
+    "static/js/2.ab7f12af.chunk.js.LICENSE": "/dog-breeds/static/js/2.ab7f12af.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6c4eadfe.js",
+    "static/js/2.ab7f12af.chunk.js",
+    "static/css/main.b6cfff15.chunk.css",
+    "static/js/main.cde37969.chunk.js"
+  ]
+}
