@@ -10,7 +10,7 @@ export interface BreedListLinksProps {
 const BreedListLinks: FunctionComponent<BreedListLinksProps> = (
   props: BreedListLinksProps
 ) => {
-  if (!props.breeds || props.breeds.length === 0) {
+  if (props.breeds?.length === 0) {
     return <ErrorMessage message="No breeds matched the filter" />;
   }
 
