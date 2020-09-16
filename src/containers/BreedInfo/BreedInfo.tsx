@@ -20,7 +20,7 @@ import { breedInfoReducer, initialState } from './reducers';
 const BreedInfo: FunctionComponent = () => {
   const [state, dispatch] = useReducer(breedInfoReducer, initialState);
 
-  const { breed, sub } = useParams();
+  const { breed, sub } = useParams<{ breed: string; sub: string }>();
 
   const { breeds, breedNames, error, loading } = useSelector(
     (state: AppState) => state.breeds

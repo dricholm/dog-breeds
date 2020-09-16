@@ -1,6 +1,6 @@
 # Dog breeds
 
-[![Build Status](https://travis-ci.com/dricholm/dog-breeds.svg?branch=master)](https://travis-ci.com/dricholm/dog-breeds)
+![Master](https://github.com/dricholm/dog-breeds/workflows/Master/badge.svg)
 [![codecov](https://codecov.io/gh/dricholm/dog-breeds/branch/master/graph/badge.svg)](https://codecov.io/gh/dricholm/dog-breeds)
 
 A website for listing dog breeds, viewing their pictures and playing a quiz game.
